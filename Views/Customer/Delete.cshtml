@@ -1,0 +1,11 @@
+@model InventoryManagement.ViewModels.CustomerViewModel;
+
+<h2>Delete Customer</h2>
+<p>Are you sure you want to delete <strong>@Model.Name</strong>?</p>
+
+<form asp-action="DeleteConfirmed" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Yes, Delete</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>

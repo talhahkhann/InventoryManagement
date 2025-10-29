@@ -1,0 +1,8 @@
+@model InventoryManagement.ViewModels.LoginViewModel
+
+<h2>Login</h2>
+<form asp-action="Login" method="post">
+    <input asp-for="Email" placeholder="Email" />
+    <input asp-for="Password" placeholder="Password" type="password" />
+    <button type="submit">Login</button>
+</form>

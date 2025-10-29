@@ -1,0 +1,65 @@
+@model InventoryManagement.ViewModels.ProductViewModel
+
+<div class="field-col">
+    <label class="field-label required">Category</label>
+    <select asp-for="CategoryId" class="field-select">
+        <option value="">-- Select Category --</option>
+        @if (ViewBag.Categories != null)
+        {
+            @foreach (var category in (IEnumerable<InventoryManagement.Models.Category>)ViewBag.Categories)
+            {
+                <option value="@category.Id" selected="@(Model?.CategoryId == category.Id)">
+                    @category.Name
+                </option>
+            }
+        }
+    </select>
+    <span asp-validation-for="CategoryId" class="text-danger" style="color: #e53e3e; font-size: 0.875rem; margin-top: 6px; display: block;"></span>
+</div>
+
+<style>
+    .field-label {
+        font-size: 0.875rem;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #4a5568;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+    .field-label.required::after {
+        content: "*";
+        color: #e53e3e;
+        font-size: 1.1em;
+    }
+    .field-select {
+        width: 100%;
+        padding: 10px 14px;
+        border: 1px solid #cbd5e0;
+        border-radius: 6px;
+        font-size: 0.95rem;
+        background: white;
+        color: #2d3748;
+        transition: all 0.2s ease;
+        height: auto;
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        padding-right: 36px;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='%234a5568' d='M7 7l3-3 3 3m0 6l-3 3-3-3'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        background-size: 16px;
+    }
+    .field-select:focus {
+        outline: none;
+        border-color: #3182ce;
+        box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.2);
+    }
+    .text-danger {
+        color: #e53e3e !important;
+        font-size: 0.875rem !important;
+        margin-top: 6px !important;
+        display: block !important;
+    }
+</style>
