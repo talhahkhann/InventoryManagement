@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using InventoryManagement.Models;
 
 namespace InventoryManagement.ViewModels
 {
@@ -21,5 +22,6 @@ namespace InventoryManagement.ViewModels
         public string Address { get; set; }
         public string City { get; set; }
         public string Country { get; set; }
+        public List<Customer> Customers{ get; set; }
     }
 }

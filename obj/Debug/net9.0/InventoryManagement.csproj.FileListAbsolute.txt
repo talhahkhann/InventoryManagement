@@ -321,3 +321,4 @@
 /home/haris/Desktop/InventoryManagement/bin/Debug/net9.0/zh-Hant/Microsoft.CodeAnalysis.Scripting.resources.dll
 /home/haris/Desktop/InventoryManagement/obj/Debug/net9.0/compressed/rhjxav2yrn-4w6g11yaqy.gz
 /home/haris/Desktop/InventoryManagement/obj/Debug/net9.0/compressed/013iotzrgd-5ovtr2a0tm.gz
+/home/haris/Desktop/InventoryManagement/obj/Debug/net9.0/InventoryManagement.sourcelink.json

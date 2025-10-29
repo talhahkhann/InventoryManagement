@@ -541,7 +541,7 @@
                                                        placeholder="Start typing product name..."
                                                        autocomplete="off" />
                                                 <input type="hidden" name="Items[0].ProductId" class="productId" value="" />
-                                                <!-- ✅ FIXED: Added missing ProductName hidden field -->
+                                                <!--  FIXED: Added missing ProductName hidden field -->
                                                 <input type="hidden" name="Items[0].ProductName" value="" />
                                             </div>
                                         </td>
@@ -552,7 +552,7 @@
                                             <input type="number" name="Items[0].Quantity" class="quantity" value="1" min="1" />
                                         </td>
                                         <td data-label="Total">
-                                            <!-- ❗ NO 'name' attribute -->
+                                            <!--  NO 'name' attribute -->
                                             <input type="text" class="total" readonly value="0.00" />
                                         </td>
                                         <td>
@@ -679,11 +679,7 @@
             const priceInput = newRow.querySelector('.price');
             const qtyInput = newRow.querySelector('.quantity');
             const totalInput = newRow.querySelector('.total');
-            const productNameHidden = newRow.querySelector('[name$=".ProductName"]');
-
-            productNameInput.value = '';
-            productIdInput.value = '';
-            if (productNameHidden) productNameHidden.value = '';
+        -
             priceInput.value = '0.00';
             qtyInput.value = '1';
             totalInput.value = '0.00';

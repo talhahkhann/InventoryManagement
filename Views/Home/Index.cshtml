@@ -1,4 +1,5 @@
-﻿@{
+﻿@model DashboardViewModel
+@{
     ViewData["Title"] = "Dashboard — Professional Invoice";
     Layout = null;
 }
@@ -220,7 +221,7 @@
                         </div>
                         <div class="card-title">Total Invoices</div>
                     </div>
-                    <div class="card-value">24</div>
+                    <div class="card-value">@Model.InvoiceCount</div>
                     <div class="card-footer">+12% from last month</div>
                 </div>
 
@@ -231,7 +232,7 @@
                         </div>
                         <div class="card-title">Customers</div>
                     </div>
-                    <div class="card-value">86</div>
+                    <div class="card-value">@Model.CustomerCount</div>
                     <div class="card-footer">Active this quarter</div>
                 </div>
 
@@ -242,7 +243,7 @@
                         </div>
                         <div class="card-title">Products</div>
                     </div>
-                    <div class="card-value">142</div>
+                    <div class="card-value">@Model.ProductCount</div>
                     <div class="card-footer">In inventory</div>
                 </div>
 
