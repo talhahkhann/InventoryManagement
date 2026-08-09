@@ -8,10 +8,13 @@ namespace InventoryManagement.Controllers
     public class CustomerController : Controller
     {
         private readonly ICustomerService _customerService;
-
-        public CustomerController(ICustomerService customerService)
+        private readonly IAreaService _areaService;
+    public CustomerController(
+        ICustomerService customerService,
+        IAreaService areaService)
         {
             _customerService = customerService;
+            _areaService = areaService;
         }
 
         // GET: Customer
@@ -30,12 +33,20 @@ namespace InventoryManagement.Controllers
                 Country = c.Country
             }).ToList();
 
+            // Get areas from database
+            var areas = await _areaService.GetAllAreasAsync();
+
+            ViewBag.Areas = areas;
+
             return View(customerVMs);
         }
 
         // GET: Customer/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            var areas = await _areaService.GetAllAreasAsync();
+
+            ViewBag.Areas = areas;
             return View();
         }
 
@@ -44,7 +55,13 @@ namespace InventoryManagement.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CustomerViewModel model)
         {
-            if (!ModelState.IsValid) return View(model);
+            if (!ModelState.IsValid)
+            {
+                var areas = await _areaService.GetAllAreasAsync();
+                ViewBag.Areas = areas;
+
+                return View(model);
+            }
 
             var customer = new Customer
             {
@@ -53,18 +70,23 @@ namespace InventoryManagement.Controllers
                 PhoneNumber = model.PhoneNumber,
                 Address = model.Address,
                 City = model.City,
-                Country = model.Country
+                Country = model.Country,
+
+                // Attach customer to selected area
+                AreaId = model.AreaId
             };
 
             await _customerService.AddCustomerAsync(customer);
+
             return RedirectToAction(nameof(Index));
         }
-
         // GET: Customer/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
             var customer = await _customerService.GetCustomerByIdAsync(id);
-            if (customer == null) return NotFound();
+
+            if (customer == null)
+                return NotFound();
 
             var model = new CustomerViewModel
             {
@@ -83,10 +105,15 @@ namespace InventoryManagement.Controllers
         // POST: Customer/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, CustomerViewModel model)
+        public async Task<IActionResult> Edit(
+            int id,
+            CustomerViewModel model)
         {
-            if (id != model.Id) return BadRequest();
-            if (!ModelState.IsValid) return View(model);
+            if (id != model.Id)
+                return BadRequest();
+
+            if (!ModelState.IsValid)
+                return View(model);
 
             var customer = new Customer
             {
@@ -100,6 +127,7 @@ namespace InventoryManagement.Controllers
             };
 
             await _customerService.UpdateCustomerAsync(customer);
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -107,7 +135,9 @@ namespace InventoryManagement.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var customer = await _customerService.GetCustomerByIdAsync(id);
-            if (customer == null) return NotFound();
+
+            if (customer == null)
+                return NotFound();
 
             var model = new CustomerViewModel
             {
@@ -129,21 +159,30 @@ namespace InventoryManagement.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             await _customerService.DeleteCustomerAsync(id);
+
             return RedirectToAction(nameof(Index));
         }
 
+        // GET: Customer/GetCustomersByArea
         [HttpGet]
-        public async Task<JsonResult> GetCusotmersByArea(int areaId)
+        public async Task<JsonResult> GetCustomersByArea(int areaId)
         {
-            var customers = await _customerService.GetCustomersByAreaAsync(areaId);
+            var customers =
+                await _customerService.GetCustomersByAreaAsync(areaId);
+
             var result = customers.Select(c => new
             {
                 c.Id,
-                c.Name
+                c.Name,
+                c.Email,
+                c.PhoneNumber,
+                c.Address,
+                c.City,
+                c.Country
             });
+
             return Json(result);
         }
-
     }
-}
 
+}

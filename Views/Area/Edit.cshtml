@@ -1,0 +1,80 @@
+﻿@model InventoryManagement.ViewModels.AreaViewModel
+
+@{
+    ViewData["Title"] = "Edit Area";
+}
+
+<div class="container py-4">
+
+    ```
+    <div class="row justify-content-center">
+        <div class="col-md-7 col-lg-6">
+
+            <div class="mb-4">
+                <h2 class="fw-bold">Edit Area</h2>
+                <p class="text-muted">
+                    Update the area information.
+                </p>
+            </div>
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+
+                    <form asp-action="Edit"
+                          asp-route-id="@Model.Id"
+                          method="post">
+
+                        @Html.AntiForgeryToken()
+
+                        <input type="hidden" asp-for="Id" />
+
+                        <div asp-validation-summary="ModelOnly"
+                             class="text-danger mb-3">
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="Name"
+                                   class="form-label fw-semibold">
+                                Area Name
+                            </label>
+
+                            <input asp-for="Name"
+                                   class="form-control"
+                                   placeholder="Enter area name" />
+
+                            <span asp-validation-for="Name"
+                                  class="text-danger">
+                            </span>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2">
+
+                            <a asp-action="Index"
+                               class="btn btn-light border">
+                                Cancel
+                            </a>
+
+                            <button type="submit"
+                                    class="btn btn-primary">
+                                <i class="bi bi-check-lg"></i>
+                                Save Changes
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+    ```
+
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

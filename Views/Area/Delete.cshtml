@@ -1,0 +1,73 @@
+﻿@model InventoryManagement.ViewModels.AreaViewModel
+
+@{
+    ViewData["Title"] = "Delete Area";
+}
+
+<div class="container py-4">
+
+    ```
+    <div class="row justify-content-center">
+        <div class="col-md-7 col-lg-6">
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body p-4 text-center">
+
+                    <div class="mb-3">
+                        <div class="bg-danger bg-opacity-10
+                                rounded-circle
+                                d-inline-flex
+                                align-items-center
+                                justify-content-center"
+                             style="width:70px;height:70px;">
+
+                            <i class="bi bi-trash text-danger fs-3"></i>
+
+                        </div>
+                    </div>
+
+                    <h3 class="fw-bold">Delete Area?</h3>
+
+                    <p class="text-muted">
+                        Are you sure you want to delete this area?
+                    </p>
+
+                    <div class="bg-light rounded p-3 mb-4">
+                        <span class="fw-semibold">
+                            @Model.Name
+                        </span>
+                    </div>
+
+                    <form asp-action="Delete"
+                          asp-route-id="@Model.Id"
+                          method="post">
+
+                        @Html.AntiForgeryToken()
+
+                        <div class="d-flex justify-content-center gap-2">
+
+                            <a asp-action="Index"
+                               class="btn btn-light border">
+                                Cancel
+                            </a>
+
+                            <button type="submit"
+                                    class="btn btn-danger">
+                                <i class="bi bi-trash"></i>
+                                Delete Area
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+    ```
+
+</div>

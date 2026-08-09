@@ -1,25 +1,31 @@
 {
   "format": 1,
   "restore": {
-    "/home/haris/Desktop/InventoryManagement/InventoryManagement.csproj": {}
+    "C:\\Users\\talha.Khan\\Desktop\\InventoryManagement\\InventoryManagement.csproj": {}
   },
   "projects": {
-    "/home/haris/Desktop/InventoryManagement/InventoryManagement.csproj": {
+    "C:\\Users\\talha.Khan\\Desktop\\InventoryManagement\\InventoryManagement.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/haris/Desktop/InventoryManagement/InventoryManagement.csproj",
+        "projectUniqueName": "C:\\Users\\talha.Khan\\Desktop\\InventoryManagement\\InventoryManagement.csproj",
         "projectName": "InventoryManagement",
-        "projectPath": "/home/haris/Desktop/InventoryManagement/InventoryManagement.csproj",
-        "packagesPath": "/home/haris/.nuget/packages/",
-        "outputPath": "/home/haris/Desktop/InventoryManagement/obj/",
+        "projectPath": "C:\\Users\\talha.Khan\\Desktop\\InventoryManagement\\InventoryManagement.csproj",
+        "packagesPath": "C:\\Users\\talha.Khan\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\talha.Khan\\Desktop\\InventoryManagement\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "/home/haris/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\talha.Khan\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -38,7 +44,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.100"
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "net9.0": {
@@ -80,12 +86,6 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[9.0.8, 9.0.8]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
@@ -94,7 +94,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/9.0.109/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.316/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
