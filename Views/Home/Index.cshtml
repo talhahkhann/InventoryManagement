@@ -259,52 +259,55 @@
                 </div>
             </div>
 
-            <!-- Quick Actions Sidebar -->
-            <!-- Quick Actions Sidebar -->
-
             <div class="quick-actions">
+    <a href="@Url.Action("Create", "Invoice")"
+       class="action-btn btn-create">
+        <i class="bi bi-plus-circle"></i>
+        Create New Invoice
+    </a>
 
-                ```
-                <a href="@Url.Action("Create", "Invoice")"
-                   class="action-btn btn-create">
-                    <i class="bi bi-plus-circle"></i>
-                    Create New Invoice
-                </a>
+    <a href="@Url.Action("Index", "Invoice")"
+       class="action-btn btn-view">
+        <i class="bi bi-receipt"></i>
+        View All Invoices
+    </a>
 
-                <a href="@Url.Action("Index", "Invoice")"
-                   class="action-btn btn-view">
-                    <i class="bi bi-receipt"></i>
-                    View All Invoices
-                </a>
+    <a href="@Url.Action("Index", "Customer")"
+       class="action-btn btn-products">
+        <i class="bi bi-person-lines-fill"></i>
+        Manage Customers
+    </a>
 
-                <a href="@Url.Action("Index", "Customer")"
-                   class="action-btn btn-products">
-                    <i class="bi bi-person-lines-fill"></i>
-                    Manage Customers
-                </a>
+    <a href="@Url.Action("Index", "Products")"
+       class="action-btn btn-products">
+        <i class="bi bi-box-seam"></i>
+        Manage Products
+    </a>
 
-                <a href="@Url.Action("Index", "Product")"
-                   class="action-btn btn-products">
-                    <i class="bi bi-box-seam"></i>
-                    Manage Products
-                </a>
+    <a href="@Url.Action("Index", "Area")"
+       class="action-btn btn-products">
+        <i class="bi bi-geo-alt"></i>
+        Manage Areas
+    </a>
 
-                <!-- Area Management -->
-                <a href="@Url.Action("Index", "Area")"
-                   class="action-btn btn-products">
-                    <i class="bi bi-geo-alt"></i>
-                    Manage Areas
-                </a>
+    <a href="@Url.Action("SalesPerProduct", "Reports")"
+       class="action-btn btn-settings">
+        <i class="bi bi-graph-up"></i>
+        Sales Per Product
+    </a>
 
-                <a href="#"
-                   class="action-btn btn-settings">
-                    <i class="bi bi-gear"></i>
-                    System Settings
-                </a>
-                ```
+    <a href="@Url.Action("SalesPerCategory", "Reports")"
+       class="action-btn btn-settings">
+        <i class="bi bi-bar-chart"></i>
+        Sales Per Category
+    </a>
 
-            </div>
-
+    <a href="#"
+       class="action-btn btn-settings">
+        <i class="bi bi-gear"></i>
+        System Settings
+    </a>
+</div>
         </main>
     </div>
 </body>

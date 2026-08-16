@@ -9,9 +9,10 @@ namespace InventoryManagement.Controllers
     {
         private readonly ICustomerService _customerService;
         private readonly IAreaService _areaService;
-    public CustomerController(
-        ICustomerService customerService,
-        IAreaService areaService)
+
+        public CustomerController(
+            ICustomerService customerService,
+            IAreaService areaService)
         {
             _customerService = customerService;
             _areaService = areaService;
@@ -30,12 +31,11 @@ namespace InventoryManagement.Controllers
                 PhoneNumber = c.PhoneNumber,
                 Address = c.Address,
                 City = c.City,
-                Country = c.Country
+                Country = c.Country,
+                AreaId = c.AreaId
             }).ToList();
 
-            // Get areas from database
             var areas = await _areaService.GetAllAreasAsync();
-
             ViewBag.Areas = areas;
 
             return View(customerVMs);
@@ -71,8 +71,6 @@ namespace InventoryManagement.Controllers
                 Address = model.Address,
                 City = model.City,
                 Country = model.Country,
-
-                // Attach customer to selected area
                 AreaId = model.AreaId
             };
 
@@ -80,6 +78,7 @@ namespace InventoryManagement.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+
         // GET: Customer/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
@@ -96,8 +95,12 @@ namespace InventoryManagement.Controllers
                 PhoneNumber = customer.PhoneNumber,
                 Address = customer.Address,
                 City = customer.City,
-                Country = customer.Country
+                Country = customer.Country,
+                AreaId = customer.AreaId   // pre-select the customer's current area
             };
+
+            var areas = await _areaService.GetAllAreasAsync();
+            ViewBag.Areas = areas;
 
             return View(model);
         }
@@ -113,7 +116,13 @@ namespace InventoryManagement.Controllers
                 return BadRequest();
 
             if (!ModelState.IsValid)
+            {
+                // repopulate dropdown, otherwise it renders empty on validation failure
+                var areas = await _areaService.GetAllAreasAsync();
+                ViewBag.Areas = areas;
+
                 return View(model);
+            }
 
             var customer = new Customer
             {
@@ -123,7 +132,8 @@ namespace InventoryManagement.Controllers
                 PhoneNumber = model.PhoneNumber,
                 Address = model.Address,
                 City = model.City,
-                Country = model.Country
+                Country = model.Country,
+                AreaId = model.AreaId
             };
 
             await _customerService.UpdateCustomerAsync(customer);
@@ -147,7 +157,8 @@ namespace InventoryManagement.Controllers
                 PhoneNumber = customer.PhoneNumber,
                 Address = customer.Address,
                 City = customer.City,
-                Country = customer.Country
+                Country = customer.Country,
+                AreaId = customer.AreaId
             };
 
             return View(model);
@@ -184,5 +195,4 @@ namespace InventoryManagement.Controllers
             return Json(result);
         }
     }
-
 }

@@ -1,6 +1,35 @@
-bin/
-obj/
+# .NET build output
+**/bin/
+**/obj/
+
+# Visual Studio
 .vs/
 *.user
 *.suo
-appsettings.json
+
+# Rider
+.idea/
+
+# VS Code
+.vscode/
+
+# Logs
+*.log
+
+# Test results
+TestResults/
+
+# NuGet
+packages/
+*.nupkg
+*.snupkg
+
+# Local configuration
+appsettings.Development.json
+appsettings.Local.json
+.env
+.env.*
+
+# OS files
+.DS_Store
+Thumbs.db
