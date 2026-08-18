@@ -239,10 +239,19 @@
             border-color: #3182ce;
             box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.2);
         }
-        #invoiceTable input[readonly] {
-            background-color: #f8fafc;
-            color: #4a5568;
-            cursor: not-allowed;
+        #invoiceTable input.price-editable {
+            background-color: white;
+            color: #2d3748;
+        }
+        .price-note {
+            font-size: 0.7rem;
+            color: #718096;
+            display: block;
+            margin-top: 4px;
+        }
+        .price-note.custom {
+            color: #dd6b20;
+            font-weight: 600;
         }
         .grand-total-row {
             font-weight: 700;
@@ -513,7 +522,8 @@
                                                 </div>
                                             </td>
                                             <td data-label="Price">
-                                                <input type="text" name="Items[@i].Price" class="price" readonly value="@Model.Items[i].Price.ToString("F2")" />
+                                                <input type="text" name="Items[@i].Price" class="price price-editable" value="@Model.Items[i].Price.ToString("F2")" />
+                                                <span class="price-note"></span>
                                             </td>
                                             <td data-label="Qty">
                                                 <input type="number" name="Items[@i].Quantity" class="quantity" value="@Model.Items[i].Quantity" min="1" />
@@ -541,12 +551,12 @@
                                                        placeholder="Start typing product name..."
                                                        autocomplete="off" />
                                                 <input type="hidden" name="Items[0].ProductId" class="productId" value="" />
-                                                <!--  FIXED: Added missing ProductName hidden field -->
                                                 <input type="hidden" name="Items[0].ProductName" value="" />
                                             </div>
                                         </td>
                                         <td data-label="Price">
-                                            <input type="text" name="Items[0].Price" class="price" readonly value="0.00" />
+                                            <input type="text" name="Items[0].Price" class="price price-editable" value="0.00" />
+                                            <span class="price-note"></span>
                                         </td>
                                         <td data-label="Qty">
                                             <input type="number" name="Items[0].Quantity" class="quantity" value="1" min="1" />
@@ -628,6 +638,64 @@
         const areas = @Html.Raw(Json.Serialize(Model.Areas.Select(a => new { id = a.AreaId, name = a.AreaName })));
         const allCustomers = @Html.Raw(Json.Serialize(Model.Customers.Select(c => new { id = c.Id, name = c.Name, areaId = c.AreaId })));
 
+        // ===== CUSTOMER-SPECIFIC RATE LOOKUP =====
+        async function fetchCustomerRate(customerId, productId) {
+            if (!customerId || !productId) return null;
+            try {
+                const response = await fetch(`/Invoice/GetProductRate?customerId=${customerId}&productId=${productId}`);
+                if (!response.ok) return null;
+                const data = await response.json();
+                return data; // { rate: number, isCustomRate: bool }
+            } catch (err) {
+                console.error('Rate lookup failed:', err);
+                return null;
+            }
+        }
+
+        function getCurrentCustomerId() {
+            return document.getElementById('CustomerId').value;
+        }
+
+        async function applyRateToRow(row, productId) {
+            const priceInput = row.querySelector('.price');
+            const noteEl = row.querySelector('.price-note');
+            const customerId = getCurrentCustomerId();
+
+            if (!productId) return;
+
+            const defaultProduct = products.find(p => p.id == productId);
+            const defaultPrice = defaultProduct ? parseFloat(defaultProduct.price) : 0;
+
+            if (!customerId) {
+                // No customer selected yet — just use default product price
+                priceInput.value = defaultPrice.toFixed(2);
+                if (noteEl) { noteEl.textContent = ''; noteEl.classList.remove('custom'); }
+                recalcRow(row);
+                return;
+            }
+
+            const result = await fetchCustomerRate(customerId, productId);
+
+            if (result && typeof result.rate === 'number') {
+                priceInput.value = result.rate.toFixed(2);
+                if (noteEl) {
+                    if (result.isCustomRate) {
+                        noteEl.textContent = 'Previous rate for this customer';
+                        noteEl.classList.add('custom');
+                    } else {
+                        noteEl.textContent = 'Default price';
+                        noteEl.classList.remove('custom');
+                    }
+                }
+            } else {
+                // Fallback if the endpoint fails for any reason
+                priceInput.value = defaultPrice.toFixed(2);
+                if (noteEl) { noteEl.textContent = ''; noteEl.classList.remove('custom'); }
+            }
+
+            recalcRow(row);
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
             $('#AreaId').change(function () {
                 const areaId = $(this).val();
@@ -639,6 +707,16 @@
                         customerDropdown.append(`<option value="${customer.id}">${customer.name}</option>`);
                     });
                 }
+            });
+
+            // Re-fetch rates for all existing rows whenever the customer changes
+            $('#CustomerId').change(function () {
+                document.querySelectorAll('.invoiceRow').forEach(row => {
+                    const productId = row.querySelector('.productId').value;
+                    if (productId) {
+                        applyRateToRow(row, productId);
+                    }
+                });
             });
 
             // Initialize existing rows
@@ -679,10 +757,14 @@
             const priceInput = newRow.querySelector('.price');
             const qtyInput = newRow.querySelector('.quantity');
             const totalInput = newRow.querySelector('.total');
-        
+            const noteEl = newRow.querySelector('.price-note');
+
+            productNameInput.value = '';
+            productIdInput.value = '';
             priceInput.value = '0.00';
             qtyInput.value = '1';
             totalInput.value = '0.00';
+            if (noteEl) { noteEl.textContent = ''; noteEl.classList.remove('custom'); }
 
             const existingList = newRow.querySelector('.autocomplete-items');
             if (existingList) existingList.remove();
@@ -699,11 +781,12 @@
             const priceInput = row.querySelector('.price');
             const quantityInput = row.querySelector('.quantity');
 
-            autocomplete(input, productIdInput, priceInput, products);
+            autocomplete(input, productIdInput, priceInput, row, products);
             quantityInput.addEventListener('input', () => recalcRow(row));
+            priceInput.addEventListener('input', () => recalcRow(row));
         }
 
-        function autocomplete(input, productIdInput, priceInput, arr) {
+        function autocomplete(input, productIdInput, priceInput, row, arr) {
             let currentFocus;
             input.addEventListener("input", function(e) {
                 const val = this.value.trim();
@@ -722,13 +805,15 @@
                         const item = document.createElement("DIV");
                         item.innerHTML = `<strong>${arr[i].name}</strong> - ${parseFloat(arr[i].price).toFixed(2)}`;
                         item.innerHTML += "<input type='hidden' value='" + arr[i].id + "'>";
-                        item.addEventListener("click", function(e) {
+                        item.addEventListener("click", async function(e) {
                             input.value = arr[i].name;
                             productIdInput.value = arr[i].id;
                             const productNameHidden = input.closest('tr').querySelector('[name$=".ProductName"]');
                             if (productNameHidden) productNameHidden.value = arr[i].name;
-                            priceInput.value = parseFloat(arr[i].price).toFixed(2);
-                            recalcRow(input.closest('.invoiceRow'));
+
+                            // Auto-fetch customer-specific rate (falls back to default price)
+                            await applyRateToRow(row, arr[i].id);
+
                             closeAllLists();
                         });
                         list.appendChild(item);

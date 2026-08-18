@@ -12,12 +12,14 @@ namespace InventoryManagement.Controllers
         private readonly ICustomerService _customerService;
         private readonly IProductService _productService;
         private readonly IAreaService _areaService;
+        private readonly ICustomerProductPriceService _customerProductService;
         private readonly ILogger<InvoiceController> _logger;
 
         public InvoiceController(
             IInvoiceService invoiceService,
             ICustomerService customerService,
             IProductService productService,
+            ICustomerProductPriceService customerProductPriceService,
             ILogger<InvoiceController> logger,
             IAreaService areaService)
         {
@@ -26,6 +28,7 @@ namespace InventoryManagement.Controllers
             _productService = productService;
             _areaService = areaService;
             _logger = logger;
+            _customerProductService = customerProductPriceService;
         }
 
         public async Task<IActionResult> Index()
@@ -44,63 +47,98 @@ namespace InventoryManagement.Controllers
             };
             return View(model);
         }
-        // POST : Invoice/Create
-        [HttpPost]
-        public async Task<IActionResult> Create(InvoiceViewModel model)
+   [HttpPost]
+public async Task<IActionResult> Create(InvoiceViewModel model)
+{
+    if (!ModelState.IsValid)
+    {
+        model.Areas = await _areaService.GetAllAreasAsync();
+        model.Customers = await _customerService.GetAllCustomerAsync();
+        model.Products = await _productService.GetAllProductsAsync();
+        return View(model);
+    }
+
+    // Remove empty rows
+    var validItems = model.Items
+        .Where(i => i.ProductId != 0)
+        .ToList();
+
+    if (!validItems.Any())
+    {
+        ModelState.AddModelError(
+            "Items",
+            "At least one product must be selected."
+        );
+
+        model.Areas = await _areaService.GetAllAreasAsync();
+        model.Customers = await _customerService.GetAllCustomerAsync();
+        model.Products = await _productService.GetAllProductsAsync();
+
+        return View(model);
+    }
+
+    // Get products
+    var productDict = (await _productService.GetAllProductsAsync())
+        .ToDictionary(p => p.Id, p => p);
+
+    var invoiceItems = new List<InvoiceItem>();
+
+    foreach (var item in validItems)
+    {
+        if (!productDict.TryGetValue(item.ProductId, out var product))
         {
-            if (!ModelState.IsValid)
-            {
-                model.Areas = await _areaService.GetAllAreasAsync();
-                model.Customers = await _customerService.GetAllCustomerAsync();
-                model.Products = await _productService.GetAllProductsAsync();
-                return View(model);
-            }
+            ModelState.AddModelError(
+                "Items",
+                "Invalid product selected."
+            );
 
-            // Remove empty rows
-            var validItems = model.Items.Where(i => i.ProductId != 0).ToList();
-            if (!validItems.Any())
-            {
-                ModelState.AddModelError("Items", "At least one product must be selected.");
-                model.Areas = await _areaService.GetAllAreasAsync();
-                model.Customers = await _customerService.GetAllCustomerAsync();
-                model.Products = await _productService.GetAllProductsAsync();
-                return View(model);
-            }
+            model.Areas = await _areaService.GetAllAreasAsync();
+            model.Customers = await _customerService.GetAllCustomerAsync();
+            model.Products = await _productService.GetAllProductsAsync();
 
-            // Build invoice items with real product prices
-            var invoiceItems = new List<InvoiceItem>();
-            var productDict = (await _productService.GetAllProductsAsync())
-                .ToDictionary(p => p.Id, p => p);
-
-            foreach (var item in validItems)
-            {
-                if (!productDict.TryGetValue(item.ProductId, out var product))
-                {
-                    ModelState.AddModelError("Items", "Invalid product selected.");
-                    model.Areas = await _areaService.GetAllAreasAsync();
-                    model.Customers = await _customerService.GetAllCustomerAsync();
-                    model.Products = await _productService.GetAllProductsAsync();
-                    return View(model);
-                }
-
-                invoiceItems.Add(new InvoiceItem
-                {
-                    ProductId = product.Id,
-                    Quantity = item.Quantity,
-                    Price = product.Price // Use real price from DB
-                });
-            }
-
-            var invoice = new Invoice
-            {
-                CustomerId = model.CustomerId,
-                Items = invoiceItems
-            };
-
-            await _invoiceService.CreateInvoiceAsync(invoice);
-            return RedirectToAction(nameof(Index));
+            return View(model);
         }
-        //GET: Invoice/Details/id
+
+        invoiceItems.Add(new InvoiceItem
+        {
+            ProductId = product.Id,
+            Quantity = item.Quantity,
+
+            // Use the price/rate selected on the invoice
+            Price = item.Price
+        });
+    }
+
+    // Calculate invoice total
+    var totalAmount = invoiceItems.Sum(
+        i => i.Quantity * i.Price
+    );
+
+    // Create invoice
+    var invoice = new Invoice
+    {
+        CustomerId = model.CustomerId,
+        TotalAmount = totalAmount,
+        Items = invoiceItems
+    };
+
+    // 1. Save invoice first
+    await _invoiceService.CreateInvoiceAsync(invoice);
+
+    // 2. After invoice is successfully saved,
+    //    save/update customer-specific rates
+    foreach (var item in validItems)
+    {
+        await _customerProductService.UpsertRateAsync(
+            model.CustomerId,
+            item.ProductId,
+            item.Price
+        );
+    }
+
+    // 3. Redirect after everything is done
+    return RedirectToAction(nameof(Index));
+}     //GET: Invoice/Details/id
         public async Task<IActionResult> Details(int id)
         {
             var invoice = await _invoiceService.GetInvoiceByIdAsync(id);
@@ -149,6 +187,20 @@ namespace InventoryManagement.Controllers
 
             return View("Create", model);
         }
+        // In InvoiceController.cs
+[HttpGet]
+public async Task<JsonResult> GetProductRate(int customerId, int productId)
+{
+    var product = await _productService.GetProductByIdAsync(productId);
+    if (product == null) return Json(new { rate = 0m, isCustomRate = false });
+
+    var customRate = await _customerProductService.GetCustomRateOrNullAsync(customerId, productId);
+
+    if (customRate.HasValue)
+        return Json(new { rate = customRate.Value, isCustomRate = true });
+
+    return Json(new { rate = product.Price, isCustomRate = false });
+}
 
         // POST: Invoice/Edit/5
         [HttpPost]
