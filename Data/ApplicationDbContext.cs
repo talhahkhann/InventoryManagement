@@ -14,7 +14,7 @@ namespace InventoryManagement.Data
         public DbSet<Invoice> Invoices { get; set; }
         public DbSet<InvoiceItem> InvoiceItems { get; set; }
         public DbSet<CustomerProductPrice> CustomerProductPrices { get; set; }
-
+        public DbSet<StockAlert> StockAlerts { get; set; }
         public DbSet<Area> Areas { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {

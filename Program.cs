@@ -46,6 +46,8 @@ builder.Services.AddScoped<IAreaService, AreaService>();
 builder.Services.AddScoped<IReportRepository, ReportRepository>();
 builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddScoped<ICustomerProductPriceService, CustomerProductPriceService>();
+builder.Services.AddScoped<IStockAlertRepository, StockAlertRepository>();
+builder.Services.AddScoped<IStockAlertService, StockAlertService>();
 
 
 
