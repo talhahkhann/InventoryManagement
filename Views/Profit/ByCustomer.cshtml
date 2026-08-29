@@ -1,0 +1,68 @@
+@model List<InventoryManagement.ViewModels.ProfitByCustomerViewModel>
+@{
+    ViewData["Title"]="Profit by Customer"; ViewData["HeaderIcon"]="bi-people"; ViewData["HeaderTitle"]="PROFIT BY CUSTOMER";
+    Layout="~/Views/Shared/_InventoryLayout.cshtml";
+    var filter = ViewBag.Filter as InventoryManagement.ViewModels.ProfitFilterViewModel ?? new InventoryManagement.ViewModels.ProfitFilterViewModel{Year=DateTime.Today.Year};
+    var years  = ViewBag.AvailableYears as List<int> ?? new List<int>();
+    decimal totRev=Model.Sum(r=>r.Revenue),totCost=Model.Sum(r=>r.Cost),totProfit=Model.Sum(r=>r.Profit);
+    decimal totMargin=totRev==0?0:Math.Round(totProfit/totRev*100,2);
+}
+<div class="inv-content">
+    <div class="profit-tabs">
+        <a href="@Url.Action("Index","Profit")" class="profit-tab"><i class="bi bi-speedometer2"></i> Dashboard</a>
+        <a href="@Url.Action("ByMonth","Profit")" class="profit-tab"><i class="bi bi-calendar-month"></i> By Month</a>
+        <a href="@Url.Action("ByYear","Profit")" class="profit-tab"><i class="bi bi-calendar3"></i> By Year</a>
+        <a href="@Url.Action("ByProduct","Profit")" class="profit-tab"><i class="bi bi-box-seam"></i> By Product</a>
+        <a href="@Url.Action("ByCustomer","Profit")" class="profit-tab active"><i class="bi bi-people"></i> By Customer</a>
+        <a href="@Url.Action("ByCategory","Profit")" class="profit-tab"><i class="bi bi-tags"></i> By Category</a>
+    </div>
+    <div class="profit-filter-bar">
+        <i class="bi bi-funnel" style="color:#718096;"></i>
+        <label for="yearSelect">Year</label>
+        <select id="yearSelect">@foreach(var y in years){<option value="@y" selected="@(y==filter.Year)">@y</option>}</select>
+        <label for="monthSelect">Month</label>
+        <select id="monthSelect">
+            <option value="">All months</option>
+            @for(int m=1;m<=12;m++){<option value="@m" selected="@(filter.Month==m)">@(new DateTime(filter.Year??DateTime.Today.Year,m,1).ToString("MMMM"))</option>}
+        </select>
+        <span class="profit-filter-sep">|</span>
+        <button class="profit-export-btn" onclick="ProfitModule.exportCsv('ByCustomer',@(filter.Year??DateTime.Today.Year),@(filter.Month?.ToString()??"null"))"><i class="bi bi-download"></i> Export CSV</button>
+    </div>
+    <div class="inv-section">
+        <div class="inv-section-header"><h2 class="inv-section-title"><i class="bi bi-table"></i> Customer Profit Detail</h2></div>
+        @await Html.PartialAsync("_SearchBar",new ViewDataDictionary(ViewData){{"InputId","custSearch"},{"ClearId","custSearchClear"},{"Placeholder","Search customer or area..."}})
+        <table class="inv-table">
+            <thead><tr><th>Customer</th><th>Area</th><th>Revenue</th><th>Cost</th><th>Profit</th><th>Margin %</th><th>Invoices</th><th>Units</th></tr></thead>
+            <tbody id="custTbody">
+            @foreach(var r in Model){
+                <tr>
+                    <td><strong>@r.CustomerName</strong></td>
+                    <td class="inv-cell-muted">@r.AreaName</td>
+                    <td class="inv-cell-price">PKR @r.Revenue.ToString("N2")</td>
+                    <td>PKR @r.Cost.ToString("N2")</td>
+                    <td class="inv-cell-price">PKR @r.Profit.ToString("N2")</td>
+                    <td class="@(r.MarginPct>=30?"profit-margin-high":r.MarginPct>=10?"profit-margin-mid":"profit-margin-low")">@r.MarginPct.ToString("F2")%</td>
+                    <td>@r.InvoiceCount</td><td>@r.UnitsSold</td>
+                </tr>
+            }
+            </tbody>
+            <tfoot><tr style="font-weight:700;background:#f7fafc;">
+                <td colspan="2">Total</td>
+                <td class="inv-cell-price">PKR @totRev.ToString("N2")</td>
+                <td>PKR @totCost.ToString("N2")</td>
+                <td class="inv-cell-price">PKR @totProfit.ToString("N2")</td>
+                <td class="@(totMargin>=30?"profit-margin-high":totMargin>=10?"profit-margin-mid":"profit-margin-low")">@totMargin.ToString("F2")%</td>
+                <td>@Model.Sum(r=>r.InvoiceCount)</td><td>@Model.Sum(r=>r.UnitsSold)</td>
+            </tr></tfoot>
+        </table>
+    </div>
+</div>
+@section Scripts {
+    <script src="/js/profit.js"></script><script src="/js/search.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded',function(){
+            ProfitModule.initPeriodFilter({baseUrl:'/Profit/ByCustomer'});
+            TableSearchService.init({inputId:'custSearch',clearBtnId:'custSearchClear',tbodyId:'custTbody',columnIndexes:[0,1]});
+        });
+    </script>
+}

@@ -1,0 +1,99 @@
+@model List<InventoryManagement.ViewModels.StockAlertViewModel>
+@{
+    ViewData["Title"]       = "Alert History";
+    ViewData["HeaderIcon"]  = "bi-clock-history";
+    ViewData["HeaderTitle"] = "ALERT HISTORY";
+    Layout = "~/Views/Shared/_InventoryLayout.cshtml";
+}
+
+<div class="inv-content">
+    <section class="inv-section">
+
+        <div class="inv-section-header">
+            <h2 class="inv-section-title">
+                <i class="bi bi-clock-history"></i> Resolved Alert History
+            </h2>
+            <a href="@Url.Action("Index", "StockAlert")" class="inv-btn inv-btn-outline">
+                <i class="bi bi-exclamation-triangle-fill"></i> Active Alerts
+            </a>
+        </div>
+
+        @if (Model == null || !Model.Any())
+        {
+            @await Html.PartialAsync("_EmptyState",
+                ("bi-check-circle", "No resolved alerts yet", "Resolved alerts will appear here once stock levels are restored."))
+        }
+        else
+        {
+            @await Html.PartialAsync("_SearchBar", new ViewDataDictionary(ViewData) {
+                { "InputId",     "historySearch"      },
+                { "ClearId",     "historySearchClear" },
+                { "Placeholder", "Search by product, severity..." }
+            })
+
+            <table class="inv-table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Stock at Alert</th>
+                        <th>Threshold</th>
+                        <th>Severity</th>
+                        <th>Triggered</th>
+                        <th>Resolved</th>
+                        <th class="center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="historyTbody">
+                    @foreach (var alert in Model)
+                    {
+                        <tr>
+                            <td data-label="Product">
+                                <strong>@alert.ProductName</strong>
+                            </td>
+                            <td data-label="Stock at Alert">
+                                <span class="inv-badge @(alert.CurrentStock == 0 ? "inv-badge-low" : "")">
+                                    @alert.CurrentStock
+                                </span>
+                            </td>
+                            <td data-label="Threshold">@alert.Threshold</td>
+                            <td data-label="Severity">
+                                <span class="@(alert.Severity == "Critical" ? "sa-badge-critical" : "sa-badge-warning")">
+                                    <i class="bi bi-exclamation-circle"></i> @alert.Severity
+                                </span>
+                            </td>
+                            <td data-label="Triggered" class="inv-cell-muted">
+                                @alert.CreatedAt.ToString("MMM dd, yyyy HH:mm")
+                            </td>
+                            <td data-label="Resolved" class="inv-cell-muted">
+                                @(alert.ResolvedAt.HasValue
+                                    ? alert.ResolvedAt.Value.ToString("MMM dd, yyyy HH:mm")
+                                    : "—")
+                            </td>
+                            <td data-label="Actions" class="center">
+                                <a href="@Url.Action("Edit", "Products", new { id = alert.ProductId })"
+                                   class="inv-btn inv-btn-info inv-btn-sm" title="View Product">
+                                    <i class="bi bi-box-seam"></i> Product
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+    </section>
+</div>
+
+@section Scripts {
+    <script src="/js/search.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            TableSearchService.init({
+                inputId:       'historySearch',
+                clearBtnId:    'historySearchClear',
+                tbodyId:       'historyTbody',
+                columnIndexes: [0, 3]   // Product, Severity
+            });
+        });
+    </script>
+}

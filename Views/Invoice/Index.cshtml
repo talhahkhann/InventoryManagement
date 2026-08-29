@@ -22,6 +22,12 @@
 
         @if (Model?.Any() == true)
         {
+            @await Html.PartialAsync("_SearchBar", new ViewDataDictionary(ViewData) {
+                { "InputId",     "invoiceSearch"      },
+                { "ClearId",     "invoiceSearchClear" },
+                { "Placeholder", "Search by customer, date, amount..." }
+            })
+
             <table class="inv-table">
                 <thead>
                     <tr>
@@ -32,7 +38,7 @@
                         <th class="center">Actions</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="invoicesTbody">
                     @foreach (var invoice in Model)
                     {
                         <tr>
@@ -63,3 +69,17 @@
 
     </section>
 </div>
+
+@section Scripts {
+    <script src="/js/search.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            TableSearchService.init({
+                inputId:       'invoiceSearch',
+                clearBtnId:    'invoiceSearchClear',
+                tbodyId:       'invoicesTbody',
+                columnIndexes: [0, 1, 2, 3]   // Invoice ID, Customer, Date, Amount
+            });
+        });
+    </script>
+}

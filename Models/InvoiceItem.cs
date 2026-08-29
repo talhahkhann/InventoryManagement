@@ -15,7 +15,11 @@ namespace InventoryManagement.Models
         public Product Product { get; set; }
 
         public int Quantity { get; set; }
-        public decimal Price { get; set; } // Price per unit
-        public decimal Total => Price * Quantity; // Calculated
+        public decimal Price { get; set; }      // Selling price per unit at time of sale
+        public decimal CostPrice { get; set; }  // Cost price snapshot at time of sale (for profit)
+
+        public decimal Total     => Price     * Quantity; // Revenue
+        public decimal TotalCost => CostPrice * Quantity; // Cost of goods sold
+        public decimal Profit    => (Price - CostPrice) * Quantity;
     }
 }

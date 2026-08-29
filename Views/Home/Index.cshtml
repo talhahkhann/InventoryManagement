@@ -9,8 +9,12 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"]</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/site.css" />
+    <script src="/js/site.js"></script>
+    <script src="/js/stockalert.js"></script>
+    <script src="/js/common.js"></script>
+    <script src="/js/dashboard.js"></script>
     <style>
         * {
             box-sizing: border-box;
@@ -22,14 +26,13 @@
         body {
             background: #f8f9fa;
             color: #212529;
-            height: 100vh;
+            min-height: 100vh;
             width: 100vw;
-            overflow: hidden;
         }
         .app-root {
             display: flex;
             flex-direction: column;
-            height: 100vh;
+            min-height: 100vh;
             width: 100vw;
         }
         .header {
@@ -57,184 +60,10 @@
             align-items: center;
             gap: 20px;
         }
-
-        /* ===== Stock Alert Notification Styles ===== */
-        .alert-dropdown {
-            position: relative;
-            display: inline-block;
-        }
-        .alert-bell {
-            background: rgba(255,255,255,0.15);
-            border: none;
-            color: white;
-            font-size: 1.3rem;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            transition: background 0.2s;
-        }
-        .alert-bell:hover {
-            background: rgba(255,255,255,0.25);
-        }
-        .alert-badge {
-            position: absolute;
-            top: -2px;
-            right: -2px;
-            background: #e53e3e;
-            color: white;
-            font-size: 0.7rem;
-            font-weight: 700;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            animation: pulse 2s infinite;
-        }
-        @@keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-        .alert-menu {
-            display: none;
-            position: absolute;
-            right: 0;
-            top: 50px;
-            width: 340px;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
-            z-index: 1000;
-            overflow: hidden;
-            border: 1px solid #e2e8f0;
-        }
-        .alert-menu.show {
-            display: block;
-            animation: slideDown 0.2s ease;
-        }
-        @@keyframes slideDown {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .alert-header {
-            padding: 16px 20px;
-            border-bottom: 1px solid #edf2f7;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-weight: 600;
-            color: #2d3748;
-            background: #f7fafc;
-        }
-        .alert-count {
-            font-size: 0.75rem;
-            color: #e53e3e;
-            background: #fff5f5;
-            padding: 2px 8px;
-            border-radius: 10px;
-        }
-        .alert-list {
-            max-height: 320px;
-            overflow-y: auto;
-        }
-        .alert-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 14px 16px;
-            border-bottom: 1px solid #f7fafc;
-            transition: background 0.15s;
-        }
-        .alert-item:hover {
-            background: #f7fafc;
-        }
-        .alert-critical {
-            border-left: 3px solid #e53e3e;
-        }
-        .alert-warning {
-            border-left: 3px solid #dd6b20;
-        }
-        .alert-icon {
-            font-size: 1.2rem;
-        }
-        .alert-critical .alert-icon { color: #e53e3e; }
-        .alert-warning .alert-icon { color: #dd6b20; }
-        .alert-content {
-            flex: 1;
-            min-width: 0;
-        }
-        .alert-title {
-            font-weight: 600;
-            color: #2d3748;
-            font-size: 0.9rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .alert-meta {
-            font-size: 0.8rem;
-            color: #718096;
-            margin-top: 2px;
-        }
-        .alert-time {
-            font-size: 0.75rem;
-            color: #a0aec0;
-            margin-top: 2px;
-        }
-        .alert-resolve {
-            background: none;
-            border: none;
-            color: #38a169;
-            cursor: pointer;
-            padding: 6px;
-            border-radius: 6px;
-            opacity: 0;
-            transition: all 0.2s;
-        }
-        .alert-item:hover .alert-resolve {
-            opacity: 1;
-        }
-        .alert-resolve:hover {
-            background: #e6f7ee;
-        }
-        .alert-footer {
-            padding: 12px;
-            text-align: center;
-            border-top: 1px solid #edf2f7;
-            background: #f7fafc;
-        }
-        .alert-footer a {
-            color: #3182ce;
-            text-decoration: none;
-            font-size: 0.85rem;
-            font-weight: 500;
-        }
-        .alert-footer a:hover {
-            text-decoration: underline;
-        }
-        .alert-empty {
-            padding: 40px 20px;
-            text-align: center;
-            color: #a0aec0;
-        }
-        .alert-empty i {
-            font-size: 2rem;
-            display: block;
-            margin-bottom: 8px;
-            color: #38a169;
-        }
-        /* ===== End Alert Styles ===== */
-
         .main-content {
             display: flex;
             flex: 1;
-            overflow: hidden;
+            overflow-y: auto;
             padding: 24px;
             gap: 24px;
         }
@@ -496,6 +325,12 @@
                     Sales Per Category
                 </a>
 
+                <a href="@Url.Action("Index", "Profit")"
+                   class="action-btn btn-settings">
+                    <i class="bi bi-graph-up-arrow"></i>
+                    Profit Calculator
+                </a>
+
                 <a href="#"
                    class="action-btn btn-settings">
                     <i class="bi bi-gear"></i>
@@ -505,97 +340,7 @@
         </main>
     </div>
 
-    <script>
-        // ===== Stock Alert Notification JS =====
-        function toggleAlertDropdown() {
-            document.getElementById('alertMenu').classList.toggle('show');
-        }
-
-        document.addEventListener('click', function(e) {
-            const dropdown = document.querySelector('.alert-dropdown');
-            if (dropdown && !dropdown.contains(e.target)) {
-                const menu = document.getElementById('alertMenu');
-                if (menu) menu.classList.remove('show');
-            }
-        });
-
-        async function resolveAlert(alertId, btn) {
-            try {
-                const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
-                const response = await fetch(`/StockAlert/Resolve/${alertId}`, {
-                    method: 'POST',
-                    headers: {
-                        'RequestVerificationToken': token,
-                        'Content-Type': 'application/json'
-                    }
-                });
-                
-                const result = await response.json();
-                if (result.success) {
-                    const item = btn.closest('.alert-item');
-                    item.style.opacity = '0';
-                    item.style.transform = 'translateX(20px)';
-                    setTimeout(() => {
-                        item.remove();
-                        updateAlertBadge();
-                    }, 200);
-                } else {
-                    alert('Failed to resolve alert');
-                }
-            } catch (err) {
-                console.error(err);
-                alert('Error resolving alert');
-            }
-        }
-
-        function updateAlertBadge() {
-            const remaining = document.querySelectorAll('.alert-item').length;
-            const badge = document.querySelector('.alert-badge');
-            const menu = document.getElementById('alertMenu');
-            
-            if (remaining === 0) {
-                if (badge) badge.remove();
-                const list = menu?.querySelector('.alert-list');
-                const footer = menu?.querySelector('.alert-footer');
-                if (list) list.remove();
-                if (footer) footer.remove();
-                
-                if (menu && !menu.querySelector('.alert-list')) {
-                    const emptyDiv = document.createElement('div');
-                    emptyDiv.className = 'alert-empty';
-                    emptyDiv.innerHTML = '<i class="bi bi-check-circle"></i><span>No active stock alerts</span>';
-                    menu.appendChild(emptyDiv);
-                }
-            } else if (badge) {
-                badge.textContent = remaining;
-            }
-        }
-
-        // Auto-refresh badge count every 60 seconds
-        setInterval(async () => {
-            try {
-                const res = await fetch('/StockAlert/GetActiveAlerts');
-                const data = await res.json();
-                const badge = document.querySelector('.alert-badge');
-                const bell = document.getElementById('alertBell');
-                
-                if (data.count > 0) {
-                    if (badge) {
-                        badge.textContent = data.count;
-                    } else if (bell) {
-                        const newBadge = document.createElement('span');
-                        newBadge.className = 'alert-badge';
-                        newBadge.textContent = data.count;
-                        bell.appendChild(newBadge);
-                    }
-                } else if (badge) {
-                    badge.remove();
-                }
-            } catch (e) { 
-                console.error('Auto-refresh failed:', e); 
-            }
-        }, 60000);
-        // ===== End Alert JS =====
-    </script>
+    @* dashboard.js initialises StockAlertService.initBell() + startAutoRefresh() on DOMContentLoaded *@
+    @await Html.PartialAsync("_ScrollToTop")
 </body>
 </html>

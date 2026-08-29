@@ -5,7 +5,6 @@
     ViewData["HeaderIcon"]  = "bi-box-seam";
     ViewData["HeaderTitle"] = "CREATE PRODUCT";
     Layout = "~/Views/Shared/_InventoryLayout.cshtml";
-
     var categories = ViewBag.Categories as IEnumerable<InventoryManagement.Models.Category>
                      ?? new List<InventoryManagement.Models.Category>();
 }
@@ -13,14 +12,10 @@
 <div class="inv-form-area">
     <form asp-action="Create" method="post">
         @Html.AntiForgeryToken()
-
         <section class="inv-section">
             <div class="inv-section-header">
-                <h2 class="inv-section-title">
-                    <i class="bi bi-info-circle"></i> Product Details
-                </h2>
+                <h2 class="inv-section-title"><i class="bi bi-info-circle"></i> Product Details</h2>
             </div>
-
             <div class="inv-field-row">
 
                 <div class="inv-field-col">
@@ -36,9 +31,16 @@
                 </div>
 
                 <div class="inv-field-col">
-                    <label asp-for="Price" class="inv-field-label required">Price (USD)</label>
+                    <label asp-for="Price" class="inv-field-label required">Selling Price (PKR)</label>
                     <input asp-for="Price" type="number" step="0.01" class="inv-field-input" min="0" placeholder="0.00" />
                     <span asp-validation-for="Price" class="inv-field-error"></span>
+                </div>
+
+                <div class="inv-field-col">
+                    <label asp-for="CostPrice" class="inv-field-label required">Cost Price (PKR)</label>
+                    <input asp-for="CostPrice" type="number" step="0.01" class="inv-field-input" min="0" placeholder="0.00" />
+                    <span asp-validation-for="CostPrice" class="inv-field-error"></span>
+                    <span class="inv-field-error" style="color:#718096; font-size:0.78rem;">Used for profit calculation</span>
                 </div>
 
                 <div class="inv-field-col">
@@ -57,16 +59,10 @@
         </section>
 
         <div class="inv-form-footer">
-            <a asp-action="Index" class="inv-btn inv-btn-outline">
-                <i class="bi bi-x-circle"></i> Cancel
-            </a>
-            <button type="submit" class="inv-btn inv-btn-primary">
-                <i class="bi bi-save"></i> Save Product
-            </button>
+            <a asp-action="Index" class="inv-btn inv-btn-outline"><i class="bi bi-x-circle"></i> Cancel</a>
+            <button type="submit" class="inv-btn inv-btn-primary"><i class="bi bi-save"></i> Save Product</button>
         </div>
     </form>
 </div>
 
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

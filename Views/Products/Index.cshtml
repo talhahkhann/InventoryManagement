@@ -22,6 +22,12 @@
 
         @if (Model?.Any() == true)
         {
+            @await Html.PartialAsync("_SearchBar", new ViewDataDictionary(ViewData) {
+                { "InputId",     "productSearch"      },
+                { "ClearId",     "productSearchClear" },
+                { "Placeholder", "Search by name, category..." }
+            })
+
             <table class="inv-table">
                 <thead>
                     <tr>
@@ -33,7 +39,7 @@
                         <th class="center">Actions</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="productsTbody">
                     @{int row = 1;}
                     @foreach (var item in Model)
                     {
@@ -66,3 +72,17 @@
 
     </section>
 </div>
+
+@section Scripts {
+    <script src="/js/search.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            TableSearchService.init({
+                inputId:       'productSearch',
+                clearBtnId:    'productSearchClear',
+                tbodyId:       'productsTbody',
+                columnIndexes: [1, 4]   // Product Name, Category
+            });
+        });
+    </script>
+}

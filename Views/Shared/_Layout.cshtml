@@ -27,6 +27,10 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                     </ul>
+                    @* Alert bell in the Bootstrap nav right side *@
+                    <div class="d-flex align-items-center" style="gap: 12px; padding-right: 8px;">
+                        @await Component.InvokeAsync("AlertNotification")
+                    </div>
                 </div>
             </div>
         </nav>
@@ -42,9 +46,18 @@
             &copy; 2025 - InventoryManagement - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/stockalert.js" asp-append-version="true"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            StockAlertService.initBell();
+            StockAlertService.startAutoRefresh();
+        });
+    </script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

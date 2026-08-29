@@ -7,11 +7,7 @@ namespace InventoryManagement.Repositories
     public class ReportRepository : IReportRepository
     {
         private readonly ApplicationDbContext _context;
-
-        public ReportRepository(ApplicationDbContext context)
-        {
-            _context = context;
-        }
+        public ReportRepository(ApplicationDbContext context) => _context = context;
 
         public async Task<List<ProductSalesReportViewModel>> GetSalesPerProductAsync()
         {
@@ -20,9 +16,9 @@ namespace InventoryManagement.Repositories
                 .GroupBy(i => i.Product.Name)
                 .Select(g => new ProductSalesReportViewModel
                 {
-                    ProductName = g.Key,
+                    ProductName       = g.Key,
                     TotalQuantitySold = g.Sum(x => x.Quantity),
-                    TotalRevenue = g.Sum(x => x.Quantity * x.Price)
+                    TotalRevenue      = g.Sum(x => x.Quantity * x.Price)
                 })
                 .ToListAsync();
         }
@@ -30,14 +26,13 @@ namespace InventoryManagement.Repositories
         public async Task<List<CategorySalesReportViewModel>> GetSalesPerCategoryAsync()
         {
             return await _context.InvoiceItems
-                .Include(i => i.Product)
-                .ThenInclude(p => p.Category)
+                .Include(i => i.Product).ThenInclude(p => p.Category)
                 .GroupBy(i => i.Product.Category.Name)
                 .Select(g => new CategorySalesReportViewModel
                 {
-                    CategoryName = g.Key,
+                    CategoryName      = g.Key,
                     TotalQuantitySold = g.Sum(x => x.Quantity),
-                    TotalRevenue = g.Sum(x => x.Quantity * x.Price)
+                    TotalRevenue      = g.Sum(x => x.Quantity * x.Price)
                 })
                 .ToListAsync();
         }

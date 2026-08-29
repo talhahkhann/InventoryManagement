@@ -22,6 +22,7 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
           rel="stylesheet">
+    <script src="/js/site.js"></script>
 
     <style>
 
@@ -528,84 +529,8 @@
 
     </div>
 
-    <!-- Validation -->
-
     <script>
-
-        document.addEventListener(
-            'DOMContentLoaded',
-            function () {
-
-                const form =
-                    document.querySelector('form');
-
-
-                if (form) {
-
-                    form.addEventListener(
-                        'submit',
-                        function (e) {
-
-                            // Remove previous custom errors
-
-                            document
-                                .querySelectorAll('.custom-error')
-                                .forEach(
-                                    el => el.remove()
-                                );
-
-
-                            // Email validation
-
-                            const email =
-                                document.querySelector(
-                                    '[name="Email"]'
-                                );
-
-
-                            if (
-                                email &&
-                                email.value &&
-                                !/^\S+@@\S+\.\S+$/
-                                    .test(email.value)
-                            ) {
-
-                                e.preventDefault();
-
-
-                                const error =
-                                    document.createElement(
-                                        'div'
-                                    );
-
-
-                                error.className =
-                                    'custom-error error-message';
-
-
-                                error.textContent =
-                                    'Please enter a valid email address';
-
-
-                                email.parentNode.appendChild(
-                                    error
-                                );
-
-
-                                email.focus();
-
-                            }
-
-                        }
-                    );
-
-                }
-
-            }
-        );
-
+        registerEmailValidator('form', 'Email');
     </script>
-
 </body>
-
 </html>

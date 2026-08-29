@@ -5,21 +5,10 @@ namespace InventoryManagement.Services
 {
     public class ReportService : IReportService
     {
-        private readonly IReportRepository _reportRepository;
+        private readonly IReportRepository _repo;
+        public ReportService(IReportRepository repo) => _repo = repo;
 
-        public ReportService(IReportRepository reportRepository)
-        {
-            _reportRepository = reportRepository;
-        }
-
-        public Task<List<ProductSalesReportViewModel>> GetSalesPerProductAsync()
-        {
-            return _reportRepository.GetSalesPerProductAsync();
-        }
-
-        public Task<List<CategorySalesReportViewModel>> GetSalesPerCategoryAsync()
-        {
-            return _reportRepository.GetSalesPerCategoryAsync();
-        }
+        public Task<List<ProductSalesReportViewModel>>  GetSalesPerProductAsync()  => _repo.GetSalesPerProductAsync();
+        public Task<List<CategorySalesReportViewModel>> GetSalesPerCategoryAsync() => _repo.GetSalesPerCategoryAsync();
     }
 }

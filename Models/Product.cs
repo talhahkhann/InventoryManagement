@@ -16,7 +16,10 @@ namespace InventoryManagement.Models
 
         [Required]
         [Range(0.01, 100000)]
-        public decimal Price { get; set; }
+        public decimal Price { get; set; }          // Selling / list price
+
+        [Range(0, 100000)]
+        public decimal CostPrice { get; set; }      // Purchase / cost price (for profit calculation)
 
         // Foreign Key to Category
         [Required]

@@ -1,0 +1,121 @@
+@model InventoryManagement.ViewModels.ProfitDashboardViewModel
+@{
+    ViewData["Title"]       = "Profit Dashboard";
+    ViewData["HeaderIcon"]  = "bi-graph-up-arrow";
+    ViewData["HeaderTitle"] = "PROFIT DASHBOARD";
+    Layout = "~/Views/Shared/_InventoryLayout.cshtml";
+    var s       = Model.Summary;
+    var selYear = Model.Filter.Year ?? DateTime.Today.Year;
+    var years   = Model.AvailableYears;
+}
+
+<div class="inv-content">
+
+    <div class="profit-tabs">
+        <a href="@Url.Action("Index",      "Profit")" class="profit-tab active"><i class="bi bi-speedometer2"></i> Dashboard</a>
+        <a href="@Url.Action("ByMonth",    "Profit")" class="profit-tab"><i class="bi bi-calendar-month"></i> By Month</a>
+        <a href="@Url.Action("ByYear",     "Profit")" class="profit-tab"><i class="bi bi-calendar3"></i> By Year</a>
+        <a href="@Url.Action("ByProduct",  "Profit")" class="profit-tab"><i class="bi bi-box-seam"></i> By Product</a>
+        <a href="@Url.Action("ByCustomer", "Profit")" class="profit-tab"><i class="bi bi-people"></i> By Customer</a>
+        <a href="@Url.Action("ByCategory", "Profit")" class="profit-tab"><i class="bi bi-tags"></i> By Category</a>
+    </div>
+
+    <div class="profit-filter-bar">
+        <i class="bi bi-funnel" style="color:#718096;"></i>
+        <label for="yearSelect">Year</label>
+        <select id="yearSelect">
+            @foreach (var y in years) { <option value="@y" selected="@(y == selYear)">@y</option> }
+        </select>
+        <label for="monthSelect">Month</label>
+        <select id="monthSelect">
+            <option value="">All months</option>
+            @for (int m = 1; m <= 12; m++) {
+                <option value="@m" selected="@(Model.Filter.Month == m)">@(new DateTime(selYear, m, 1).ToString("MMMM"))</option>
+            }
+        </select>
+    </div>
+
+    <div class="profit-cards">
+        <div class="profit-card profit-card-revenue">
+            <span class="profit-card-label"><i class="bi bi-cash-stack"></i> Total Revenue</span>
+            <span class="profit-card-value">PKR @s.TotalRevenue.ToString("N0")</span>
+            @if (s.PrevRevenue > 0) {
+                var dc = s.RevenueDeltaPct >= 0 ? "delta-up" : "delta-down";
+                var di = s.RevenueDeltaPct >= 0 ? "bi-arrow-up-short" : "bi-arrow-down-short";
+                <span class="profit-card-delta @dc"><i class="bi @di"></i> @s.RevenueDeltaPct.ToString("F1")% vs prev</span>
+            }
+        </div>
+        <div class="profit-card profit-card-cost">
+            <span class="profit-card-label"><i class="bi bi-receipt"></i> Total Cost</span>
+            <span class="profit-card-value">PKR @s.TotalCost.ToString("N0")</span>
+        </div>
+        <div class="profit-card profit-card-profit">
+            <span class="profit-card-label"><i class="bi bi-graph-up-arrow"></i> Net Profit</span>
+            <span class="profit-card-value">PKR @s.TotalProfit.ToString("N0")</span>
+            @if (s.PrevProfit > 0) {
+                var dc = s.ProfitDeltaPct >= 0 ? "delta-up" : "delta-down";
+                var di = s.ProfitDeltaPct >= 0 ? "bi-arrow-up-short" : "bi-arrow-down-short";
+                <span class="profit-card-delta @dc"><i class="bi @di"></i> @s.ProfitDeltaPct.ToString("F1")% vs prev</span>
+            }
+        </div>
+        <div class="profit-card profit-card-margin">
+            <span class="profit-card-label"><i class="bi bi-percent"></i> Profit Margin</span>
+            <span class="profit-card-value">@s.ProfitMarginPct.ToString("F1")%</span>
+        </div>
+        <div class="profit-card profit-card-invoices">
+            <span class="profit-card-label"><i class="bi bi-file-earmark-text"></i> Invoices</span>
+            <span class="profit-card-value">@s.TotalInvoices</span>
+        </div>
+        <div class="profit-card profit-card-units">
+            <span class="profit-card-label"><i class="bi bi-boxes"></i> Units Sold</span>
+            <span class="profit-card-value">@s.TotalUnitsSold</span>
+        </div>
+    </div>
+
+    <div class="profit-chart-wrap">
+        <div class="profit-chart-title"><i class="bi bi-bar-chart-line"></i> Monthly Revenue, Cost &amp; Profit — @selYear</div>
+        <div class="profit-chart-canvas"><canvas id="monthlyChart"></canvas></div>
+    </div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-top:0;">
+        <div class="profit-chart-wrap" style="margin-bottom:0;">
+            <div class="profit-chart-title"><i class="bi bi-pie-chart"></i> Top Products by Profit</div>
+            <div class="profit-chart-canvas"><canvas id="productDoughnut"></canvas></div>
+        </div>
+        <div class="inv-section" style="margin:0;">
+            <div class="inv-section-header">
+                <h2 class="inv-section-title"><i class="bi bi-trophy"></i> Top 5 Products</h2>
+                <a href="@Url.Action("ByProduct","Profit")" class="inv-btn inv-btn-outline inv-btn-sm">View all</a>
+            </div>
+            <table class="inv-table">
+                <thead><tr><th>Product</th><th>Profit</th><th>Margin</th></tr></thead>
+                <tbody>
+                @foreach (var p in Model.ByProduct.Take(5)) {
+                    <tr>
+                        <td>@p.ProductName</td>
+                        <td class="inv-cell-price">PKR @p.Profit.ToString("N2")</td>
+                        <td class="@(p.MarginPct>=30?"profit-margin-high":p.MarginPct>=10?"profit-margin-mid":"profit-margin-low")">@p.MarginPct.ToString("F1")%</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="/js/profit.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async function () {
+            ProfitModule.initPeriodFilter({ baseUrl: '/Profit/Index' });
+            await ProfitModule.loadAndRenderMonthlyChart('monthlyChart', @selYear);
+            @if (Model.ByProduct.Any()) {
+                var labels = System.Text.Json.JsonSerializer.Serialize(Model.ByProduct.Take(8).Select(p => p.ProductName));
+                var values = System.Text.Json.JsonSerializer.Serialize(Model.ByProduct.Take(8).Select(p => p.Profit));
+                <text>ProfitModule.renderProductDoughnut('productDoughnut', @Html.Raw(labels), @Html.Raw(values));</text>
+            }
+        });
+    </script>
+}

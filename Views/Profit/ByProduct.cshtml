@@ -1,0 +1,81 @@
+@model List<InventoryManagement.ViewModels.ProfitByProductViewModel>
+@{
+    ViewData["Title"]="Profit by Product"; ViewData["HeaderIcon"]="bi-box-seam"; ViewData["HeaderTitle"]="PROFIT BY PRODUCT";
+    Layout="~/Views/Shared/_InventoryLayout.cshtml";
+    var filter = ViewBag.Filter as InventoryManagement.ViewModels.ProfitFilterViewModel ?? new InventoryManagement.ViewModels.ProfitFilterViewModel{Year=DateTime.Today.Year};
+    var years  = ViewBag.AvailableYears as List<int> ?? new List<int>();
+    decimal totRev=Model.Sum(r=>r.Revenue),totCost=Model.Sum(r=>r.Cost),totProfit=Model.Sum(r=>r.Profit);
+    decimal totMargin=totRev==0?0:Math.Round(totProfit/totRev*100,2);
+}
+<div class="inv-content">
+    <div class="profit-tabs">
+        <a href="@Url.Action("Index","Profit")" class="profit-tab"><i class="bi bi-speedometer2"></i> Dashboard</a>
+        <a href="@Url.Action("ByMonth","Profit")" class="profit-tab"><i class="bi bi-calendar-month"></i> By Month</a>
+        <a href="@Url.Action("ByYear","Profit")" class="profit-tab"><i class="bi bi-calendar3"></i> By Year</a>
+        <a href="@Url.Action("ByProduct","Profit")" class="profit-tab active"><i class="bi bi-box-seam"></i> By Product</a>
+        <a href="@Url.Action("ByCustomer","Profit")" class="profit-tab"><i class="bi bi-people"></i> By Customer</a>
+        <a href="@Url.Action("ByCategory","Profit")" class="profit-tab"><i class="bi bi-tags"></i> By Category</a>
+    </div>
+    <div class="profit-filter-bar">
+        <i class="bi bi-funnel" style="color:#718096;"></i>
+        <label for="yearSelect">Year</label>
+        <select id="yearSelect">@foreach(var y in years){<option value="@y" selected="@(y==filter.Year)">@y</option>}</select>
+        <label for="monthSelect">Month</label>
+        <select id="monthSelect">
+            <option value="">All months</option>
+            @for(int m=1;m<=12;m++){<option value="@m" selected="@(filter.Month==m)">@(new DateTime(filter.Year??DateTime.Today.Year,m,1).ToString("MMMM"))</option>}
+        </select>
+        <span class="profit-filter-sep">|</span>
+        <button class="profit-export-btn" onclick="ProfitModule.exportCsv('ByProduct',@(filter.Year??DateTime.Today.Year),@(filter.Month?.ToString()??"null"))"><i class="bi bi-download"></i> Export CSV</button>
+    </div>
+    @if(Model.Any()){
+    <div class="profit-chart-wrap" style="max-width:500px;">
+        <div class="profit-chart-title"><i class="bi bi-pie-chart"></i> Top Products by Profit</div>
+        <div class="profit-chart-canvas"><canvas id="productChart"></canvas></div>
+    </div>}
+    <div class="inv-section">
+        <div class="inv-section-header"><h2 class="inv-section-title"><i class="bi bi-table"></i> Product Profit Detail</h2></div>
+        @await Html.PartialAsync("_SearchBar",new ViewDataDictionary(ViewData){{"InputId","prodSearch"},{"ClearId","prodSearchClear"},{"Placeholder","Search product or category..."}})
+        <table class="inv-table">
+            <thead><tr><th>Product</th><th>Category</th><th>Revenue</th><th>Cost</th><th>Profit</th><th>Margin %</th><th>Units</th><th>Avg Sell</th><th>Avg Cost</th></tr></thead>
+            <tbody id="prodTbody">
+            @foreach(var r in Model){
+                <tr>
+                    <td><strong>@r.ProductName</strong></td>
+                    <td class="inv-cell-muted">@r.CategoryName</td>
+                    <td class="inv-cell-price">PKR @r.Revenue.ToString("N2")</td>
+                    <td>PKR @r.Cost.ToString("N2")</td>
+                    <td class="inv-cell-price">PKR @r.Profit.ToString("N2")</td>
+                    <td class="@(r.MarginPct>=30?"profit-margin-high":r.MarginPct>=10?"profit-margin-mid":"profit-margin-low")">@r.MarginPct.ToString("F2")%</td>
+                    <td>@r.UnitsSold</td>
+                    <td>PKR @r.AvgSellingPrice.ToString("N2")</td>
+                    <td>PKR @r.AvgCostPrice.ToString("N2")</td>
+                </tr>
+            }
+            </tbody>
+            <tfoot><tr style="font-weight:700;background:#f7fafc;">
+                <td colspan="2">Total</td>
+                <td class="inv-cell-price">PKR @totRev.ToString("N2")</td>
+                <td>PKR @totCost.ToString("N2")</td>
+                <td class="inv-cell-price">PKR @totProfit.ToString("N2")</td>
+                <td class="@(totMargin>=30?"profit-margin-high":totMargin>=10?"profit-margin-mid":"profit-margin-low")">@totMargin.ToString("F2")%</td>
+                <td>@Model.Sum(r=>r.UnitsSold)</td><td colspan="2"></td>
+            </tr></tfoot>
+        </table>
+    </div>
+</div>
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="/js/profit.js"></script><script src="/js/search.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded',function(){
+            ProfitModule.initPeriodFilter({baseUrl:'/Profit/ByProduct'});
+            TableSearchService.init({inputId:'prodSearch',clearBtnId:'prodSearchClear',tbodyId:'prodTbody',columnIndexes:[0,1]});
+            @if(Model.Any()){
+                var lbl = System.Text.Json.JsonSerializer.Serialize(Model.Take(8).Select(p=>p.ProductName));
+                var val = System.Text.Json.JsonSerializer.Serialize(Model.Take(8).Select(p=>p.Profit));
+                <text>ProfitModule.renderProductDoughnut('productChart',@Html.Raw(lbl),@Html.Raw(val));</text>
+            }
+        });
+    </script>
+}

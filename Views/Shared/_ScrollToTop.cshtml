@@ -1,0 +1,10 @@
+@* _ScrollToTop.cshtml — Reusable scroll-to-top button component
+   Usage: @await Html.PartialAsync("_ScrollToTop")
+   Requires: common.js + the .stt-* styles in site.css
+*@
+<button id="scrollToTopBtn"
+        class="stt-btn"
+        aria-label="Scroll to top"
+        title="Back to top">
+    <i class="bi bi-arrow-up"></i>
+</button>

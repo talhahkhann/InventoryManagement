@@ -1,0 +1,68 @@
+@model List<InventoryManagement.ViewModels.ProfitByYearViewModel>
+@{
+    ViewData["Title"]="Profit by Year"; ViewData["HeaderIcon"]="bi-calendar3"; ViewData["HeaderTitle"]="PROFIT BY YEAR";
+    Layout="~/Views/Shared/_InventoryLayout.cshtml";
+    decimal totRev=Model.Sum(r=>r.Revenue),totCost=Model.Sum(r=>r.Cost),totProfit=Model.Sum(r=>r.Profit);
+    decimal totMargin=totRev==0?0:Math.Round(totProfit/totRev*100,2);
+}
+<div class="inv-content">
+    <div class="profit-tabs">
+        <a href="@Url.Action("Index","Profit")" class="profit-tab"><i class="bi bi-speedometer2"></i> Dashboard</a>
+        <a href="@Url.Action("ByMonth","Profit")" class="profit-tab"><i class="bi bi-calendar-month"></i> By Month</a>
+        <a href="@Url.Action("ByYear","Profit")" class="profit-tab active"><i class="bi bi-calendar3"></i> By Year</a>
+        <a href="@Url.Action("ByProduct","Profit")" class="profit-tab"><i class="bi bi-box-seam"></i> By Product</a>
+        <a href="@Url.Action("ByCustomer","Profit")" class="profit-tab"><i class="bi bi-people"></i> By Customer</a>
+        <a href="@Url.Action("ByCategory","Profit")" class="profit-tab"><i class="bi bi-tags"></i> By Category</a>
+    </div>
+    <div class="profit-filter-bar" style="justify-content:flex-end;">
+        <button class="profit-export-btn" onclick="ProfitModule.exportCsv('ByYear',@DateTime.Today.Year)"><i class="bi bi-download"></i> Export CSV</button>
+    </div>
+    <div class="profit-chart-wrap">
+        <div class="profit-chart-title"><i class="bi bi-bar-chart"></i> Year-over-Year Comparison</div>
+        <div class="profit-chart-canvas"><canvas id="yearChart"></canvas></div>
+    </div>
+    <div class="inv-section">
+        <div class="inv-section-header"><h2 class="inv-section-title"><i class="bi bi-table"></i> Annual Breakdown</h2></div>
+        @await Html.PartialAsync("_SearchBar",new ViewDataDictionary(ViewData){{"InputId","yearSearch"},{"ClearId","yearSearchClear"},{"Placeholder","Search year..."}})
+        <table class="inv-table">
+            <thead><tr><th>Year</th><th>Revenue</th><th>Cost</th><th>Profit</th><th>Margin %</th><th>Invoices</th><th>Units</th></tr></thead>
+            <tbody id="yearTbody">
+            @foreach(var r in Model){
+                <tr>
+                    <td><strong>@r.Year</strong></td>
+                    <td class="inv-cell-price">PKR @r.Revenue.ToString("N2")</td>
+                    <td>PKR @r.Cost.ToString("N2")</td>
+                    <td class="inv-cell-price">PKR @r.Profit.ToString("N2")</td>
+                    <td class="@(r.MarginPct>=30?"profit-margin-high":r.MarginPct>=10?"profit-margin-mid":"profit-margin-low")">@r.MarginPct.ToString("F2")%</td>
+                    <td>@r.InvoiceCount</td><td>@r.UnitsSold</td>
+                </tr>
+            }
+            </tbody>
+            <tfoot><tr style="font-weight:700;background:#f7fafc;">
+                <td>All Years</td>
+                <td class="inv-cell-price">PKR @totRev.ToString("N2")</td>
+                <td>PKR @totCost.ToString("N2")</td>
+                <td class="inv-cell-price">PKR @totProfit.ToString("N2")</td>
+                <td class="@(totMargin>=30?"profit-margin-high":totMargin>=10?"profit-margin-mid":"profit-margin-low")">@totMargin.ToString("F2")%</td>
+                <td>@Model.Sum(r=>r.InvoiceCount)</td><td>@Model.Sum(r=>r.UnitsSold)</td>
+            </tr></tfoot>
+        </table>
+    </div>
+</div>
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="/js/profit.js"></script><script src="/js/search.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded',function(){
+            TableSearchService.init({inputId:'yearSearch',clearBtnId:'yearSearchClear',tbodyId:'yearTbody',columnIndexes:[0]});
+            const d = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.OrderBy(r=>r.Year).Select(r=>new{label=r.Year.ToString(),revenue=r.Revenue,cost=r.Cost,profit=r.Profit})));
+            const ctx = document.getElementById('yearChart');
+            if(ctx) new Chart(ctx,{type:'bar',data:{labels:d.map(x=>x.label),datasets:[
+                {label:'Revenue',data:d.map(x=>x.revenue),backgroundColor:'rgba(49,130,206,0.8)'},
+                {label:'Cost',data:d.map(x=>x.cost),backgroundColor:'rgba(229,62,62,0.75)'},
+                {label:'Profit',data:d.map(x=>x.profit),backgroundColor:'rgba(56,161,105,0.85)'}
+            ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top'}},
+            scales:{y:{beginAtZero:true,ticks:{callback:v=>'PKR '+Number(v).toLocaleString()}}}}});
+        });
+    </script>
+}
