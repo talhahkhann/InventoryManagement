@@ -549,3 +549,120 @@ body {
         margin-top: 10px;
     }
 }
+
+/* --- Autocomplete & Modal Styles (Invoices) --- */
+.autocomplete {
+    position: relative;
+    width: 100%;
+}
+.autocomplete-items {
+    position: absolute;
+    border: 1px solid #cbd5e0;
+    border-top: none;
+    z-index: 99;
+    top: 100%;
+    left: 0;
+    right: 0;
+    border-radius: 0 0 6px 6px;
+    background: white;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    text-align: left;
+}
+.autocomplete-items div {
+    padding: 10px 14px;
+    cursor: pointer;
+    border-bottom: 1px solid #edf2f7;
+}
+.autocomplete-items div:last-child {
+    border-bottom: none;
+}
+.autocomplete-items div:hover,
+.autocomplete-items div.highlight {
+    background-color: #ebf8ff;
+}
+
+/* Modal Overlay & Content */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+.modal-content {
+    background: white;
+    width: 90%;
+    max-width: 800px;
+    max-height: 90vh;
+    overflow: auto;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+.modal-header {
+    padding: 20px;
+    background: #2c5282;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.modal-body {
+    padding: 30px;
+}
+.invoice-preview {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.invoice-header {
+    text-align: center;
+    margin-bottom: 30px;
+    border-bottom: 2px solid #2c5282;
+    padding-bottom: 20px;
+}
+.invoice-header h1 {
+    font-size: 28px;
+    color: #2c5282;
+    margin-bottom: 10px;
+}
+.invoice-meta {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    font-size: 14px;
+}
+.invoice-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+.invoice-table th,
+.invoice-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+}
+.invoice-table th {
+    background: #f8fafc;
+    color: #2c5282;
+}
+.invoice-total {
+    text-align: right;
+    margin-top: 20px;
+    font-size: 18px;
+    font-weight: bold;
+}
+.invoice-total span {
+    color: #38a169;
+    font-size: 24px;
+}
+.modal-footer {
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    border-top: 1px solid #e2e8f0;
+}
