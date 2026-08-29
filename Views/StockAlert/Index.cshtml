@@ -65,24 +65,4 @@
         </div>
     }
 </div>
-
-@section Scripts {
-    <script>
-        async function resolveAlertPage(alertId, btn) {
-            if (!confirm('Mark this alert as resolved?')) return;
-            try {
-                const response = await fetch(`/StockAlert/Resolve/${alertId}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' }
-                });
-                const result = await response.json();
-                if (result.success) {
-                    btn.closest('tr').remove();
-                    if (document.querySelectorAll('tbody tr').length === 0) {
-                        location.reload();
-                    }
-                }
-            } catch (e) { alert('Error'); }
-        }
-    </script>
-}
+

@@ -344,91 +344,14 @@
             const priceInput = row.querySelector('.price');
             const quantityInput = row.querySelector('.quantity');
 
-            autocomplete(input, productIdInput, priceInput, row, products);
+            initAutocomplete(input, productIdInput, products, async function(selectedProduct) {
+                const productNameHidden = input.closest('tr').querySelector('[name$=".ProductName"]');
+                if (productNameHidden) productNameHidden.value = selectedProduct.name;
+
+                await applyRateToRow(row, selectedProduct.id);
+            });
             quantityInput.addEventListener('input', () => recalcRow(row));
             priceInput.addEventListener('input', () => recalcRow(row));
-        }
-
-        function autocomplete(input, productIdInput, priceInput, row, arr) {
-            let currentFocus;
-            input.addEventListener("input", function(e) {
-                const val = this.value.trim();
-                closeAllLists();
-                if (!val) return;
-
-                currentFocus = -1;
-                const list = document.createElement("DIV");
-                list.setAttribute("class", "autocomplete-items");
-                this.parentNode.appendChild(list);
-
-                let found = false;
-                for (let i = 0; i < arr.length; i++) {
-                    if (arr[i].name.toLowerCase().includes(val.toLowerCase())) {
-                        found = true;
-                        const item = document.createElement("DIV");
-                        item.innerHTML = `<strong>${arr[i].name}</strong> - PKR ${parseFloat(arr[i].price).toFixed(2)}`;
-                        item.innerHTML += "<input type='hidden' value='" + arr[i].id + "'>";
-                        item.addEventListener("click", async function(e) {
-                            input.value = arr[i].name;
-                            productIdInput.value = arr[i].id;
-                            const productNameHidden = input.closest('tr').querySelector('[name$=".ProductName"]');
-                            if (productNameHidden) productNameHidden.value = arr[i].name;
-
-                            await applyRateToRow(row, arr[i].id);
-                            closeAllLists();
-                        });
-                        list.appendChild(item);
-                    }
-                }
-
-                if (!found) {
-                    const item = document.createElement("DIV");
-                    item.textContent = "No products found";
-                    item.style.color = "#999";
-                    list.appendChild(item);
-                }
-            });
-
-            input.addEventListener("keydown", function(e) {
-                const list = this.parentNode.querySelector(".autocomplete-items");
-                if (!list) return;
-                let items = list.getElementsByTagName("div");
-                if (e.keyCode == 40) { currentFocus++; addActive(items); }
-                else if (e.keyCode == 38) { currentFocus--; addActive(items); }
-                else if (e.keyCode == 13) {
-                    e.preventDefault();
-                    if (currentFocus > -1 && items[currentFocus]) {
-                        items[currentFocus].click();
-                    }
-                }
-            });
-
-            function addActive(items) {
-                if (!items) return;
-                removeActive(items);
-                if (currentFocus >= items.length) currentFocus = 0;
-                if (currentFocus < 0) currentFocus = items.length - 1;
-                items[currentFocus].classList.add("highlight");
-            }
-
-            function removeActive(items) {
-                for (let i = 0; i < items.length; i++) {
-                    items[i].classList.remove("highlight");
-                }
-            }
-
-            document.addEventListener("click", function (e) {
-                if (e.target !== input) closeAllLists();
-            });
-
-            function closeAllLists(elmnt) {
-                const items = document.getElementsByClassName("autocomplete-items");
-                for (let i = 0; i < items.length; i++) {
-                    if (elmnt != items[i] && elmnt != input) {
-                        items[i].parentNode.removeChild(items[i]);
-                    }
-                }
-            }
         }
 
         function recalcRow(row) {
