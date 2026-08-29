@@ -666,3 +666,124 @@ body {
     gap: 16px;
     border-top: 1px solid #e2e8f0;
 }
+
+
+/* =============================================
+   SEARCH BAR COMPONENT
+   ============================================= */
+
+/* Wrapper — sits above any table */
+.search-bar-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+/* The input container with icon */
+.search-bar {
+    position: relative;
+    flex: 1;
+    max-width: 420px;
+}
+
+.search-bar-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #a0aec0;
+    font-size: 1rem;
+    pointer-events: none;
+}
+
+.search-bar-input {
+    width: 100%;
+    padding: 9px 36px 9px 36px;
+    border: 1px solid #cbd5e0;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    color: #2d3748;
+    background: #fff;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.search-bar-input:focus {
+    outline: none;
+    border-color: #3182ce;
+    box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.18);
+}
+
+.search-bar-input::placeholder {
+    color: #a0aec0;
+}
+
+/* Clear × button — hidden by default, shown by JS */
+.search-bar-clear {
+    position: absolute;
+    right: 9px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #a0aec0;
+    cursor: pointer;
+    display: none;   /* toggled by search.js */
+    align-items: center;
+    justify-content: center;
+    padding: 2px;
+    border-radius: 50%;
+    transition: color 0.15s;
+    font-size: 1rem;
+    line-height: 1;
+}
+
+.search-bar-clear:hover {
+    color: #4a5568;
+}
+
+/* Result count badge (optional) */
+.search-bar-count {
+    font-size: 0.8rem;
+    color: #718096;
+    white-space: nowrap;
+}
+
+/* Highlighted match text */
+mark.search-highlight {
+    background: #fef08a;
+    color: inherit;
+    border-radius: 2px;
+    padding: 0 1px;
+}
+
+/* No-results row injected by search.js */
+.search-no-results-cell {
+    text-align: center;
+    padding: 40px 20px;
+    color: #718096;
+    font-size: 0.9rem;
+}
+
+.search-no-results-cell i {
+    font-size: 1.6rem;
+    display: block;
+    margin-bottom: 8px;
+    opacity: 0.45;
+}
+
+/* Bootstrap table pages — override Bootstrap's table border on the no-results row */
+.table .search-no-results-cell {
+    border-color: transparent;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .search-bar {
+        max-width: 100%;
+    }
+    .search-bar-wrapper {
+        flex-wrap: wrap;
+    }
+}

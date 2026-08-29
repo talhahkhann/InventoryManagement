@@ -24,6 +24,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
           rel="stylesheet">
     <script src="/js/site.js"></script>
+    <link rel="stylesheet" href="/css/site.css" />
+    <script src="/js/search.js"></script>
 
     <style>
 
@@ -456,10 +458,31 @@
                     </div>
 
 
+                    <!-- Search Bar -->
+
+                    <div class="search-bar-wrapper">
+                        <div class="search-bar">
+                            <i class="bi bi-search search-bar-icon"></i>
+                            <input type="text"
+                                   id="customerSearch"
+                                   class="search-bar-input"
+                                   placeholder="Search by name, email, phone, city..."
+                                   autocomplete="off"
+                                   aria-label="Search customers" />
+                            <button type="button"
+                                    id="customerSearchClear"
+                                    class="search-bar-clear"
+                                    aria-label="Clear search"
+                                    title="Clear">
+                                <i class="bi bi-x-lg"></i>
+                            </button>
+                        </div>
+                    </div>
+
+
                     <!-- Area Filter -->
 
                     <div class="area-filter">
-
                         <div class="area-filter-label">
 
                             <i class="bi bi-geo-alt"></i>
@@ -659,6 +682,20 @@
     <script src="/js/customer.js"></script>
     <script>
         initCustomerAreaFilter('@Url.Action("GetCustomersByArea", "Customer")');
+
+        // Init search — also re-applies after AJAX area-filter replaces rows
+        TableSearchService.init({
+            inputId:       'customerSearch',
+            clearBtnId:    'customerSearchClear',
+            tbodyId:       'customerTableBody',
+            columnIndexes: [0, 1, 2, 3, 4]   // Name, Email, Phone, City, Country
+        });
+
+        // Patch: after area-filter swaps rows, re-run the current search term
+        document.getElementById('areaDropdown').addEventListener('change', function () {
+            // customer.js finishes asynchronously, so wait for DOM update
+            setTimeout(() => TableSearchService.refresh('customerSearch'), 400);
+        });
     </script>
 
 </body>

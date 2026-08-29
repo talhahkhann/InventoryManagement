@@ -1,0 +1,32 @@
+@* _SearchBar.cshtml — Reusable search bar component
+   Usage:
+     @await Html.PartialAsync("_SearchBar", new ViewDataDictionary(ViewData) {
+         { "InputId",   "tableSearch"      },   // required
+         { "ClearId",   "tableSearchClear" },   // required
+         { "Placeholder", "Search..."      }    // optional, defaults below
+     })
+*@
+@{
+    var inputId     = (string)(ViewData["InputId"]     ?? "tableSearch");
+    var clearId     = (string)(ViewData["ClearId"]     ?? "tableSearchClear");
+    var placeholder = (string)(ViewData["Placeholder"] ?? "Search...");
+}
+
+<div class="search-bar-wrapper">
+    <div class="search-bar">
+        <i class="bi bi-search search-bar-icon"></i>
+        <input type="text"
+               id="@inputId"
+               class="search-bar-input"
+               placeholder="@placeholder"
+               autocomplete="off"
+               aria-label="@placeholder" />
+        <button type="button"
+                id="@clearId"
+                class="search-bar-clear"
+                aria-label="Clear search"
+                title="Clear">
+            <i class="bi bi-x-lg"></i>
+        </button>
+    </div>
+</div>

@@ -19,6 +19,12 @@
     }
     else
     {
+        @await Html.PartialAsync("_SearchBar", new ViewDataDictionary(ViewData) {
+            { "InputId",     "alertSearch"      },
+            { "ClearId",     "alertSearchClear" },
+            { "Placeholder", "Search by product, severity..." }
+        })
+
         <div class="table-responsive">
             <table class="table table-hover">
                 <thead class="table-dark">
@@ -31,7 +37,7 @@
                         <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="alertsTbody">
                     @foreach (var alert in Model)
                     {
                         <tr class="@(alert.Severity == "Critical" ? "table-danger" : "table-warning")">
@@ -65,4 +71,18 @@
         </div>
     }
 </div>
-
+
+@section Scripts {
+    <script src="/js/stockalert.js"></script>
+    <script src="/js/search.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            TableSearchService.init({
+                inputId:       'alertSearch',
+                clearBtnId:    'alertSearchClear',
+                tbodyId:       'alertsTbody',
+                columnIndexes: [0, 3]   // Product, Severity
+            });
+        });
+    </script>
+}
