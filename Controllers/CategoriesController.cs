@@ -31,7 +31,7 @@ namespace InventoryManagement.Controllers
         // GET: Category/Create
         public IActionResult Create()
         {
-            return View();
+            return View(new CategoryViewModel());
         }
 
         // POST: Category/Create
