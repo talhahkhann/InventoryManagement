@@ -10,6 +10,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/site.css" />
     <script src="/js/site.js"></script>
     <script src="/js/stockalert.js"></script>
     <script src="/js/dashboard.js"></script>
@@ -59,180 +60,6 @@
             align-items: center;
             gap: 20px;
         }
-
-        /* ===== Stock Alert Notification Styles ===== */
-        .alert-dropdown {
-            position: relative;
-            display: inline-block;
-        }
-        .alert-bell {
-            background: rgba(255,255,255,0.15);
-            border: none;
-            color: white;
-            font-size: 1.3rem;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            transition: background 0.2s;
-        }
-        .alert-bell:hover {
-            background: rgba(255,255,255,0.25);
-        }
-        .alert-badge {
-            position: absolute;
-            top: -2px;
-            right: -2px;
-            background: #e53e3e;
-            color: white;
-            font-size: 0.7rem;
-            font-weight: 700;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            animation: pulse 2s infinite;
-        }
-        @@keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-        .alert-menu {
-            display: none;
-            position: absolute;
-            right: 0;
-            top: 50px;
-            width: 340px;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
-            z-index: 1000;
-            overflow: hidden;
-            border: 1px solid #e2e8f0;
-        }
-        .alert-menu.show {
-            display: block;
-            animation: slideDown 0.2s ease;
-        }
-        @@keyframes slideDown {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .alert-header {
-            padding: 16px 20px;
-            border-bottom: 1px solid #edf2f7;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-weight: 600;
-            color: #2d3748;
-            background: #f7fafc;
-        }
-        .alert-count {
-            font-size: 0.75rem;
-            color: #e53e3e;
-            background: #fff5f5;
-            padding: 2px 8px;
-            border-radius: 10px;
-        }
-        .alert-list {
-            max-height: 320px;
-            overflow-y: auto;
-        }
-        .alert-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 14px 16px;
-            border-bottom: 1px solid #f7fafc;
-            transition: background 0.15s;
-        }
-        .alert-item:hover {
-            background: #f7fafc;
-        }
-        .alert-critical {
-            border-left: 3px solid #e53e3e;
-        }
-        .alert-warning {
-            border-left: 3px solid #dd6b20;
-        }
-        .alert-icon {
-            font-size: 1.2rem;
-        }
-        .alert-critical .alert-icon { color: #e53e3e; }
-        .alert-warning .alert-icon { color: #dd6b20; }
-        .alert-content {
-            flex: 1;
-            min-width: 0;
-        }
-        .alert-title {
-            font-weight: 600;
-            color: #2d3748;
-            font-size: 0.9rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .alert-meta {
-            font-size: 0.8rem;
-            color: #718096;
-            margin-top: 2px;
-        }
-        .alert-time {
-            font-size: 0.75rem;
-            color: #a0aec0;
-            margin-top: 2px;
-        }
-        .alert-resolve {
-            background: none;
-            border: none;
-            color: #38a169;
-            cursor: pointer;
-            padding: 6px;
-            border-radius: 6px;
-            opacity: 0;
-            transition: all 0.2s;
-        }
-        .alert-item:hover .alert-resolve {
-            opacity: 1;
-        }
-        .alert-resolve:hover {
-            background: #e6f7ee;
-        }
-        .alert-footer {
-            padding: 12px;
-            text-align: center;
-            border-top: 1px solid #edf2f7;
-            background: #f7fafc;
-        }
-        .alert-footer a {
-            color: #3182ce;
-            text-decoration: none;
-            font-size: 0.85rem;
-            font-weight: 500;
-        }
-        .alert-footer a:hover {
-            text-decoration: underline;
-        }
-        .alert-empty {
-            padding: 40px 20px;
-            text-align: center;
-            color: #a0aec0;
-        }
-        .alert-empty i {
-            font-size: 2rem;
-            display: block;
-            margin-bottom: 8px;
-            color: #38a169;
-        }
-        /* ===== End Alert Styles ===== */
-
         .main-content {
             display: flex;
             flex: 1;
@@ -507,6 +334,6 @@
         </main>
     </div>
 
-    @* dashboard.js handles DOMContentLoaded + startAlertBadgeAutoRefresh() *@
+    @* dashboard.js initialises StockAlertService.initBell() + startAutoRefresh() on DOMContentLoaded *@
 </body>
 </html>

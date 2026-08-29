@@ -16,12 +16,16 @@
                 <i class="bi @(ViewData["HeaderIcon"] ?? "bi-boxes") inv-header-icon"></i>
                 <span class="inv-header-title">@(ViewData["HeaderTitle"] ?? ViewData["Title"])</span>
             </div>
-            @if (IsSectionDefined("HeaderActions"))
-            {
-                <div class="inv-header-actions">
+
+            <div class="inv-header-actions">
+                @* Alert bell — shared across all inventory pages *@
+                @await Component.InvokeAsync("AlertNotification")
+
+                @if (IsSectionDefined("HeaderActions"))
+                {
                     @RenderSection("HeaderActions", required: false)
-                </div>
-            }
+                }
+            </div>
         </header>
 
         @* Main Content *@
@@ -31,7 +35,16 @@
 
     </div>
 
+    @* Core scripts — available to every inv-layout page *@
+    <script src="/js/site.js"></script>
+    <script src="/js/stockalert.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            StockAlertService.initBell();
+            StockAlertService.startAutoRefresh();
+        });
+    </script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
-

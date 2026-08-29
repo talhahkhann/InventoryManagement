@@ -1,10 +1,10 @@
-// dashboard.js — Home/Dashboard module
-// Depends on: stockalert.js (startAlertBadgeAutoRefresh)
+// dashboard.js — Home/Dashboard page init
+// Depends on: stockalert.js (StockAlertService)
 
-/**
- * Initialises the dashboard page:
- *  - Starts the stock-alert badge auto-refresh polling loop (60 s interval).
- */
 document.addEventListener('DOMContentLoaded', function () {
-    startAlertBadgeAutoRefresh();
+    // Wire up bell dropdown resolve buttons
+    StockAlertService.initBell();
+
+    // Start polling badge count every 60 seconds
+    StockAlertService.startAutoRefresh();
 });

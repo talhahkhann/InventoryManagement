@@ -787,3 +787,240 @@ mark.search-highlight {
         flex-wrap: wrap;
     }
 }
+
+/* =============================================
+   STOCK ALERT NOTIFICATION — BELL + DROPDOWN
+   Works in any layout that includes site.css
+   ============================================= */
+
+/* Bell wrapper */
+.alert-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+/* Bell button */
+.alert-bell {
+    background: rgba(255,255,255,0.15);
+    border: none;
+    color: white;
+    font-size: 1.3rem;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: background 0.2s;
+}
+.alert-bell:hover {
+    background: rgba(255,255,255,0.25);
+}
+
+/* Red badge counter on bell */
+.alert-badge {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    background: #e53e3e;
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 700;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: alertPulse 2s infinite;
+    pointer-events: none;
+}
+@keyframes alertPulse {
+    0%, 100% { transform: scale(1); }
+    50%       { transform: scale(1.15); }
+}
+
+/* Dropdown panel */
+.alert-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 50px;
+    width: 340px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+    z-index: 1000;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+}
+.alert-menu.show {
+    display: block;
+    animation: alertSlideDown 0.2s ease;
+}
+@keyframes alertSlideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Dropdown header row */
+.alert-header {
+    padding: 14px 18px;
+    border-bottom: 1px solid #edf2f7;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: #2d3748;
+    background: #f7fafc;
+}
+
+/* "N active" pill */
+.alert-count {
+    font-size: 0.75rem;
+    color: #e53e3e;
+    background: #fff5f5;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 600;
+}
+
+/* Scrollable list of alert items */
+.alert-list {
+    max-height: 320px;
+    overflow-y: auto;
+}
+
+/* Single alert row in dropdown */
+.alert-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    border-bottom: 1px solid #f7fafc;
+    transition: background 0.15s;
+}
+.alert-item:last-child {
+    border-bottom: none;
+}
+.alert-item:hover {
+    background: #f7fafc;
+}
+
+/* Severity left-border accent */
+.alert-critical { border-left: 3px solid #e53e3e; }
+.alert-warning  { border-left: 3px solid #dd6b20; }
+
+/* Icon */
+.alert-icon {
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+.alert-critical .alert-icon { color: #e53e3e; }
+.alert-warning  .alert-icon { color: #dd6b20; }
+
+/* Text content block */
+.alert-content {
+    flex: 1;
+    min-width: 0;
+}
+.alert-title {
+    font-weight: 600;
+    color: #2d3748;
+    font-size: 0.875rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.alert-meta {
+    font-size: 0.78rem;
+    color: #718096;
+    margin-top: 2px;
+}
+.alert-time {
+    font-size: 0.72rem;
+    color: #a0aec0;
+    margin-top: 2px;
+}
+
+/* Resolve ✓ button — fades in on row hover */
+.alert-resolve {
+    background: none;
+    border: none;
+    color: #38a169;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 6px;
+    opacity: 0;
+    transition: opacity 0.2s, background 0.2s;
+    flex-shrink: 0;
+}
+.alert-item:hover .alert-resolve {
+    opacity: 1;
+}
+.alert-resolve:hover {
+    background: #e6f7ee;
+}
+
+/* "View all N alerts" footer link */
+.alert-footer {
+    padding: 12px;
+    text-align: center;
+    border-top: 1px solid #edf2f7;
+    background: #f7fafc;
+}
+.alert-footer a {
+    color: #3182ce;
+    text-decoration: none;
+    font-size: 0.83rem;
+    font-weight: 500;
+}
+.alert-footer a:hover {
+    text-decoration: underline;
+}
+
+/* Empty state inside dropdown */
+.alert-empty {
+    padding: 36px 20px;
+    text-align: center;
+    color: #a0aec0;
+    font-size: 0.875rem;
+}
+.alert-empty i {
+    font-size: 2rem;
+    display: block;
+    margin-bottom: 8px;
+    color: #38a169;
+}
+
+/* =============================================
+   STOCK ALERT — FULL-PAGE TABLE BADGE PILLS
+   (used in StockAlert/Index.cshtml Bootstrap table)
+   ============================================= */
+.sa-badge-critical {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    background: #fff5f5;
+    color: #c53030;
+    border: 1px solid #fed7d7;
+}
+.sa-badge-warning {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    background: #fffaf0;
+    color: #c05621;
+    border: 1px solid #fbd38d;
+}
