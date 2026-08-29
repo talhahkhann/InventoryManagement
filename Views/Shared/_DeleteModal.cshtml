@@ -1,0 +1,40 @@
+@* _DeleteModal.cshtml
+   Reusable inline delete confirmation section.
+   
+   Usage — render in any view that needs a delete confirmation page:
+       <partial name="_DeleteModal" model="@deleteModel" />
+   
+   Expects a model with: Name (string), a deletion message block, a form action.
+   For full flexibility, this partial is typically embedded directly in Delete.cshtml pages.
+   
+   Pass via ViewData:
+     DeleteTitle   — what is being deleted, e.g. "Product"
+     DeleteName    — the name/identifier of the item
+     DeleteDetails — HTML-safe description block (optional)
+     DeleteAction  — the form action URL (asp-action handled by parent)
+*@
+@{
+    var entityType = ViewData["DeleteTitle"]   as string ?? "Item";
+    var entityName = ViewData["DeleteName"]    as string ?? "(unknown)";
+}
+
+<div class="inv-confirm-card">
+    <i class="bi bi-exclamation-triangle-fill inv-confirm-icon"></i>
+    <h2 class="inv-confirm-title">Delete @entityType?</h2>
+    <p class="inv-confirm-text">
+        This action <strong>cannot be undone</strong>. The following @entityType.ToLower() will be permanently removed.
+    </p>
+
+    <div class="inv-confirm-meta">
+        <dl>
+            <dt>@entityType</dt>
+            <dd>@entityName</dd>
+            @RenderSection("DeleteDetails", required: false)
+        </dl>
+    </div>
+
+    <div class="inv-confirm-actions">
+        @RenderSection("DeleteActions", required: true)
+    </div>
+</div>
+

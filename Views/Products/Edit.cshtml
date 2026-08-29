@@ -1,65 +1,77 @@
 @model InventoryManagement.ViewModels.ProductViewModel
 
-<div class="field-col">
-    <label class="field-label required">Category</label>
-    <select asp-for="CategoryId" class="field-select">
-        <option value="">-- Select Category --</option>
-        @if (ViewBag.Categories != null)
-        {
-            @foreach (var category in (IEnumerable<InventoryManagement.Models.Category>)ViewBag.Categories)
-            {
-                <option value="@category.Id" selected="@(Model?.CategoryId == category.Id)">
-                    @category.Name
-                </option>
-            }
-        }
-    </select>
-    <span asp-validation-for="CategoryId" class="text-danger" style="color: #e53e3e; font-size: 0.875rem; margin-top: 6px; display: block;"></span>
+@{
+    ViewData["Title"]       = "Edit Product";
+    ViewData["HeaderIcon"]  = "bi-pencil-square";
+    ViewData["HeaderTitle"] = "EDIT PRODUCT";
+    Layout = "~/Views/Shared/_InventoryLayout.cshtml";
+
+    var categories = ViewBag.Categories as IEnumerable<InventoryManagement.Models.Category>
+                     ?? new List<InventoryManagement.Models.Category>();
+}
+
+<div class="inv-form-area">
+    <form asp-action="Edit" asp-route-id="@Model.Id" method="post">
+        @Html.AntiForgeryToken()
+
+        @* Hidden Id field so the POST binder picks it up *@
+        <input asp-for="Id" type="hidden" />
+
+        <section class="inv-section">
+            <div class="inv-section-header">
+                <h2 class="inv-section-title">
+                    <i class="bi bi-info-circle"></i> Product Details
+                </h2>
+            </div>
+
+            <div class="inv-field-row">
+
+                <div class="inv-field-col">
+                    <label asp-for="Name" class="inv-field-label required">Product Name</label>
+                    <input asp-for="Name" class="inv-field-input" placeholder="Enter product name" />
+                    <span asp-validation-for="Name" class="inv-field-error"></span>
+                </div>
+
+                <div class="inv-field-col">
+                    <label asp-for="Quantity" class="inv-field-label required">Quantity</label>
+                    <input asp-for="Quantity" type="number" class="inv-field-input" min="0" placeholder="0" />
+                    <span asp-validation-for="Quantity" class="inv-field-error"></span>
+                </div>
+
+                <div class="inv-field-col">
+                    <label asp-for="Price" class="inv-field-label required">Price (USD)</label>
+                    <input asp-for="Price" type="number" step="0.01" class="inv-field-input" min="0" placeholder="0.00" />
+                    <span asp-validation-for="Price" class="inv-field-error"></span>
+                </div>
+
+                <div class="inv-field-col">
+                    <label asp-for="CategoryId" class="inv-field-label required">Category</label>
+                    <select asp-for="CategoryId" class="inv-field-select">
+                        <option value="">-- Select Category --</option>
+                        @foreach (var cat in categories)
+                        {
+                            <option value="@cat.Id" selected="@(Model.CategoryId == cat.Id)">
+                                @cat.Name
+                            </option>
+                        }
+                    </select>
+                    <span asp-validation-for="CategoryId" class="inv-field-error"></span>
+                </div>
+
+            </div>
+        </section>
+
+        <div class="inv-form-footer">
+            <a asp-action="Index" class="inv-btn inv-btn-outline">
+                <i class="bi bi-x-circle"></i> Cancel
+            </a>
+            <button type="submit" class="inv-btn inv-btn-warning">
+                <i class="bi bi-save"></i> Update Product
+            </button>
+        </div>
+    </form>
 </div>
 
-<style>
-    .field-label {
-        font-size: 0.875rem;
-        font-weight: 600;
-        margin-bottom: 8px;
-        color: #4a5568;
-        display: flex;
-        align-items: center;
-        gap: 4px;
-    }
-    .field-label.required::after {
-        content: "*";
-        color: #e53e3e;
-        font-size: 1.1em;
-    }
-    .field-select {
-        width: 100%;
-        padding: 10px 14px;
-        border: 1px solid #cbd5e0;
-        border-radius: 6px;
-        font-size: 0.95rem;
-        background: white;
-        color: #2d3748;
-        transition: all 0.2s ease;
-        height: auto;
-        appearance: none;
-        -webkit-appearance: none;
-        -moz-appearance: none;
-        padding-right: 36px;
-        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='%234a5568' d='M7 7l3-3 3 3m0 6l-3 3-3-3'/%3e%3c/svg%3e");
-        background-repeat: no-repeat;
-        background-position: right 12px center;
-        background-size: 16px;
-    }
-    .field-select:focus {
-        outline: none;
-        border-color: #3182ce;
-        box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.2);
-    }
-    .text-danger {
-        color: #e53e3e !important;
-        font-size: 0.875rem !important;
-        margin-top: 6px !important;
-        display: block !important;
-    }
-</style>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

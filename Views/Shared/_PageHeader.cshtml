@@ -1,0 +1,13 @@
+@* _PageHeader.cshtml
+   Usage: <partial name="_PageHeader" />
+   Set ViewData["HeaderIcon"] (Bootstrap Icons class) and ViewData["HeaderTitle"] before rendering.
+   This partial is already embedded inside _InventoryLayout — use it only when NOT using that layout.
+*@
+
+<header class="inv-header">
+    <div class="inv-header-logo">
+        <i class="bi @(ViewData["HeaderIcon"] ?? "bi-boxes") inv-header-icon"></i>
+        <span class="inv-header-title">@(ViewData["HeaderTitle"] ?? ViewData["Title"])</span>
+    </div>
+</header>
+

@@ -1,0 +1,49 @@
+@model InventoryManagement.ViewModels.ProductViewModel
+
+@{
+    ViewData["Title"]       = "Delete Product";
+    ViewData["HeaderIcon"]  = "bi-trash";
+    ViewData["HeaderTitle"] = "DELETE PRODUCT";
+    Layout = "~/Views/Shared/_InventoryLayout.cshtml";
+}
+
+<div class="inv-content">
+    <div class="inv-confirm-card">
+
+        <i class="bi bi-exclamation-triangle-fill inv-confirm-icon"></i>
+        <h2 class="inv-confirm-title">Delete Product?</h2>
+        <p class="inv-confirm-text">
+            This action <strong>cannot be undone</strong>.
+            The following product will be permanently removed from the inventory.
+        </p>
+
+        @* Product details summary *@
+        <div class="inv-confirm-meta">
+            <dl>
+                <dt>Name</dt>
+                <dd>@Model.Name</dd>
+
+                <dt>Price</dt>
+                <dd>@Model.Price.ToString("C")</dd>
+
+                <dt>Quantity</dt>
+                <dd>@Model.Quantity units</dd>
+            </dl>
+        </div>
+
+        @* Actions *@
+        <div class="inv-confirm-actions">
+            <a asp-action="Index" class="inv-btn inv-btn-outline">
+                <i class="bi bi-arrow-left-circle"></i> Cancel
+            </a>
+            <form asp-action="Delete" asp-route-id="@Model.Id" method="post" style="display:inline;">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="inv-btn inv-btn-danger">
+                    <i class="bi bi-trash"></i> Yes, Delete
+                </button>
+            </form>
+        </div>
+
+    </div>
+</div>
+
