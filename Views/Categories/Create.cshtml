@@ -1,18 +1,45 @@
-@model InventoryManagement.Models.Category
+@model InventoryManagement.ViewModels.CategoryViewModel
 
 @{
-    ViewData["Title"] = "Create Category";
+    ViewData["Title"]       = "Create Category";
+    ViewData["HeaderIcon"]  = "bi-tag-fill";
+    ViewData["HeaderTitle"] = "CREATE CATEGORY";
+    Layout = "~/Views/Shared/_InventoryLayout.cshtml";
 }
 
-<h2>Create Category</h2>
+<div class="inv-form-area">
+    <form asp-action="Create" method="post">
+        @Html.AntiForgeryToken()
 
-<form asp-action="Create" method="post">
-    <div class="form-group">
-        <label asp-for="Name"></label>
-        <input asp-for="Name" class="form-control" />
-        <span asp-validation-for="Name" class="text-danger"></span>
-    </div>
-    <button type="submit" class="btn btn-primary">Save</button>
-</form>
+        <section class="inv-section">
+            <div class="inv-section-header">
+                <h2 class="inv-section-title">
+                    <i class="bi bi-info-circle"></i> Category Details
+                </h2>
+            </div>
 
-<a asp-action="Index" class="btn btn-secondary mt-2">Back to List</a>
+            <div class="inv-field-row">
+
+                <div class="inv-field-col">
+                    <label asp-for="Name" class="inv-field-label required">Category Name</label>
+                    <input asp-for="Name" class="inv-field-input" placeholder="Enter category name" />
+                    <span asp-validation-for="Name" class="inv-field-error"></span>
+                </div>
+
+            </div>
+        </section>
+
+        <div class="inv-form-footer">
+            <a asp-action="Index" class="inv-btn inv-btn-outline">
+                <i class="bi bi-x-circle"></i> Cancel
+            </a>
+            <button type="submit" class="inv-btn inv-btn-primary">
+                <i class="bi bi-save"></i> Save Category
+            </button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

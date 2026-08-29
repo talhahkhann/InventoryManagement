@@ -1,4 +1,4 @@
-﻿@model DashboardViewModel
+@model DashboardViewModel
 @{
     ViewData["Title"] = "Dashboard — Professional Invoice";
     Layout = null;
@@ -464,6 +464,12 @@
                    class="action-btn btn-products">
                     <i class="bi bi-box-seam"></i>
                     Manage Products
+                </a>
+
+                <a href="@Url.Action("Index", "Categories")"
+                   class="action-btn btn-products">
+                    <i class="bi bi-tags"></i>
+                    Manage Categories
                 </a>
 
                 <a href="@Url.Action("Index", "Area")"

@@ -1,0 +1,42 @@
+@model InventoryManagement.ViewModels.CategoryViewModel
+
+@{
+    ViewData["Title"]       = "Delete Category";
+    ViewData["HeaderIcon"]  = "bi-trash";
+    ViewData["HeaderTitle"] = "DELETE CATEGORY";
+    Layout = "~/Views/Shared/_InventoryLayout.cshtml";
+}
+
+<div class="inv-content">
+    <div class="inv-confirm-card">
+
+        <i class="bi bi-exclamation-triangle-fill inv-confirm-icon"></i>
+        <h2 class="inv-confirm-title">Delete Category?</h2>
+        <p class="inv-confirm-text">
+            This action <strong>cannot be undone</strong>.
+            The following category will be permanently removed. Any products linked to it may be affected.
+        </p>
+
+        @* Category details summary *@
+        <div class="inv-confirm-meta">
+            <dl>
+                <dt>Category</dt>
+                <dd>@Model.Name</dd>
+            </dl>
+        </div>
+
+        @* Actions *@
+        <div class="inv-confirm-actions">
+            <a asp-action="Index" class="inv-btn inv-btn-outline">
+                <i class="bi bi-arrow-left-circle"></i> Cancel
+            </a>
+            <form asp-action="Delete" asp-route-id="@Model.Id" method="post" style="display:inline;">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="inv-btn inv-btn-danger">
+                    <i class="bi bi-trash"></i> Yes, Delete
+                </button>
+            </form>
+        </div>
+
+    </div>
+</div>

@@ -1,19 +1,48 @@
-@model InventoryManagement.ViewModels.CategoryViewModel;
+@model InventoryManagement.ViewModels.CategoryViewModel
 
 @{
-    ViewData["Title"] = "Edit Category";
+    ViewData["Title"]       = "Edit Category";
+    ViewData["HeaderIcon"]  = "bi-pencil-square";
+    ViewData["HeaderTitle"] = "EDIT CATEGORY";
+    Layout = "~/Views/Shared/_InventoryLayout.cshtml";
 }
 
-<h2>Edit Category</h2>
+<div class="inv-form-area">
+    <form asp-action="Edit" asp-route-id="@Model.Id" method="post">
+        @Html.AntiForgeryToken()
 
-<form asp-action="Edit" method="post">
-    <input type="hidden" asp-for="Id" />
-    <div class="form-group">
-        <label asp-for="Name"></label>
-        <input asp-for="Name" class="form-control" />
-        <span asp-validation-for="Name" class="text-danger"></span>
-    </div>
-    <button type="submit" class="btn btn-primary">Update</button>
-</form>
+        @* Hidden Id for POST model binding *@
+        <input asp-for="Id" type="hidden" />
 
-<a asp-action="Index" class="btn btn-secondary mt-2">Back to List</a>
+        <section class="inv-section">
+            <div class="inv-section-header">
+                <h2 class="inv-section-title">
+                    <i class="bi bi-info-circle"></i> Category Details
+                </h2>
+            </div>
+
+            <div class="inv-field-row">
+
+                <div class="inv-field-col">
+                    <label asp-for="Name" class="inv-field-label required">Category Name</label>
+                    <input asp-for="Name" class="inv-field-input" placeholder="Enter category name" />
+                    <span asp-validation-for="Name" class="inv-field-error"></span>
+                </div>
+
+            </div>
+        </section>
+
+        <div class="inv-form-footer">
+            <a asp-action="Index" class="inv-btn inv-btn-outline">
+                <i class="bi bi-x-circle"></i> Cancel
+            </a>
+            <button type="submit" class="inv-btn inv-btn-warning">
+                <i class="bi bi-save"></i> Update Category
+            </button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
