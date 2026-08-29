@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="/css/site.css" />
     <script src="/js/site.js"></script>
     <script src="/js/stockalert.js"></script>
+    <script src="/js/common.js"></script>
     <script src="/js/dashboard.js"></script>
     <style>
         * {
@@ -25,14 +26,13 @@
         body {
             background: #f8f9fa;
             color: #212529;
-            height: 100vh;
+            min-height: 100vh;
             width: 100vw;
-            overflow: hidden;
         }
         .app-root {
             display: flex;
             flex-direction: column;
-            height: 100vh;
+            min-height: 100vh;
             width: 100vw;
         }
         .header {
@@ -63,7 +63,7 @@
         .main-content {
             display: flex;
             flex: 1;
-            overflow: hidden;
+            overflow-y: auto;
             padding: 24px;
             gap: 24px;
         }
@@ -325,6 +325,12 @@
                     Sales Per Category
                 </a>
 
+                <a href="@Url.Action("Index", "Profit")"
+                   class="action-btn btn-settings">
+                    <i class="bi bi-graph-up-arrow"></i>
+                    Profit Calculator
+                </a>
+
                 <a href="#"
                    class="action-btn btn-settings">
                     <i class="bi bi-gear"></i>
@@ -335,5 +341,6 @@
     </div>
 
     @* dashboard.js initialises StockAlertService.initBell() + startAutoRefresh() on DOMContentLoaded *@
+    @await Html.PartialAsync("_ScrollToTop")
 </body>
 </html>

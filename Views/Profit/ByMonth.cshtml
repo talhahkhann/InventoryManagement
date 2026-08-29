@@ -1,0 +1,71 @@
+@model List<InventoryManagement.ViewModels.ProfitByMonthViewModel>
+@{
+    ViewData["Title"]       = "Profit by Month";
+    ViewData["HeaderIcon"]  = "bi-calendar-month";
+    ViewData["HeaderTitle"] = "PROFIT BY MONTH";
+    Layout = "~/Views/Shared/_InventoryLayout.cshtml";
+    int selYear = ViewBag.SelectedYear ?? DateTime.Today.Year;
+    var years   = ViewBag.AvailableYears as List<int> ?? new List<int>();
+    decimal totRev = Model.Sum(r=>r.Revenue), totCost=Model.Sum(r=>r.Cost), totProfit=Model.Sum(r=>r.Profit);
+    decimal totMargin = totRev==0?0:Math.Round(totProfit/totRev*100,2);
+}
+<div class="inv-content">
+    <div class="profit-tabs">
+        <a href="@Url.Action("Index","Profit")" class="profit-tab"><i class="bi bi-speedometer2"></i> Dashboard</a>
+        <a href="@Url.Action("ByMonth","Profit")" class="profit-tab active"><i class="bi bi-calendar-month"></i> By Month</a>
+        <a href="@Url.Action("ByYear","Profit")" class="profit-tab"><i class="bi bi-calendar3"></i> By Year</a>
+        <a href="@Url.Action("ByProduct","Profit")" class="profit-tab"><i class="bi bi-box-seam"></i> By Product</a>
+        <a href="@Url.Action("ByCustomer","Profit")" class="profit-tab"><i class="bi bi-people"></i> By Customer</a>
+        <a href="@Url.Action("ByCategory","Profit")" class="profit-tab"><i class="bi bi-tags"></i> By Category</a>
+    </div>
+    <div class="profit-filter-bar">
+        <i class="bi bi-funnel" style="color:#718096;"></i>
+        <label for="yearSelect">Year</label>
+        <select id="yearSelect">@foreach(var y in years){<option value="@y" selected="@(y==selYear)">@y</option>}</select>
+        <span class="profit-filter-sep">|</span>
+        <button class="profit-export-btn" onclick="ProfitModule.exportCsv('ByMonth',@selYear)"><i class="bi bi-download"></i> Export CSV</button>
+    </div>
+    <div class="profit-chart-wrap">
+        <div class="profit-chart-title"><i class="bi bi-bar-chart-line"></i> Monthly Breakdown — @selYear</div>
+        <div class="profit-chart-canvas"><canvas id="monthlyChart"></canvas></div>
+    </div>
+    <div class="inv-section">
+        <div class="inv-section-header"><h2 class="inv-section-title"><i class="bi bi-table"></i> Monthly Detail</h2></div>
+        @await Html.PartialAsync("_SearchBar", new ViewDataDictionary(ViewData){{"InputId","monthSearch"},{"ClearId","monthSearchClear"},{"Placeholder","Search month..."}})
+        <table class="inv-table">
+            <thead><tr><th>Month</th><th>Revenue</th><th>Cost</th><th>Profit</th><th>Margin %</th><th>Invoices</th><th>Units</th></tr></thead>
+            <tbody id="monthTbody">
+            @foreach(var r in Model){
+                <tr>
+                    <td data-label="Month">@r.MonthName</td>
+                    <td data-label="Revenue" class="inv-cell-price">PKR @r.Revenue.ToString("N2")</td>
+                    <td data-label="Cost">PKR @r.Cost.ToString("N2")</td>
+                    <td data-label="Profit" class="inv-cell-price">PKR @r.Profit.ToString("N2")</td>
+                    <td data-label="Margin %" class="@(r.MarginPct>=30?"profit-margin-high":r.MarginPct>=10?"profit-margin-mid":"profit-margin-low")">@r.MarginPct.ToString("F2")%</td>
+                    <td data-label="Invoices">@r.InvoiceCount</td>
+                    <td data-label="Units">@r.UnitsSold</td>
+                </tr>
+            }
+            </tbody>
+            <tfoot><tr style="font-weight:700;background:#f7fafc;">
+                <td>Total</td>
+                <td class="inv-cell-price">PKR @totRev.ToString("N2")</td>
+                <td>PKR @totCost.ToString("N2")</td>
+                <td class="inv-cell-price">PKR @totProfit.ToString("N2")</td>
+                <td class="@(totMargin>=30?"profit-margin-high":totMargin>=10?"profit-margin-mid":"profit-margin-low")">@totMargin.ToString("F2")%</td>
+                <td>@Model.Sum(r=>r.InvoiceCount)</td><td>@Model.Sum(r=>r.UnitsSold)</td>
+            </tr></tfoot>
+        </table>
+    </div>
+</div>
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="/js/profit.js"></script><script src="/js/search.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded',function(){
+            ProfitModule.initPeriodFilter({baseUrl:'/Profit/ByMonth'});
+            ProfitModule.loadAndRenderMonthlyChart('monthlyChart',@selYear);
+            TableSearchService.init({inputId:'monthSearch',clearBtnId:'monthSearchClear',tbodyId:'monthTbody',columnIndexes:[0]});
+        });
+    </script>
+}

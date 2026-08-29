@@ -12,36 +12,34 @@ namespace InventoryManagement.Controllers
 
         public ProductsController(IProductService productService, ICategoryService categoryService)
         {
-            _productService = productService;
+            _productService  = productService;
             _categoryService = categoryService;
         }
 
-        // GET: Product
+        // GET: Products
         public async Task<IActionResult> Index()
         {
             var products = await _productService.GetAllProductsAsync();
-
-            var productVMs = products.Select(p => new ProductViewModel
+            var vms = products.Select(p => new ProductViewModel
             {
-                Id = p.Id,
-                Name = p.Name,
-                Price = p.Price,
-                Quantity = p.Quantity,
-                CategoryId = p.CategoryId,
+                Id         = p.Id,
+                Name       = p.Name,
+                Price      = p.Price,
+                CostPrice  = p.CostPrice,
+                Quantity   = p.Quantity,
+                CategoryId = p.CategoryId
             }).ToList();
-
-            return View(productVMs);
+            return View(vms);
         }
 
-        // GET: Product/Create
+        // GET: Products/Create
         public async Task<IActionResult> Create()
         {
-           var categories = await _categoryService.GetAllCategoriesAsync();
-    ViewBag.Categories = categories ?? new List<Category>(); // ensure never null
-    return View(new ProductViewModel()); // always pass a model
+            ViewBag.Categories = await _categoryService.GetAllCategoriesAsync() ?? new List<Category>();
+            return View(new ProductViewModel());
         }
 
-        // POST: Product/Create
+        // POST: Products/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ProductViewModel model)
@@ -54,9 +52,10 @@ namespace InventoryManagement.Controllers
 
             var product = new Product
             {
-                Name = model.Name,
-                Price = model.Price,
-                Quantity = model.Quantity,
+                Name       = model.Name,
+                Price      = model.Price,
+                CostPrice  = model.CostPrice,
+                Quantity   = model.Quantity,
                 CategoryId = model.CategoryId
             };
 
@@ -64,27 +63,25 @@ namespace InventoryManagement.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: Product/Edit/5
+        // GET: Products/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
             var product = await _productService.GetProductByIdAsync(id);
             if (product == null) return NotFound();
 
             ViewBag.Categories = await _categoryService.GetAllCategoriesAsync();
-
-            var model = new ProductViewModel
+            return View(new ProductViewModel
             {
-                Id = product.Id,
-                Name = product.Name,
-                Price = product.Price,
-                Quantity = product.Quantity,
+                Id         = product.Id,
+                Name       = product.Name,
+                Price      = product.Price,
+                CostPrice  = product.CostPrice,
+                Quantity   = product.Quantity,
                 CategoryId = product.CategoryId
-            };
-
-            return View(model);
+            });
         }
 
-        // POST: Product/Edit/5
+        // POST: Products/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, ProductViewModel model)
@@ -96,38 +93,35 @@ namespace InventoryManagement.Controllers
                 return View(model);
             }
 
-            var product = new Product
+            await _productService.UpdateProductAsync(new Product
             {
-                Id = model.Id,
-                Name = model.Name,
-                Price = model.Price,
-                Quantity = model.Quantity,
+                Id         = model.Id,
+                Name       = model.Name,
+                Price      = model.Price,
+                CostPrice  = model.CostPrice,
+                Quantity   = model.Quantity,
                 CategoryId = model.CategoryId
-            };
-
-            await _productService.UpdateProductAsync(product);
+            });
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: Product/Delete/5
+        // GET: Products/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
             var product = await _productService.GetProductByIdAsync(id);
             if (product == null) return NotFound();
-
-            var model = new ProductViewModel
+            return View(new ProductViewModel
             {
-                Id = product.Id,
-                Name = product.Name,
-                Price = product.Price,
-                Quantity = product.Quantity,
-                CategoryId = product.CategoryId,
-            };
-
-            return View(model);
+                Id         = product.Id,
+                Name       = product.Name,
+                Price      = product.Price,
+                CostPrice  = product.CostPrice,
+                Quantity   = product.Quantity,
+                CategoryId = product.CategoryId
+            });
         }
 
-        // POST: Product/Delete/5
+        // POST: Products/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

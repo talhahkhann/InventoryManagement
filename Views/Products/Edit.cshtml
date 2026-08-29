@@ -5,7 +5,6 @@
     ViewData["HeaderIcon"]  = "bi-pencil-square";
     ViewData["HeaderTitle"] = "EDIT PRODUCT";
     Layout = "~/Views/Shared/_InventoryLayout.cshtml";
-
     var categories = ViewBag.Categories as IEnumerable<InventoryManagement.Models.Category>
                      ?? new List<InventoryManagement.Models.Category>();
 }
@@ -13,17 +12,11 @@
 <div class="inv-form-area">
     <form asp-action="Edit" asp-route-id="@Model.Id" method="post">
         @Html.AntiForgeryToken()
-
-        @* Hidden Id field so the POST binder picks it up *@
         <input asp-for="Id" type="hidden" />
-
         <section class="inv-section">
             <div class="inv-section-header">
-                <h2 class="inv-section-title">
-                    <i class="bi bi-info-circle"></i> Product Details
-                </h2>
+                <h2 class="inv-section-title"><i class="bi bi-info-circle"></i> Product Details</h2>
             </div>
-
             <div class="inv-field-row">
 
                 <div class="inv-field-col">
@@ -39,9 +32,16 @@
                 </div>
 
                 <div class="inv-field-col">
-                    <label asp-for="Price" class="inv-field-label required">Price (USD)</label>
+                    <label asp-for="Price" class="inv-field-label required">Selling Price (PKR)</label>
                     <input asp-for="Price" type="number" step="0.01" class="inv-field-input" min="0" placeholder="0.00" />
                     <span asp-validation-for="Price" class="inv-field-error"></span>
+                </div>
+
+                <div class="inv-field-col">
+                    <label asp-for="CostPrice" class="inv-field-label required">Cost Price (PKR)</label>
+                    <input asp-for="CostPrice" type="number" step="0.01" class="inv-field-input" min="0" placeholder="0.00" />
+                    <span asp-validation-for="CostPrice" class="inv-field-error"></span>
+                    <span style="color:#718096; font-size:0.78rem; margin-top:4px; display:block;">Used for profit calculation</span>
                 </div>
 
                 <div class="inv-field-col">
@@ -50,9 +50,7 @@
                         <option value="">-- Select Category --</option>
                         @foreach (var cat in categories)
                         {
-                            <option value="@cat.Id" selected="@(Model.CategoryId == cat.Id)">
-                                @cat.Name
-                            </option>
+                            <option value="@cat.Id" selected="@(Model.CategoryId == cat.Id)">@cat.Name</option>
                         }
                     </select>
                     <span asp-validation-for="CategoryId" class="inv-field-error"></span>
@@ -62,16 +60,10 @@
         </section>
 
         <div class="inv-form-footer">
-            <a asp-action="Index" class="inv-btn inv-btn-outline">
-                <i class="bi bi-x-circle"></i> Cancel
-            </a>
-            <button type="submit" class="inv-btn inv-btn-warning">
-                <i class="bi bi-save"></i> Update Product
-            </button>
+            <a asp-action="Index" class="inv-btn inv-btn-outline"><i class="bi bi-x-circle"></i> Cancel</a>
+            <button type="submit" class="inv-btn inv-btn-warning"><i class="bi bi-save"></i> Update Product</button>
         </div>
     </form>
 </div>
 
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

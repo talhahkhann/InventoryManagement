@@ -15,6 +15,11 @@ namespace InventoryManagement.ViewModels
         public decimal Price { get; set; }
 
         [Required]
+        [Range(0, double.MaxValue)]
+        [Display(Name = "Cost Price")]
+        public decimal CostPrice { get; set; }
+
+        [Required]
         [Range(0, int.MaxValue)]
         public int Quantity { get; set; }
 
