@@ -1,0 +1,14 @@
+@* _EmptyState.cshtml
+   Renders a centred "nothing here" placeholder.
+   
+   Usage:
+       @await Html.PartialAsync("_EmptyState", ("bi-inbox", "No products found", "Add your first product to get started."))
+*@
+@model (string Icon, string Heading, string Message)
+
+<div class="inv-empty">
+    <i class="bi @Model.Icon"></i>
+    <h3>@Model.Heading</h3>
+    <p>@Model.Message</p>
+</div>
+

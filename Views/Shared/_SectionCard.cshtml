@@ -1,0 +1,20 @@
+@* _SectionCard.cshtml
+   A convenience partial that renders the .inv-section wrapper with a title header row.
+   
+   Usage — pass a model tuple with (icon, title):
+       @await Html.PartialAsync("_SectionCard", ("bi-list-ul", "Product Inventory"))
+   
+   For the content inside the section, place it after the partial call in the parent view
+   or embed this markup directly in the parent when you need slot-based content.
+   
+   Typically used as a standalone card container in list pages.
+*@
+@model (string Icon, string Title)
+
+<div class="inv-section-header">
+    <h2 class="inv-section-title">
+        <i class="bi @Model.Icon"></i>
+        @Model.Title
+    </h2>
+</div>
+
