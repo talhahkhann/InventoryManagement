@@ -1,8 +1,11 @@
 using InventoryManagement.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InventoryManagement.Controllers
 {
+    // Reports are for Admin and Manager only.
+    [Authorize(Roles = "Admin,Manager")]
     public class ReportsController : Controller
     {
         private readonly IReportService _reportService;

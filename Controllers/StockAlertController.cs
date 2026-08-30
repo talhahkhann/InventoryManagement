@@ -1,9 +1,12 @@
 using InventoryManagement.Services.Interfaces;
 using InventoryManagement.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InventoryManagement.Controllers
 {
+    // Stock alerts — Admin and Manager only.
+    [Authorize(Roles = "Admin,Manager")]
     public class StockAlertController : Controller
     {
         private readonly IStockAlertService _alertService;

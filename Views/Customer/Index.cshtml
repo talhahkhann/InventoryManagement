@@ -1,703 +1,115 @@
 @model IEnumerable<InventoryManagement.ViewModels.CustomerViewModel>
 
 @{
-    ViewData["Title"] = "Customers";
-    Layout = null;
+    ViewData["Title"]       = "Customers";
+    ViewData["HeaderIcon"]  = "bi-people-fill";
+    ViewData["HeaderTitle"] = "CUSTOMERS";
+    Layout = "~/Views/Shared/_InventoryLayout.cshtml";
 }
 
-<!DOCTYPE html>
-
-<html lang="en">
-
-<head>
-
-    ```
-    <meta charset="utf-8" />
-
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0" />
-
-    <title>
-        @ViewData["Title"] — Customer Management
-    </title>
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
-          rel="stylesheet">
-    <script src="/js/site.js"></script>
-    <link rel="stylesheet" href="/css/site.css" />
-    <script src="/js/search.js"></script>
-
-    <style>
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            font-size: 0.875rem;
-        }
-
-        body {
-            background: #f8f9fa;
-            color: #212529;
-            height: 100vh;
-            width: 100vw;
-            overflow: hidden;
-        }
-
-        .app-root {
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            width: 100vw;
-        }
-
-        /* Header */
-
-        .header {
-            background: linear-gradient(135deg, #1a3a6c, #2c5282);
-            padding: 12px 20px;
-            font-weight: 600;
-            font-size: 1.25rem;
-            color: white;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .header-logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .header-title {
-            font-weight: 700;
-            letter-spacing: -0.5px;
-        }
-
-        /* Main */
-
-        .main-content {
-            display: flex;
-            flex: 1;
-            overflow: hidden;
-            padding: 20px;
-            gap: 20px;
-        }
-
-        .content-area {
-            flex: 1;
-            background: white;
-            overflow-y: auto;
-            padding: 24px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        /* Section */
-
-        .section {
-            background: #ffffff;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
-        }
-
-        .section-title {
-            font-size: 1.125rem;
-            margin-bottom: 16px;
-            font-weight: 700;
-            color: #2c5282;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #e2e8f0;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-            .section-title i {
-                font-size: 1.25rem;
-            }
-
-        /* Buttons */
-
-        .btn {
-            padding: 10px 20px;
-            border-radius: 6px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            text-align: center;
-            border: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: all 0.2s ease;
-            min-width: 100px;
-            text-decoration: none;
-        }
-
-        .btn-primary {
-            background: #3182ce;
-            color: white;
-        }
-
-            .btn-primary:hover {
-                background: #2c5282;
-                transform: translateY(-2px);
-                box-shadow: 0 4px 8px rgba(49, 130, 206, 0.3);
-            }
-
-        .btn-warning {
-            background: #d69e2e;
-            color: white;
-        }
-
-            .btn-warning:hover {
-                background: #b7791f;
-                transform: translateY(-2px);
-                box-shadow: 0 4px 8px rgba(214, 158, 46, 0.3);
-            }
-
-        .btn-danger {
-            background: #e53e3e;
-            color: white;
-            min-width: auto;
-            padding: 6px 12px;
-        }
-
-            .btn-danger:hover {
-                background: #c53030;
-                transform: translateY(-2px);
-                box-shadow: 0 4px 8px rgba(229, 62, 62, 0.3);
-            }
-
-        .action-buttons {
-            display: flex;
-            gap: 8px;
-            justify-content: flex-end;
-        }
-
-            .action-buttons .btn {
-                padding: 6px 12px;
-                min-width: auto;
-                font-size: 0.875rem;
-            }
-
-        /* Area Filter */
-
-        .area-filter {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            padding: 15px 18px;
-            margin-bottom: 20px;
-        }
-
-        .area-filter-label {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: #2c5282;
-            font-weight: 600;
-            white-space: nowrap;
-        }
-
-            .area-filter-label i {
-                font-size: 1.1rem;
-            }
-
-        .area-dropdown {
-            min-width: 250px;
-            padding: 10px 12px;
-            border: 1px solid #cbd5e0;
-            border-radius: 6px;
-            background: white;
-            color: #2d3748;
-            font-size: 0.9rem;
-            outline: none;
-            cursor: pointer;
-        }
-
-            .area-dropdown:focus {
-                border-color: #3182ce;
-                box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.15);
-            }
-
-        /* Loading */
-
-        .loading {
-            display: none;
-            align-items: center;
-            gap: 8px;
-            color: #718096;
-            margin-left: 10px;
-        }
-
-            .loading.show {
-                display: flex;
-            }
-
-        /* Table */
-
-        .customers-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 12px;
-        }
-
-            .customers-table thead {
-                background: #2c5282;
-                color: white;
-            }
-
-            .customers-table th {
-                padding: 14px 12px;
-                text-align: left;
-                font-weight: 600;
-                font-size: 0.95rem;
-            }
-
-            .customers-table td {
-                padding: 14px 12px;
-                border-bottom: 1px solid #edf2f7;
-                vertical-align: middle;
-            }
-
-            .customers-table tbody tr:last-child td {
-                border-bottom: none;
-            }
-
-            .customers-table tbody tr:hover {
-                background-color: #f8fafc;
-            }
-
-        .name-cell {
-            font-weight: 600;
-            color: #2b6cb0;
-        }
-
-        .email-cell {
-            color: #319795;
-            font-size: 0.95rem;
-        }
-
-        .phone-cell {
-            font-family: monospace;
-            color: #4a5568;
-        }
-
-        .location-cell {
-            color: #718096;
-            font-style: italic;
-        }
-
-        /* Empty */
-
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
-            color: #718096;
-        }
-
-            .empty-state i {
-                font-size: 3rem;
-                margin-bottom: 16px;
-                opacity: 0.6;
-            }
-
-            .empty-state h3 {
-                margin-bottom: 8px;
-            }
-
-        /* Mobile */
-
-        @@media (max-width: 768px) {
-
-            .main-content {
-                padding: 16px;
-            }
-
-            .content-area {
-                padding: 20px 16px;
-            }
-
-            .area-filter {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .area-dropdown {
-                width: 100%;
-            }
-
-            .customers-table,
-            .customers-table thead,
-            .customers-table tbody,
-            .customers-table tr,
-            .customers-table td,
-            .customers-table th {
-                display: block;
-                width: 100%;
-            }
-
-                .customers-table thead tr {
-                    position: absolute;
-                    top: -9999px;
-                    left: -9999px;
-                }
-
-                .customers-table tr {
-                    margin-bottom: 20px;
-                    padding: 16px;
-                    border: 1px solid #e2e8f0;
-                    border-radius: 8px;
-                    background: white;
-                }
-
-                .customers-table td {
-                    text-align: right;
-                    padding-left: 50%;
-                    position: relative;
-                    border: none;
-                    padding-top: 12px;
-                    padding-bottom: 12px;
-                }
-
-                    .customers-table td:before {
-                        content: attr(data-label) ": ";
-                        position: absolute;
-                        left: 16px;
-                        width: 45%;
-                        padding-right: 10px;
-                        font-weight: 600;
-                        text-align: left;
-                        color: #4a5568;
-                    }
-
-            .action-buttons {
-                justify-content: center;
-                margin-top: 12px;
-            }
-        }
-
-    </style>
-    ```
-
-</head>
-
-<body>
-
-    <div class="app-root">
-
-        ```
-        <!-- Header -->
-
-        <header class="header">
-
-            <div class="header-logo">
-
-                <i class="bi bi-people"
-                   style="font-size: 1.8rem;">
-                </i>
-
-                <span class="header-title">
-                    CUSTOMERS
+<div class="inv-content">
+    <section class="inv-section">
+
+        <div class="inv-section-header">
+            <h2 class="inv-section-title">
+                <i class="bi bi-person-lines-fill"></i> Customer Directory
+            </h2>
+            <a asp-action="Create" class="inv-btn inv-btn-primary">
+                <i class="bi bi-person-plus"></i> Add Customer
+            </a>
+        </div>
+
+        @if (Model?.Any() == true)
+        {
+            @* Area filter *@
+            <div class="inv-filter-bar">
+                <span class="inv-filter-label">
+                    <i class="bi bi-geo-alt"></i> Filter by Area
                 </span>
-
+                <select id="areaDropdown" class="inv-field-select" style="max-width:260px;">
+                    <option value="">All Areas</option>
+                    @if (ViewBag.Areas != null)
+                    {
+                        foreach (var area in ViewBag.Areas)
+                        {
+                            <option value="@area.AreaId">@area.AreaName</option>
+                        }
+                    }
+                </select>
+                <span id="loading" class="inv-filter-loading" style="display:none;">
+                    <i class="bi bi-arrow-repeat"></i> Loading…
+                </span>
             </div>
 
-        </header>
-
-
-        <!-- Main -->
-
-        <main class="main-content">
-
-            <div class="content-area">
-
-                <section class="section">
-
-                    <!-- Title -->
-
-                    <div style="
-                display:flex;
-                justify-content:space-between;
-                align-items:center;
-                margin-bottom:20px;
-            ">
-
-                        <h2 class="section-title">
-
-                            <i class="bi bi-person-lines-fill"></i>
-
-                            Customer Directory
-
-                        </h2>
-
-
-                        <a asp-action="Create"
-                           class="btn btn-primary">
-
-                            <i class="bi bi-person-plus"></i>
-
-                            Add Customer
-
-                        </a>
-
-                    </div>
-
-
-                    <!-- Search Bar -->
-
-                    <div class="search-bar-wrapper">
-                        <div class="search-bar">
-                            <i class="bi bi-search search-bar-icon"></i>
-                            <input type="text"
-                                   id="customerSearch"
-                                   class="search-bar-input"
-                                   placeholder="Search by name, email, phone, city..."
-                                   autocomplete="off"
-                                   aria-label="Search customers" />
-                            <button type="button"
-                                    id="customerSearchClear"
-                                    class="search-bar-clear"
-                                    aria-label="Clear search"
-                                    title="Clear">
-                                <i class="bi bi-x-lg"></i>
-                            </button>
-                        </div>
-                    </div>
-
-
-                    <!-- Area Filter -->
-
-                    <div class="area-filter">
-                        <div class="area-filter-label">
-
-                            <i class="bi bi-geo-alt"></i>
-
-                            <label for="areaDropdown">
-                                Filter by Area
-                            </label>
-
-                        </div>
-
-
-                        <select id="areaDropdown"
-                                class="area-dropdown">
-
-                            <option value="">
-                                All Areas
-                            </option>
-
-                            @if (ViewBag.Areas != null)
-                            {
-                                foreach (var area in ViewBag.Areas)
-                                {
-                                    <option value="@area.AreaId">
-                                        @area.AreaName
-                                    </option>
-                                }
-                            }
-
-                        </select>
-
-
-                        <div id="loading"
-                             class="loading">
-
-                            <i class="bi bi-arrow-repeat"></i>
-
-                            Loading...
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- Customer Table -->
-
-                    <div id="customerTableContainer">
-
-                        @if (Model?.Any() == true)
-                        {
-
-                            <table class="customers-table">
-
-                                <thead>
-
-                                    <tr>
-
-                                        <th>Name</th>
-
-                                        <th>Email</th>
-
-                                        <th>Phone</th>
-
-                                        <th>City</th>
-
-                                        <th>Country</th>
-
-                                        <th style="text-align:center;">
-                                            Actions
-                                        </th>
-
-                                    </tr>
-
-                                </thead>
-
-
-                                <tbody id="customerTableBody">
-
-                                    @foreach (var customer in Model)
-                                    {
-
-                                        <tr>
-
-                                            <td data-label="Name"
-                                                class="name-cell">
-
-                                                @customer.Name
-
-                                            </td>
-
-
-                                            <td data-label="Email"
-                                                class="email-cell">
-
-                                                @customer.Email
-
-                                            </td>
-
-
-                                            <td data-label="Phone"
-                                                class="phone-cell">
-
-                                                @customer.PhoneNumber
-
-                                            </td>
-
-
-                                            <td data-label="City"
-                                                class="location-cell">
-
-                                                @customer.City
-
-                                            </td>
-
-
-                                            <td data-label="Country"
-                                                class="location-cell">
-
-                                                @customer.Country
-
-                                            </td>
-
-
-                                            <td data-label="Actions"
-                                                style="text-align:center;">
-
-                                                <div class="action-buttons">
-
-                                                    <a asp-action="Edit"
-                                                       asp-route-id="@customer.Id"
-                                                       class="btn btn-warning">
-
-                                                        <i class="bi bi-pencil"></i>
-
-                                                    </a>
-
-
-                                                    <form asp-action="Delete"
-                                                          asp-route-id="@customer.Id"
-                                                          method="post"
-                                                          style="display:inline;">
-
-                                                        @Html.AntiForgeryToken()
-
-                                                        <button type="submit"
-                                                                class="btn btn-danger"
-                                                                onclick="return confirm('Are you sure you want to delete this customer?');">
-
-                                                            <i class="bi bi-trash"></i>
-
-                                                        </button>
-
-                                                    </form>
-
-                                                </div>
-
-                                            </td>
-
-                                        </tr>
-
-                                    }
-
-                                </tbody>
-
-                            </table>
-
-                        }
-                        else
-                        {
-
-                            <div class="empty-state">
-
-                                <i class="bi bi-people"></i>
-
-                                <h3>
-                                    No customers found
-                                </h3>
-
-                                <p>
-                                    Add your first customer to get started.
-                                </p>
-
-                            </div>
-
-                        }
-
-                    </div>
-
-                </section>
-
-            </div>
-
-        </main>
-        ```
-
-    </div>
-
+            @await Html.PartialAsync("_SearchBar", new ViewDataDictionary(ViewData) {
+                { "InputId",     "customerSearch"      },
+                { "ClearId",     "customerSearchClear" },
+                { "Placeholder", "Search by name, email, phone, city..." }
+            })
+
+            <table class="inv-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>City</th>
+                        <th>Country</th>
+                        <th class="center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="customerTableBody">
+                    @foreach (var customer in Model)
+                    {
+                        <tr>
+                            <td data-label="Name"><strong>@customer.Name</strong></td>
+                            <td data-label="Email" class="inv-cell-muted">@customer.Email</td>
+                            <td data-label="Phone" class="inv-cell-muted">@customer.PhoneNumber</td>
+                            <td data-label="City"  class="inv-cell-muted">@customer.City</td>
+                            <td data-label="Country" class="inv-cell-muted">@customer.Country</td>
+                            <td data-label="Actions" class="center">
+                                <div class="inv-actions">
+                                    <a asp-action="Edit" asp-route-id="@customer.Id"
+                                       class="inv-btn inv-btn-warning inv-btn-sm" title="Edit">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@customer.Id"
+                                       class="inv-btn inv-btn-danger inv-btn-sm" title="Delete">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            @await Html.PartialAsync("_EmptyState",
+                ("bi-people", "No customers found", "Add your first customer to get started."))
+        }
+
+    </section>
+</div>
+
+@section Scripts {
+    <script src="/js/search.js"></script>
     <script src="/js/customer.js"></script>
     <script>
-        initCustomerAreaFilter('@Url.Action("GetCustomersByArea", "Customer")');
+        document.addEventListener('DOMContentLoaded', function () {
+            initCustomerAreaFilter('@Url.Action("GetCustomersByArea", "Customer")');
 
-        // Init search — also re-applies after AJAX area-filter replaces rows
-        TableSearchService.init({
-            inputId:       'customerSearch',
-            clearBtnId:    'customerSearchClear',
-            tbodyId:       'customerTableBody',
-            columnIndexes: [0, 1, 2, 3, 4]   // Name, Email, Phone, City, Country
-        });
+            TableSearchService.init({
+                inputId:       'customerSearch',
+                clearBtnId:    'customerSearchClear',
+                tbodyId:       'customerTableBody',
+                columnIndexes: [0, 1, 2, 3, 4]
+            });
 
-        // Patch: after area-filter swaps rows, re-run the current search term
-        document.getElementById('areaDropdown').addEventListener('change', function () {
-            // customer.js finishes asynchronously, so wait for DOM update
-            setTimeout(() => TableSearchService.refresh('customerSearch'), 400);
+            document.getElementById('areaDropdown').addEventListener('change', function () {
+                setTimeout(() => TableSearchService.refresh('customerSearch'), 400);
+            });
         });
     </script>
-
-</body>
-
-</html>
+}

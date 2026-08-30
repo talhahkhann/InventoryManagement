@@ -1360,3 +1360,508 @@ mark.search-highlight {
         font-size: 1rem;
     }
 }
+
+
+/* =============================================
+   SIDEBAR NAVIGATION LAYOUT
+   Added for role-based nav in _InventoryLayout
+   ============================================= */
+
+/* Body wrapper: sidebar on left, main on right */
+.inv-body-wrapper {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    min-height: 0;
+}
+
+/* Sidebar */
+.inv-sidebar {
+    width: 220px;
+    flex-shrink: 0;
+    background: #1a2844;
+    overflow-y: auto;
+    padding: 16px 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.inv-nav-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    flex: 1;
+}
+
+.inv-nav-item {
+    margin: 0;
+}
+
+/* Section label (e.g. "Inventory", "Analytics") */
+.inv-nav-section-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #4a6fa5;
+    padding: 14px 20px 4px;
+    pointer-events: none;
+}
+
+/* Nav link */
+.inv-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    color: #a0b3cc;
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-left: 3px solid transparent;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+}
+
+.inv-nav-link i {
+    font-size: 1rem;
+    width: 18px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.inv-nav-link:hover {
+    color: #fff;
+    background: rgba(255,255,255,0.07);
+    text-decoration: none;
+}
+
+.inv-nav-link.active {
+    color: #fff;
+    background: rgba(49,130,206,0.18);
+    border-left-color: #3182ce;
+    font-weight: 700;
+}
+
+/* Main content area next to sidebar */
+.inv-main {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+    background: #f0f4f8;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-height: 0;
+}
+
+/* =============================================
+   USER CHIP (header top-right)
+   ============================================= */
+.inv-user-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,0.12);
+    border-radius: 20px;
+    padding: 6px 14px 6px 10px;
+    font-size: 0.82rem;
+    color: #e2e8f0;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.inv-user-chip i {
+    font-size: 1.1rem;
+    color: #90cdf4;
+}
+
+/* =============================================
+   BADGE VARIANTS  (role, status, etc.)
+   ============================================= */
+.inv-badge-danger {
+    background: #fff5f5;
+    color: #c53030;
+    border: 1px solid #feb2b2;
+}
+
+.inv-badge-warning {
+    background: #fffaf0;
+    color: #c05621;
+    border: 1px solid #fbd38d;
+}
+
+.inv-badge-info {
+    background: #ebf8ff;
+    color: #2b6cb0;
+    border: 1px solid #bee3f8;
+}
+
+.inv-badge-muted {
+    background: #f7fafc;
+    color: #718096;
+    border: 1px solid #e2e8f0;
+}
+
+/* =============================================
+   ALERT BANNERS  (success / danger)
+   ============================================= */
+.inv-alert {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 18px;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 16px;
+}
+
+.inv-alert-success {
+    background: #f0fff4;
+    color: #276749;
+    border: 1px solid #9ae6b4;
+}
+
+.inv-alert-danger {
+    background: #fff5f5;
+    color: #c53030;
+    border: 1px solid #feb2b2;
+}
+
+/* =============================================
+   INFO BOX  (role permissions summary etc.)
+   ============================================= */
+.inv-info-box {
+    background: #ebf8ff;
+    border: 1px solid #bee3f8;
+    border-radius: 8px;
+    padding: 14px 18px;
+    font-size: 0.875rem;
+    color: #2b6cb0;
+}
+
+/* =============================================
+   RESPONSIVE SIDEBAR
+   ============================================= */
+@media (max-width: 768px) {
+    .inv-sidebar {
+        width: 56px;
+        padding: 10px 0;
+    }
+
+    .inv-nav-link span,
+    .inv-nav-section-label {
+        display: none;
+    }
+
+    .inv-nav-link {
+        justify-content: center;
+        padding: 12px;
+        border-left-width: 2px;
+    }
+
+    .inv-nav-link i {
+        width: auto;
+        font-size: 1.15rem;
+    }
+
+    .inv-user-chip span:not(i) {
+        display: none;
+    }
+
+    .inv-user-chip {
+        padding: 6px;
+        border-radius: 50%;
+    }
+}
+
+
+/* =============================================
+   DASHBOARD — Home/Index
+   ============================================= */
+
+/* Welcome banner */
+.dash-welcome {
+    background: linear-gradient(135deg, #1a3a6c 0%, #2c5282 100%);
+    border-radius: 12px;
+    padding: 24px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    box-shadow: 0 4px 16px rgba(26,58,108,0.18);
+}
+
+.dash-welcome-greeting {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 4px;
+}
+
+.dash-welcome-sub {
+    font-size: 0.875rem;
+    color: #90cdf4;
+}
+
+.dash-welcome-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 20px;
+    padding: 8px 18px;
+    color: #fff;
+    font-size: 0.875rem;
+    font-weight: 700;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.dash-welcome-badge i { font-size: 1rem; color: #90cdf4; }
+
+/* KPI stat cards row */
+.dash-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+.dash-kpi-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+    text-decoration: none;
+    color: inherit;
+    border-left: 4px solid transparent;
+    transition: transform 0.18s, box-shadow 0.18s;
+    position: relative;
+}
+
+.dash-kpi-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    text-decoration: none;
+    color: inherit;
+}
+
+.dash-kpi-blue   { border-left-color: #3182ce; }
+.dash-kpi-green  { border-left-color: #38a169; }
+.dash-kpi-orange { border-left-color: #dd6b20; }
+.dash-kpi-purple { border-left-color: #805ad5; }
+.dash-kpi-red    { border-left-color: #e53e3e; }
+
+.dash-kpi-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.dash-kpi-blue   .dash-kpi-icon { background: #ebf8ff; color: #3182ce; }
+.dash-kpi-green  .dash-kpi-icon { background: #f0fff4; color: #38a169; }
+.dash-kpi-orange .dash-kpi-icon { background: #fffaf0; color: #dd6b20; }
+.dash-kpi-purple .dash-kpi-icon { background: #faf5ff; color: #805ad5; }
+.dash-kpi-red    .dash-kpi-icon { background: #fff5f5; color: #e53e3e; }
+
+.dash-kpi-body { flex: 1; min-width: 0; }
+
+.dash-kpi-value {
+    font-size: 1.9rem;
+    font-weight: 800;
+    color: #1a202c;
+    line-height: 1;
+    margin-bottom: 4px;
+}
+
+.dash-kpi-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #718096;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.dash-kpi-arrow {
+    font-size: 1.4rem;
+    color: #cbd5e0;
+    transition: color 0.15s, transform 0.15s;
+}
+
+.dash-kpi-card:hover .dash-kpi-arrow {
+    color: #3182ce;
+    transform: translateX(3px);
+}
+
+/* Two-column panels row */
+.dash-panels {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.dash-panel { margin: 0 !important; }
+
+/* Action button grid inside panels */
+.dash-action-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 12px;
+}
+
+.dash-action-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 18px 12px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-align: center;
+    color: #fff;
+    transition: transform 0.15s, box-shadow 0.15s, filter 0.15s;
+    line-height: 1.2;
+}
+
+.dash-action-btn i {
+    font-size: 1.5rem;
+}
+
+.dash-action-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+    filter: brightness(1.08);
+    text-decoration: none;
+    color: #fff;
+}
+
+.dash-action-blue   { background: #3182ce; }
+.dash-action-teal   { background: #319795; }
+.dash-action-green  { background: #38a169; }
+.dash-action-orange { background: #dd6b20; }
+.dash-action-purple { background: #805ad5; }
+.dash-action-red    { background: #e53e3e; }
+.dash-action-slate  { background: #4a5568; }
+
+/* Responsive */
+@media (max-width: 900px) {
+    .dash-panels {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .dash-kpi-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    .dash-kpi-value { font-size: 1.5rem; }
+    .dash-welcome-greeting { font-size: 1.1rem; }
+    .dash-welcome-badge { display: none; }
+    .dash-action-grid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    }
+}
+
+
+/* =============================================
+   LOGOUT BUTTON — visible white outline in header
+   ============================================= */
+.inv-btn-logout {
+    background: transparent;
+    color: #e2e8f0;
+    border: 1px solid rgba(255,255,255,0.45);
+    padding: 7px 14px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.18s, border-color 0.18s, color 0.18s;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.inv-btn-logout:hover {
+    background: rgba(255,255,255,0.15);
+    border-color: rgba(255,255,255,0.8);
+    color: #fff;
+    text-decoration: none;
+}
+
+/* =============================================
+   FILTER BAR  (Customer area filter etc.)
+   ============================================= */
+.inv-filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    background: #f7fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 10px 16px;
+    margin-bottom: 16px;
+}
+.inv-filter-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #4a5568;
+    white-space: nowrap;
+}
+.inv-filter-loading {
+    font-size: 0.8rem;
+    color: #718096;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* =============================================
+   BADGE VARIANTS — danger / warning / success
+   (extend existing inv-badge base class)
+   ============================================= */
+.inv-badge-danger {
+    background: #fff5f5;
+    color: #c53030;
+    border: 1px solid #feb2b2;
+}
+.inv-badge-warning {
+    background: #fffaf0;
+    color: #c05621;
+    border: 1px solid #fbd38d;
+}
+.inv-badge-success {
+    background: #f0fff4;
+    color: #276749;
+    border: 1px solid #9ae6b4;
+}
+
+/* Success button (resolve) */
+.inv-btn-success {
+    background: #38a169;
+    color: white;
+}
+.inv-btn-success:hover {
+    background: #2f855a;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(56,161,105,0.3);
+    color: white;
+}

@@ -3,10 +3,14 @@ using InventoryManagement.Models;
 using InventoryManagement.Services.Interfaces;
 using InventoryManagement.Services;
 using InventoryManagement.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InventoryManagement.Controllers
 {
+    // All authenticated roles can access invoices.
+    // (Admin, Manager, Staff — Staff can only create invoices.)
+    [Authorize]
     public class InvoiceController : Controller
     {
         private readonly IInvoiceService _invoiceService;
@@ -35,6 +39,7 @@ namespace InventoryManagement.Controllers
             _profitService         = profitService;
         }
 
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Index()
         {
             var invoices = await _invoiceService.GetAllInvoicesAsync();
@@ -120,6 +125,7 @@ namespace InventoryManagement.Controllers
         }
 
         // GET: Invoice/Details/id
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Details(int id)
         {
             var invoice = await _invoiceService.GetInvoiceByIdAsync(id);
@@ -136,6 +142,7 @@ namespace InventoryManagement.Controllers
         }
 
         // GET: Invoice/Edit/id
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Edit(int id)
         {
             var invoice = await _invoiceService.GetInvoiceByIdAsync(id);
@@ -178,6 +185,7 @@ namespace InventoryManagement.Controllers
 
         // POST: Invoice/Edit/5
         [HttpPost]
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Edit(InvoiceViewModel model)
         {
             if (!ModelState.IsValid)

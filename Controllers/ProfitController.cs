@@ -1,9 +1,12 @@
 using InventoryManagement.Services.Interfaces;
 using InventoryManagement.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InventoryManagement.Controllers
 {
+    // Profit analytics — Admin and Manager only.
+    [Authorize(Roles = "Admin,Manager")]
     public class ProfitController : Controller
     {
         private readonly IProfitService _profitService;
