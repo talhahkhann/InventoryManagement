@@ -1,10 +1,13 @@
 using InventoryManagement.Models;
 using InventoryManagement.Services.Interfaces;
 using InventoryManagement.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InventoryManagement.Controllers
 {
+    // Admin and Manager can fully manage products; Staff has no access.
+    [Authorize(Roles = "Admin,Manager")]
     public class ProductsController : Controller
     {
         private readonly IProductService _productService;

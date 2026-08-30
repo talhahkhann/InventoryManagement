@@ -1,345 +1,81 @@
 ﻿@model IEnumerable<InventoryManagement.ViewModels.AreaViewModel>
 
 @{
-    ViewData["Title"] = "Areas";
-    Layout = null;
+    ViewData["Title"]       = "Areas";
+    ViewData["HeaderIcon"]  = "bi-geo-alt-fill";
+    ViewData["HeaderTitle"] = "AREAS";
+    Layout = "~/Views/Shared/_InventoryLayout.cshtml";
 }
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] — Customer Management</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-    <link rel="stylesheet" href="/css/site.css" />
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            font-size: 0.875rem;
-        }
-        body {
-            background: #f8f9fa;
-            color: #212529;
-            height: 100vh;
-            width: 100vw;
-            overflow: hidden;
-        }
-        .app-root {
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            width: 100vw;
-        }
-        .header {
-            background: linear-gradient(135deg, #1a3a6c, #2c5282);
-            padding: 12px 20px;
-            font-weight: 600;
-            font-size: 1.25rem;
-            color: white;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .header-logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .header-title {
-            font-weight: 700;
-            letter-spacing: -0.5px;
-        }
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .main-content {
-            display: flex;
-            flex: 1;
-            overflow: hidden;
-            padding: 20px;
-            gap: 20px;
-        }
-        .form-area {
-            flex: 1;
-            background: white;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            padding: 24px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-        }
-        .section {
-            background: #ffffff;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            padding: 0;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
-            overflow: hidden;
-        }
-        .section-title {
-            font-size: 1.125rem;
-            margin-bottom: 0;
-            font-weight: 700;
-            color: #2c5282;
-            padding: 16px 20px;
-            border-bottom: 2px solid #e2e8f0;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .section-title i {
-            font-size: 1.25rem;
-        }
-        .page-subtitle {
-            color: #718096;
-            font-size: 0.85rem;
-            margin-top: 2px;
-        }
-        .btn {
-            padding: 10px 20px;
-            border-radius: 6px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            text-align: center;
-            border: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: all 0.2s ease;
-            min-width: 100px;
-            text-decoration: none;
-        }
-        .btn-primary {
-            background: #3182ce;
-            color: white;
-        }
-        .btn-primary:hover {
-            background: #2c5282;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(49, 130, 206, 0.3);
-        }
-        .btn-outline {
-            background: transparent;
-            color: white;
-            border: 1px solid rgba(255,255,255,0.6);
-        }
-        .btn-outline:hover {
-            background: rgba(255,255,255,0.15);
-        }
-        .btn-icon {
-            padding: 8px 10px;
-            min-width: auto;
-        }
-        .btn-icon-primary {
-            background: transparent;
-            color: #3182ce;
-            border: 1px solid #cbd5e0;
-        }
-        .btn-icon-primary:hover {
-            background: #3182ce;
-            color: white;
-            border-color: #3182ce;
-        }
-        .btn-icon-danger {
-            background: transparent;
-            color: #e53e3e;
-            border: 1px solid #cbd5e0;
-        }
-        .btn-icon-danger:hover {
-            background: #e53e3e;
-            color: white;
-            border-color: #e53e3e;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        thead {
-            background: #f8fafc;
-        }
-        th {
-            text-align: left;
-            padding: 12px 20px;
-            font-weight: 700;
-            color: #4a5568;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 0.03em;
-            border-bottom: 2px solid #e2e8f0;
-        }
-        td {
-            padding: 14px 20px;
-            border-bottom: 1px solid #edf2f7;
-            color: #2d3748;
-        }
-        tbody tr:hover {
-            background: #f8fafc;
-        }
-        tbody tr:last-child td {
-            border-bottom: none;
-        }
-        .id-col {
-            width: 80px;
-            color: #a0aec0;
-        }
-        .actions-col {
-            width: 140px;
-            text-align: right;
-        }
-        .area-name-cell {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .area-icon {
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            background: rgba(49, 130, 206, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-        .area-icon i {
-            color: #3182ce;
-            font-size: 1rem;
-        }
-        .area-name {
-            font-weight: 600;
-            color: #2d3748;
-        }
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-        }
-        .empty-state i {
-            font-size: 2.5rem;
-            color: #cbd5e0;
-            margin-bottom: 12px;
-            display: block;
-        }
-        .empty-state h5 {
-            font-size: 1.05rem;
-            color: #2d3748;
-            margin-bottom: 6px;
-        }
-        .empty-state p {
-            color: #718096;
-            margin-bottom: 16px;
-        }
+<div class="inv-content">
+    <section class="inv-section">
 
-        @@media (max-width: 768px) {
-            .main-content {
-                padding: 16px;
-            }
-            .form-area {
-                padding: 16px;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="app-root">
-        <header class="header">
-            <div class="header-logo">
-                <i class="bi bi-geo-alt" style="font-size: 1.8rem;"></i>
-                <span class="header-title">AREAS</span>
-            </div>
-            <div class="header-actions">
-                <a asp-action="Create" class="btn btn-outline">
-                    <i class="bi bi-plus-lg"></i> Add Area
-                </a>
-            </div>
-        </header>
-        <main class="main-content">
-            <div class="form-area">
-                <section class="section">
-                    <h2 class="section-title">
-                        <i class="bi bi-geo-alt-fill"></i> Manage Areas
-                    </h2>
+        <div class="inv-section-header">
+            <h2 class="inv-section-title">
+                <i class="bi bi-geo-alt-fill"></i> Manage Areas
+            </h2>
+            <a asp-action="Create" class="inv-btn inv-btn-primary">
+                <i class="bi bi-plus-circle"></i> Add Area
+            </a>
+        </div>
 
-                    @if (!Model.Any())
+        @if (Model?.Any() == true)
+        {
+            @await Html.PartialAsync("_SearchBar", new ViewDataDictionary(ViewData) {
+                { "InputId",     "areaSearch"      },
+                { "ClearId",     "areaSearchClear" },
+                { "Placeholder", "Search areas..." }
+            })
+
+            <table class="inv-table">
+                <thead>
+                    <tr>
+                        <th style="width:80px;">#</th>
+                        <th>Area Name</th>
+                        <th class="center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="areasTbody">
+                    @{ int row = 1; }
+                    @foreach (var area in Model)
                     {
-                        <div class="empty-state">
-                            <i class="bi bi-geo-alt"></i>
-                            <h5>No Areas Found</h5>
-                            <p>Start by creating your first area.</p>
-                            <a asp-action="Create" class="btn btn-primary">
-                                <i class="bi bi-plus-lg"></i> Add Area
-                            </a>
-                        </div>
+                        <tr>
+                            <td data-label="#">@(row++)</td>
+                            <td data-label="Area Name">
+                                <div style="display:flex;align-items:center;gap:10px;">
+                                    <div style="width:34px;height:34px;border-radius:50%;background:#ebf8ff;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                                        <i class="bi bi-geo-alt" style="color:#3182ce;"></i>
+                                    </div>
+                                    <strong>@area.Name</strong>
+                                </div>
+                            </td>
+                            <td data-label="Actions" class="center">
+                                <div class="inv-actions">
+                                    <a asp-action="Edit" asp-route-id="@area.Id"
+                                       class="inv-btn inv-btn-warning inv-btn-sm" title="Edit">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@area.Id"
+                                       class="inv-btn inv-btn-danger inv-btn-sm" title="Delete">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
                     }
-                    else
-                    {
-                        <div class="search-bar-wrapper">
-                            <div class="search-bar">
-                                <i class="bi bi-search search-bar-icon"></i>
-                                <input type="text"
-                                       id="areaSearch"
-                                       class="search-bar-input"
-                                       placeholder="Search areas..."
-                                       autocomplete="off"
-                                       aria-label="Search areas" />
-                                <button type="button"
-                                        id="areaSearchClear"
-                                        class="search-bar-clear"
-                                        aria-label="Clear search"
-                                        title="Clear">
-                                    <i class="bi bi-x-lg"></i>
-                                </button>
-                            </div>
-                        </div>
+                </tbody>
+            </table>
+        }
+        else
+        {
+            @await Html.PartialAsync("_EmptyState",
+                ("bi-geo-alt", "No areas found", "Add your first area to get started."))
+        }
 
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th class="id-col">#</th>
-                                    <th>Area Name</th>
-                                    <th class="actions-col">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="areasTbody">
-                                @foreach (var area in Model)
-                                {
-                                    <tr>
-                                        <td class="id-col">@area.Id</td>
-                                        <td>
-                                            <div class="area-name-cell">
-                                                <div class="area-icon">
-                                                    <i class="bi bi-geo-alt"></i>
-                                                </div>
-                                                <span class="area-name">@area.Name</span>
-                                            </div>
-                                        </td>
-                                        <td class="actions-col">
-                                            <a asp-action="Edit" asp-route-id="@area.Id" class="btn btn-icon btn-icon-primary" title="Edit">
-                                                <i class="bi bi-pencil"></i>
-                                            </a>
-                                            <a asp-action="Delete" asp-route-id="@area.Id" class="btn btn-icon btn-icon-danger" title="Delete">
-                                                <i class="bi bi-trash"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    }
-                </section>
-            </div>
-        </main>
-    </div>
+    </section>
+</div>
+
+@section Scripts {
     <script src="/js/search.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -347,9 +83,8 @@
                 inputId:       'areaSearch',
                 clearBtnId:    'areaSearchClear',
                 tbodyId:       'areasTbody',
-                columnIndexes: [1]   // Area Name
+                columnIndexes: [1]
             });
         });
     </script>
-</body>
-</html>
+}

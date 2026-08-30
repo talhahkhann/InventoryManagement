@@ -1,8 +1,7 @@
 using InventoryManagement.Data;
 using InventoryManagement.Models;
 using InventoryManagement.Repositories;
-using InventoryManagement.Repositories.Implementations;
-using InventoryManagement.Repositories.Interfaces;
+using InventoryManagement.Repositories.Implementations;using InventoryManagement.Repositories.Interfaces;
 using InventoryManagement.Services;
 using InventoryManagement.Services.Implementations;
 using InventoryManagement.Services.Interfaces;
@@ -65,16 +64,17 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 var app = builder.Build();
 
-// Apply migrations and seed roles
+// Apply migrations and seed roles + default admin
 using (var scope = app.Services.CreateScope())
 {
-    var services = scope.ServiceProvider;
-    var context = services.GetRequiredService<ApplicationDbContext>();
-    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+    var services     = scope.ServiceProvider;
+    var context      = services.GetRequiredService<ApplicationDbContext>();
+    var roleManager  = services.GetRequiredService<RoleManager<IdentityRole>>();
+    var userManager  = services.GetRequiredService<UserManager<ApplicationUser>>();
 
     context.Database.Migrate(); // apply migrations
 
-    await DbInitializer.SeedRoles(roleManager); // seed Admin/Manager/Staff
+    await DbInitializer.SeedAdminUser(userManager, roleManager);
 }
 
 // Configure HTTP request pipeline

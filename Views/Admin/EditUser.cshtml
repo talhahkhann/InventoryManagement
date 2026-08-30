@@ -1,26 +1,27 @@
-@model InventoryManagement.ViewModels.RegisterViewModel
+@model InventoryManagement.ViewModels.EditUserViewModel
 
 @{
-    ViewData["Title"]       = "Create Account";
-    ViewData["HeaderIcon"]  = "bi-person-plus-fill";
-    ViewData["HeaderTitle"] = "CREATE ACCOUNT";
+    ViewData["Title"]       = "Edit User";
+    ViewData["HeaderIcon"]  = "bi-person-gear";
+    ViewData["HeaderTitle"] = "EDIT USER";
     Layout = "~/Views/Shared/_InventoryLayout.cshtml";
 }
 
 <div class="inv-form-area">
-    <form asp-action="Register" method="post">
+    <form asp-action="EditUser" method="post">
         @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="Id" />
 
         <section class="inv-section">
             <div class="inv-section-header">
-                <h2 class="inv-section-title"><i class="bi bi-person-badge"></i> New User Details</h2>
+                <h2 class="inv-section-title"><i class="bi bi-person-lines-fill"></i> Edit User Details</h2>
             </div>
 
             <div class="inv-field-row">
 
                 <div class="inv-field-col">
                     <label asp-for="FullName" class="inv-field-label required">Full Name</label>
-                    <input asp-for="FullName" class="inv-field-input" placeholder="Enter full name" />
+                    <input asp-for="FullName" class="inv-field-input" placeholder="Full Name" />
                     <span asp-validation-for="FullName" class="inv-field-error"></span>
                 </div>
 
@@ -28,12 +29,6 @@
                     <label asp-for="Email" class="inv-field-label required">Email Address</label>
                     <input asp-for="Email" type="email" class="inv-field-input" placeholder="user@example.com" />
                     <span asp-validation-for="Email" class="inv-field-error"></span>
-                </div>
-
-                <div class="inv-field-col">
-                    <label asp-for="Password" class="inv-field-label required">Password</label>
-                    <input asp-for="Password" type="password" class="inv-field-input" placeholder="Min. 4 characters" />
-                    <span asp-validation-for="Password" class="inv-field-error"></span>
                 </div>
 
                 <div class="inv-field-col">
@@ -66,25 +61,27 @@
                 </div>
 
             </div>
+        </section>
 
-            <div class="inv-info-box" style="margin-top:1.2rem;">
-                <i class="bi bi-shield-check" style="margin-right:.4rem;color:var(--inv-primary);"></i>
-                <strong>Role permissions:</strong>
-                <ul style="margin:.5rem 0 0 1.2rem; font-size:.88rem; color:#4a5568;">
-                    <li><strong>Admin</strong> — full access: users, roles, products, customers, invoices, reports, profit, stock alerts</li>
-                    <li><strong>Manager</strong> — products, customers, invoices (view/edit), reports, profit, stock alerts</li>
-                    <li><strong>Staff</strong> — create invoices only</li>
-                </ul>
+        @* Password reset section *@
+        <section class="inv-section" style="margin-top:1.5rem;">
+            <div class="inv-section-header">
+                <h2 class="inv-section-title"><i class="bi bi-key-fill"></i> Reset Password</h2>
+            </div>
+            <div class="inv-field-row">
+                <div class="inv-field-col">
+                    <label asp-for="NewPassword" class="inv-field-label">New Password</label>
+                    <input asp-for="NewPassword" type="password" class="inv-field-input"
+                           placeholder="Leave blank to keep current password" />
+                    <span asp-validation-for="NewPassword" class="inv-field-error"></span>
+                    <span style="font-size:.78rem; color:#718096;">Min. 4 characters. Leave blank to keep the existing password.</span>
+                </div>
             </div>
         </section>
 
         <div class="inv-form-footer">
-            <a asp-controller="Admin" asp-action="Users" class="inv-btn inv-btn-outline">
-                <i class="bi bi-x-circle"></i> Cancel
-            </a>
-            <button type="submit" class="inv-btn inv-btn-primary">
-                <i class="bi bi-person-check-fill"></i> Create Account
-            </button>
+            <a asp-action="Users" class="inv-btn inv-btn-outline"><i class="bi bi-x-circle"></i> Cancel</a>
+            <button type="submit" class="inv-btn inv-btn-primary"><i class="bi bi-save"></i> Save Changes</button>
         </div>
 
     </form>

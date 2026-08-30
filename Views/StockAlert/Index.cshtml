@@ -1,71 +1,75 @@
 @model List<InventoryManagement.ViewModels.StockAlertViewModel>
+
 @{
-    ViewData["Title"] = "Stock Alerts";
+    ViewData["Title"]       = "Stock Alerts";
+    ViewData["HeaderIcon"]  = "bi-exclamation-triangle-fill";
+    ViewData["HeaderTitle"] = "STOCK ALERTS";
+    Layout = "~/Views/Shared/_InventoryLayout.cshtml";
 }
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>
-            <i class="bi bi-exclamation-triangle-fill text-warning"></i> Active Stock Alerts
-        </h2>
-        <a href="@Url.Action("History", "StockAlert")" class="btn btn-outline-secondary">
-            <i class="bi bi-clock-history"></i> View History
-        </a>
-    </div>
+<div class="inv-content">
+    <section class="inv-section">
 
-    @if (!Model.Any())
-    {
-        <div class="alert alert-success">
-            <i class="bi bi-check-circle"></i> No active stock alerts. All inventory levels are healthy!
+        <div class="inv-section-header">
+            <h2 class="inv-section-title">
+                <i class="bi bi-exclamation-triangle-fill"></i> Active Alerts
+            </h2>
+            <a asp-action="History" class="inv-btn inv-btn-outline">
+                <i class="bi bi-clock-history"></i> View History
+            </a>
         </div>
-    }
-    else
-    {
-        @await Html.PartialAsync("_SearchBar", new ViewDataDictionary(ViewData) {
-            { "InputId",     "alertSearch"      },
-            { "ClearId",     "alertSearchClear" },
-            { "Placeholder", "Search by product, severity..." }
-        })
 
-        <div class="table-responsive">
-            <table class="table table-hover">
-                <thead class="table-dark">
+        @if (Model == null || !Model.Any())
+        {
+            @await Html.PartialAsync("_EmptyState",
+                ("bi-check-circle", "All clear — no active alerts", "All inventory levels are above their thresholds."))
+        }
+        else
+        {
+            @await Html.PartialAsync("_SearchBar", new ViewDataDictionary(ViewData) {
+                { "InputId",     "alertSearch"      },
+                { "ClearId",     "alertSearchClear" },
+                { "Placeholder", "Search by product or severity..." }
+            })
+
+            <table class="inv-table">
+                <thead>
                     <tr>
                         <th>Product</th>
                         <th>Current Stock</th>
                         <th>Threshold</th>
                         <th>Severity</th>
-                        <th>Created</th>
-                        <th>Actions</th>
+                        <th>Triggered</th>
+                        <th class="center">Actions</th>
                     </tr>
                 </thead>
                 <tbody id="alertsTbody">
                     @foreach (var alert in Model)
                     {
-                        <tr class="@(alert.Severity == "Critical" ? "table-danger" : "table-warning")">
-                            <td data-label="Product">
-                                <strong>@alert.ProductName</strong>
-                            </td>
+                        <tr>
+                            <td data-label="Product"><strong>@alert.ProductName</strong></td>
                             <td data-label="Current Stock">
-                                <span class="badge @(alert.CurrentStock == 0 ? "bg-danger" : "bg-warning text-dark")">
+                                <span class="inv-badge @(alert.CurrentStock == 0 ? "inv-badge-danger" : "inv-badge-warning")">
                                     @alert.CurrentStock
                                 </span>
                             </td>
-                            <td data-label="Threshold">@alert.Threshold</td>
+                            <td data-label="Threshold" class="inv-cell-muted">@alert.Threshold</td>
                             <td data-label="Severity">
-                                <span class="badge @(alert.Severity == "Critical" ? "bg-danger" : "bg-warning text-dark")">
+                                <span class="@(alert.Severity == "Critical" ? "sa-badge-critical" : "sa-badge-warning")">
                                     <i class="bi bi-exclamation-circle"></i> @alert.Severity
                                 </span>
                             </td>
-                            <td data-label="Created">@alert.CreatedAt.ToString("MMM dd, yyyy HH:mm")</td>
-                            <td data-label="Actions">
-                                <div class="d-flex gap-2">
-                                    <a href="@Url.Action("Edit", "Products", new { id = alert.ProductId })"
-                                       class="btn btn-sm btn-primary">
+                            <td data-label="Triggered" class="inv-cell-muted">
+                                @alert.CreatedAt.ToString("MMM dd, yyyy HH:mm")
+                            </td>
+                            <td data-label="Actions" class="center">
+                                <div class="inv-actions">
+                                    <a asp-controller="Products" asp-action="Edit" asp-route-id="@alert.ProductId"
+                                       class="inv-btn inv-btn-info inv-btn-sm" title="Restock product">
                                         <i class="bi bi-box-arrow-in-up"></i> Restock
                                     </a>
                                     <button onclick="resolveAlertPage(@alert.Id, this)"
-                                            class="btn btn-sm btn-success">
+                                            class="inv-btn inv-btn-success inv-btn-sm" title="Mark resolved">
                                         <i class="bi bi-check-lg"></i> Resolve
                                     </button>
                                 </div>
@@ -74,18 +78,16 @@
                     }
                 </tbody>
             </table>
-        </div>
-    }
+        }
+
+    </section>
 </div>
 
 @section Scripts {
     <script src="/js/search.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // Wire up table resolve buttons (CSRF-safe via StockAlertService)
             StockAlertService.initPage();
-
-            // Live search on Product + Severity columns
             TableSearchService.init({
                 inputId:       'alertSearch',
                 clearBtnId:    'alertSearchClear',

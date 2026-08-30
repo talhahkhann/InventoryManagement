@@ -7,19 +7,23 @@ namespace InventoryManagement.Models
     {
         [Required]
         [MaxLength(100)]
-        public string FullName { get; set; }
+        public string FullName { get; set; } = string.Empty;
+
         [MaxLength(250)]
-        public string Address { get; set; }
+        public string? Address { get; set; }
+
         [Phone]
-        override
-        public string PhoneNumber { get; set; }
+        public override string? PhoneNumber { get; set; }
+
         [EmailAddress]
         [Required]
-        public override string Email { get; set; }
+        public override string? Email { get; set; }
+
         [MaxLength(50)]
-        public string Country { get; set; }
-        //Optional extra fields
+        public string? Country { get; set; }
+
         public DateTime? DateoBirth { get; set; }
+
         public string? ProfilePictureUrl { get; set; }
     }
 }
