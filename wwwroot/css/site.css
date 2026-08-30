@@ -1865,3 +1865,192 @@ mark.search-highlight {
     box-shadow: 0 4px 8px rgba(56,161,105,0.3);
     color: white;
 }
+
+
+/* =============================================
+   INVOICE TABLE — alignment & autocomplete fix
+   ============================================= */
+
+/* Lock table layout so column widths never shift */
+.inv-invoice-table {
+    table-layout: fixed;
+    width: 100%;
+}
+
+/* All cells: top-aligned, no overflow clipping */
+.inv-invoice-table td,
+.inv-invoice-table th {
+    vertical-align: top;
+    overflow: visible;   /* critical — lets autocomplete dropdown escape the cell */
+    padding: 10px 10px;
+}
+
+/* Product cell — takes remaining width, overflow visible for dropdown */
+.inv-inv-cell-product {
+    overflow: visible !important;
+    position: relative;
+}
+
+/* Number / delete cells — fixed narrow */
+.inv-inv-cell-num {
+    width: 46px;
+    text-align: center;
+    vertical-align: middle !important;
+    padding-top: 12px !important;
+}
+
+/* Price / Qty / Total cells — fixed width, inputs fill cell */
+.inv-inv-cell-fixed {
+    vertical-align: top;
+}
+
+/* All inputs inside invoice table fill their cell */
+.inv-invoice-table .inv-field-input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 9px 10px;
+    font-size: 0.875rem;
+}
+
+/* Read-only total cell */
+.inv-total-readonly {
+    background: #f7fafc !important;
+    color: #38a169;
+    font-weight: 700;
+}
+
+/* Price-note label — sits below the price input, no height impact */
+.price-note {
+    display: block;
+    font-size: 0.72rem;
+    margin-top: 3px;
+    min-height: 14px;   /* reserve space so row height stays stable */
+    line-height: 1;
+}
+
+/* ── Autocomplete dropdown fix ───────────────────────────────────────
+   The wrapper must be position:relative so the dropdown is
+   absolutely positioned relative to it, NOT the table cell.
+   overflow:visible on the wrapper + cell lets the list escape.        */
+.autocomplete {
+    position: relative !important;
+    display: block;
+    width: 100%;
+}
+
+.autocomplete-items {
+    position: absolute;
+    top: 100%;           /* flush below the input */
+    left: 0;
+    right: 0;
+    z-index: 9999;       /* above everything */
+    background: #fff;
+    border: 1px solid #cbd5e0;
+    border-top: none;
+    border-radius: 0 0 6px 6px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+    max-height: 220px;
+    overflow-y: auto;
+    /* Detach from table flow entirely */
+    width: max-content;
+    min-width: 100%;
+}
+
+.autocomplete-items div {
+    padding: 9px 14px;
+    cursor: pointer;
+    border-bottom: 1px solid #edf2f7;
+    font-size: 0.875rem;
+    white-space: nowrap;
+}
+
+.autocomplete-items div:last-child { border-bottom: none; }
+
+.autocomplete-items div:hover,
+.autocomplete-items div.highlight {
+    background: #ebf8ff;
+    color: #2b6cb0;
+}
+
+/* Grand total row */
+.grand-total-row td {
+    border-top: 2px solid #e2e8f0;
+    padding: 14px 10px !important;
+    vertical-align: middle !important;
+}
+
+.grand-total-value {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #38a169;
+}
+
+/* =============================================
+   GLOBAL FORM & TABLE ALIGNMENT FIXES
+   ============================================= */
+
+/* inv-field-row: consistent vertical alignment for all form rows */
+.inv-field-row {
+    align-items: flex-start;   /* top-align labels + inputs of different heights */
+}
+
+/* inv-field-col: make sure error spans don't collapse height */
+.inv-field-col .inv-field-error:empty {
+    display: block;
+    min-height: 1rem;
+}
+
+/* inv-section-title: always vertically centered with its actions button */
+.inv-section-header {
+    align-items: center;
+}
+
+/* inv-table: consistent cell padding and vertical alignment */
+.inv-table td {
+    vertical-align: middle;
+}
+
+/* inv-actions: always centered vertically */
+.inv-actions {
+    align-items: center;
+}
+
+/* Responsive: invoice table stacks gracefully */
+@media (max-width: 768px) {
+    .inv-invoice-table,
+    .inv-invoice-table thead,
+    .inv-invoice-table tbody,
+    .inv-invoice-table tr,
+    .inv-invoice-table td {
+        display: block;
+        width: 100%;
+    }
+
+    .inv-invoice-table thead {
+        display: none;
+    }
+
+    .inv-invoice-table tr {
+        margin-bottom: 16px;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 12px;
+        background: #fff;
+    }
+
+    .inv-invoice-table td {
+        padding: 8px 0;
+        border: none;
+    }
+
+    .inv-inv-cell-num {
+        text-align: left;
+        width: 100%;
+        padding-top: 4px !important;
+    }
+
+    .autocomplete-items {
+        width: 100%;
+        min-width: unset;
+    }
+}
