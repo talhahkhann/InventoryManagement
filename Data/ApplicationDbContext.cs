@@ -24,6 +24,9 @@ namespace InventoryManagement.Data
         public DbSet<PurchaseOrder>      PurchaseOrders      { get; set; }
         public DbSet<PurchaseOrderItem>  PurchaseOrderItems  { get; set; }
 
+        // ── Audit Log ─────────────────────────────────────────────────
+        public DbSet<AuditLog>           AuditLogs           { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);

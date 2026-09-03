@@ -8,8 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace InventoryManagement.Controllers
 {
-    // All authenticated roles can access invoices.
-    // (Admin, Manager, Staff — Staff can only create invoices.)
     [Authorize]
     public class InvoiceController : Controller
     {
@@ -19,6 +17,7 @@ namespace InventoryManagement.Controllers
         private readonly IAreaService _areaService;
         private readonly ICustomerProductPriceService _customerProductService;
         private readonly IProfitService _profitService;
+        private readonly IAuditLogService _audit;
         private readonly ILogger<InvoiceController> _logger;
 
         public InvoiceController(
@@ -27,6 +26,7 @@ namespace InventoryManagement.Controllers
             IProductService productService,
             ICustomerProductPriceService customerProductPriceService,
             IProfitService profitService,
+            IAuditLogService auditLogService,
             ILogger<InvoiceController> logger,
             IAreaService areaService)
         {
@@ -37,7 +37,12 @@ namespace InventoryManagement.Controllers
             _logger                = logger;
             _customerProductService= customerProductPriceService;
             _profitService         = profitService;
+            _audit                 = auditLogService;
         }
+
+        private string CurrentUser => User.Identity?.Name ?? "unknown";
+        private string CurrentRole => User.IsInRole("Admin") ? "Admin"
+                                    : User.IsInRole("Manager") ? "Manager" : "Staff";
 
         [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Index()
