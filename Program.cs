@@ -1,7 +1,8 @@
 using InventoryManagement.Data;
 using InventoryManagement.Models;
 using InventoryManagement.Repositories;
-using InventoryManagement.Repositories.Implementations;using InventoryManagement.Repositories.Interfaces;
+using InventoryManagement.Repositories.Implementations;
+using InventoryManagement.Repositories.Interfaces;
 using InventoryManagement.Services;
 using InventoryManagement.Services.Implementations;
 using InventoryManagement.Services.Interfaces;
@@ -51,6 +52,14 @@ builder.Services.AddScoped<InventoryManagement.Repositories.Interfaces.IProfitRe
                            InventoryManagement.Repositories.Implementations.ProfitRepository>();
 builder.Services.AddScoped<InventoryManagement.Services.Interfaces.IProfitService,
                            InventoryManagement.Services.Implementations.ProfitService>();
+
+// Purchase Order module
+builder.Services.AddScoped<ISupplierRepository, SupplierRepository>();
+builder.Services.AddScoped<InventoryManagement.Services.Interfaces.ISupplierService,
+                           InventoryManagement.Services.Implementations.SupplierService>();
+builder.Services.AddScoped<IPurchaseOrderRepository, PurchaseOrderRepository>();
+builder.Services.AddScoped<InventoryManagement.Services.Interfaces.IPurchaseOrderService,
+                           InventoryManagement.Services.Implementations.PurchaseOrderService>();
 
 
 

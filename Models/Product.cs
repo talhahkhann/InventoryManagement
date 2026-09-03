@@ -21,6 +21,14 @@ namespace InventoryManagement.Models
         [Range(0, 100000)]
         public decimal CostPrice { get; set; }      // Purchase / cost price (for profit calculation)
 
+        /// <summary>
+        /// When stock falls below this number, a StockAlert is automatically created.
+        /// Default 10 — Admin/Manager can adjust per product.
+        /// </summary>
+        [Range(0, 100000)]
+        [Display(Name = "Stock Alert Threshold")]
+        public int StockThreshold { get; set; } = 10;
+
         // Foreign Key to Category
         [Required]
         public int CategoryId { get; set; }

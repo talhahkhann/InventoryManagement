@@ -1,0 +1,101 @@
+@model IEnumerable<InventoryManagement.ViewModels.SupplierViewModel>
+
+@{
+    ViewData["Title"]       = "Suppliers";
+    ViewData["HeaderIcon"]  = "bi-truck";
+    ViewData["HeaderTitle"] = "SUPPLIERS";
+    Layout = "~/Views/Shared/_InventoryLayout.cshtml";
+}
+
+<div class="inv-content">
+    <section class="inv-section">
+
+        @if (ViewBag.Success is string ok)
+        {
+            <div class="inv-alert inv-alert-success"><i class="bi bi-check-circle-fill"></i> @ok</div>
+        }
+        @if (ViewBag.Error is string err)
+        {
+            <div class="inv-alert inv-alert-danger"><i class="bi bi-exclamation-triangle-fill"></i> @err</div>
+        }
+
+        <div class="inv-section-header">
+            <h2 class="inv-section-title"><i class="bi bi-truck"></i> Supplier Directory</h2>
+            <a asp-action="Create" class="inv-btn inv-btn-primary">
+                <i class="bi bi-plus-circle"></i> Add Supplier
+            </a>
+        </div>
+
+        @if (Model?.Any() == true)
+        {
+            @await Html.PartialAsync("_SearchBar", new ViewDataDictionary(ViewData) {
+                { "InputId",     "supplierSearch"      },
+                { "ClearId",     "supplierSearchClear" },
+                { "Placeholder", "Search by name, city, country..." }
+            })
+
+            <table class="inv-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Contact</th>
+                        <th>Phone</th>
+                        <th>City</th>
+                        <th>POs</th>
+                        <th>Status</th>
+                        <th class="center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="suppliersTbody">
+                    @{ int row = 1; }
+                    @foreach (var s in Model)
+                    {
+                        <tr>
+                            <td data-label="#">@(row++)</td>
+                            <td data-label="Name"><strong>@s.Name</strong></td>
+                            <td data-label="Contact" class="inv-cell-muted">@(s.ContactPerson ?? "—")</td>
+                            <td data-label="Phone"   class="inv-cell-muted">@(s.Phone ?? "—")</td>
+                            <td data-label="City"    class="inv-cell-muted">@(s.City ?? "—")</td>
+                            <td data-label="POs"     class="inv-cell-qty">@s.PurchaseOrderCount</td>
+                            <td data-label="Status">
+                                @if (s.IsActive)
+                                {
+                                    <span class="inv-badge inv-badge-success"><i class="bi bi-check-circle"></i> Active</span>
+                                }
+                                else
+                                {
+                                    <span class="inv-badge inv-badge-muted"><i class="bi bi-pause-circle"></i> Inactive</span>
+                                }
+                            </td>
+                            <td data-label="Actions" class="center">
+                                <div class="inv-actions">
+                                    <a asp-action="Edit"   asp-route-id="@s.Id" class="inv-btn inv-btn-warning inv-btn-sm" title="Edit"><i class="bi bi-pencil"></i></a>
+                                    <a asp-action="Delete" asp-route-id="@s.Id" class="inv-btn inv-btn-danger  inv-btn-sm" title="Delete"><i class="bi bi-trash"></i></a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            @await Html.PartialAsync("_EmptyState",
+                ("bi-truck", "No suppliers yet", "Add your first supplier to start creating purchase orders."))
+        }
+
+    </section>
+</div>
+
+@section Scripts {
+    <script src="/js/search.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            TableSearchService.init({
+                inputId: 'supplierSearch', clearBtnId: 'supplierSearchClear',
+                tbodyId: 'suppliersTbody', columnIndexes: [1, 2, 4]
+            });
+        });
+    </script>
+}

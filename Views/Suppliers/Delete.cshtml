@@ -1,0 +1,47 @@
+@model InventoryManagement.ViewModels.SupplierViewModel
+
+@{
+	ViewData["Title"]       = "Delete Supplier";
+	ViewData["HeaderIcon"]  = "bi-truck";
+	ViewData["HeaderTitle"] = "DELETE SUPPLIER";
+	Layout = "~/Views/Shared/_InventoryLayout.cshtml";
+}
+
+<div class="inv-content">
+	<div class="inv-confirm-card" style="max-width:540px;">
+
+		<i class="bi bi-exclamation-triangle-fill inv-confirm-icon"></i>
+		<h2 class="inv-confirm-title">Delete "@Model.Name"?</h2>
+		<p class="inv-confirm-text">
+			This will permanently remove the supplier. This action cannot be undone.
+			@if (Model.PurchaseOrderCount > 0)
+			{
+				<br />
+				<strong class="text-danger">Warning:</strong>
+				<text>
+					This supplier has @Model.PurchaseOrderCount purchase order(s) — deletion will be blocked.
+				</text>
+			}
+		</p>
+
+		<div class="inv-confirm-meta">
+			<dl>
+				<dt>Contact</dt><dd>@(Model.ContactPerson ?? "—")</dd>
+				<dt>Phone</dt> <dd>@(Model.Phone ?? "—")</dd>
+				<dt>City</dt>  <dd>@(Model.City ?? "—")</dd>
+				<dt>Orders</dt><dd>@Model.PurchaseOrderCount</dd>
+			</dl>
+		</div>
+
+		<div class="inv-confirm-actions">
+			<a asp-action="Index" class="inv-btn inv-btn-outline"><i class="bi bi-x-circle"></i> Cancel</a>
+			<form asp-action="Delete" asp-route-id="@Model.Id" method="post" style="display:inline;">
+				@Html.AntiForgeryToken()
+				<button type="submit" class="inv-btn inv-btn-danger">
+					<i class="bi bi-trash"></i> Delete Supplier
+				</button>
+			</form>
+		</div>
+
+	</div>
+</div>

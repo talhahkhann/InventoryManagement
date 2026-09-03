@@ -69,6 +69,10 @@
                             <td data-label="Country" class="inv-cell-muted">@customer.Country</td>
                             <td data-label="Actions" class="center">
                                 <div class="inv-actions">
+                                    <a asp-action="History" asp-route-id="@customer.Id"
+                                       class="inv-btn inv-btn-info inv-btn-sm" title="Purchase History">
+                                        <i class="bi bi-clock-history"></i>
+                                    </a>
                                     <a asp-action="Edit" asp-route-id="@customer.Id"
                                        class="inv-btn inv-btn-warning inv-btn-sm" title="Edit">
                                         <i class="bi bi-pencil"></i>

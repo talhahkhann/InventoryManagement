@@ -1,244 +1,189 @@
-@model List<InventoryManagement.ViewModels.CategorySalesReportViewModel>
+@model InventoryManagement.ViewModels.SalesReportPageViewModel<InventoryManagement.ViewModels.CategorySalesReportViewModel>
 
 @{
-    ViewData["Title"] = "Sales Per Category — Professional Invoice";
-    Layout = null;
+    ViewData["Title"]       = "Sales Per Category";
+    ViewData["HeaderIcon"]  = "bi-tags-fill";
+    ViewData["HeaderTitle"] = "REPORTS — SALES PER CATEGORY";
+    Layout = "~/Views/Shared/_InventoryLayout.cshtml";
+
+    var from = Model.Filter.From?.ToString("yyyy-MM-dd") ?? "";
+    var to   = Model.Filter.To?.ToString("yyyy-MM-dd")   ?? "";
+    var grandTotal = Model.Data.Sum(r => r.TotalRevenue);
+    var grandQty   = Model.Data.Sum(r => r.TotalQuantitySold);
 }
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"]</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            font-size: 0.875rem;
-        }
-        body {
-            background: #f8f9fa;
-            color: #212529;
-            height: 100vh;
-            width: 100vw;
-            overflow: hidden;
-        }
-        .app-root {
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            width: 100vw;
-        }
-        .header {
-            background: linear-gradient(135deg, #1a3a6c, #2c5282);
-            padding: 12px 20px;
-            font-weight: 600;
-            font-size: 1.25rem;
-            color: white;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .header-logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .header-title {
-            font-weight: 700;
-            letter-spacing: -0.5px;
-        }
-        .main-content {
-            display: flex;
-            flex: 1;
-            overflow: hidden;
-            padding: 20px;
-            gap: 20px;
-        }
-        .report-area {
-            flex: 1;
-            background: white;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            padding: 24px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-        }
-        .section {
-            background: #ffffff;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
-        }
-        .section-title {
-            font-size: 1.125rem;
-            margin-bottom: 16px;
-            font-weight: 700;
-            color: #2c5282;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #e2e8f0;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .btn {
-            padding: 10px 20px;
-            border-radius: 6px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            text-align: center;
-            border: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: all 0.2s ease;
-            min-width: 100px;
-        }
-        .btn-outline {
-            background: transparent;
-            color: #4a5568;
-            border: 1px solid #cbd5e0;
-        }
-        .btn-outline:hover {
-            background: #f8fafc;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.08);
-        }
-        .footer {
-            padding: 20px 0 0;
-            background: white;
-            display: flex;
-            justify-content: flex-end;
-            gap: 16px;
-            margin-top: auto;
-        }
+<div class="inv-content">
 
-        /* Table Styles */
-        .report-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 16px;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-        .report-table thead {
-            background: #2c5282;
-            color: white;
-        }
-        .report-table th {
-            padding: 14px 12px;
-            text-align: center;
-            font-weight: 600;
-        }
-        .report-table td {
-            padding: 12px;
-            border-bottom: 1px solid #edf2f7;
-            vertical-align: middle;
-            text-align: center;
-        }
-        .report-table tr:last-child td {
-            border-bottom: none;
-        }
-
-        @@media (max-width: 768px) {
-            .main-content { padding: 16px; }
-            .report-table thead { display: none; }
-            .report-table tr {
-                display: block;
-                margin-bottom: 16px;
-                border: 1px solid #e2e8f0;
-                border-radius: 8px;
-                padding: 16px;
-                background: white;
-            }
-            .report-table td {
-                display: block;
-                text-align: right;
-                padding-left: 50%;
-                position: relative;
-                border: none;
-            }
-            .report-table td:before {
-                content: attr(data-label) ": ";
-                position: absolute;
-                left: 16px;
-                width: 45%;
-                font-weight: 600;
-                text-align: left;
-                color: #4a5568;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="app-root">
-        <header class="header">
-            <div class="header-logo">
-                <i class="bi bi-bar-chart-line" style="font-size: 1.8rem;"></i>
-                <span class="header-title">SALES PER CATEGORY</span>
-            </div>
-        </header>
-
-        <main class="main-content">
-            <div class="report-area">
-                <section class="section">
-                    <h2 class="section-title">
-                        <i class="bi bi-receipt"></i> Category Sales Summary
-                    </h2>
-                    <table class="report-table">
-                        <thead>
-                            <tr>
-                                <th>Category Name</th>
-                                <th>Total Quantity Sold</th>
-                                <th>Total Revenue</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (Model != null && Model.Any())
-                            {
-                                foreach (var item in Model)
-                                {
-                                    <tr>
-                                        <td data-label="Category">@item.CategoryName</td>
-                                        <td data-label="Qty Sold">@item.TotalQuantitySold</td>
-                                        <td data-label="Revenue">PKR @item.TotalRevenue.ToString("N2")</td>
-                                    </tr>
-                                }
-                            }
-                            else
-                            {
-                                <tr>
-                                    <td colspan="3" style="text-align: center; padding: 20px; color: #718096;">
-                                        No sales data available.
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </section>
-
-                <footer class="footer">
-                    <a href="@Url.Action("Index", "Home")" class="btn btn-outline">
-                        <i class="bi bi-arrow-left"></i> Back to Dashboard
-                    </a>
-                    <button type="button" onclick="printReport()" class="btn btn-outline">
-                        <i class="bi bi-printer"></i> Print Report
-                    </button>
-                </footer>
-            </div>
-        </main>
+    @* ── Report Nav Tabs ─────────────────────────────────────────────── *@
+    <div class="rpt-tabs">
+        <a asp-action="SalesPerProduct"  asp-route-from="@from" asp-route-to="@to"
+           class="rpt-tab"><i class="bi bi-box-seam"></i> By Product</a>
+        <a asp-action="SalesPerCategory" asp-route-from="@from" asp-route-to="@to"
+           class="rpt-tab active"><i class="bi bi-tags"></i> By Category</a>
+        <a asp-action="TopProducts"      asp-route-from="@from" asp-route-to="@to"
+           class="rpt-tab"><i class="bi bi-trophy"></i> Top Products</a>
+        <a asp-action="TopCustomers"     asp-route-from="@from" asp-route-to="@to"
+           class="rpt-tab"><i class="bi bi-people-fill"></i> Top Customers</a>
     </div>
-    <script src="/js/reports.js"></script>
-</body>
-</html>
+
+    <section class="inv-section">
+
+        @* ── Filter bar ──────────────────────────────────────────────── *@
+        <form method="get" asp-action="SalesPerCategory" class="rpt-filter-bar">
+            <span class="rpt-filter-label"><i class="bi bi-funnel"></i> Date Range</span>
+
+            <div class="rpt-filter-group">
+                <label class="rpt-filter-sublabel">From</label>
+                <input type="date" name="from" value="@from" class="inv-field-input rpt-date-input" />
+            </div>
+            <div class="rpt-filter-group">
+                <label class="rpt-filter-sublabel">To</label>
+                <input type="date" name="to" value="@to" class="inv-field-input rpt-date-input" />
+            </div>
+
+            @if (Model.AvailableYears.Any())
+            {
+                <div class="rpt-year-pills">
+                    @foreach (var yr in Model.AvailableYears.Take(5))
+                    {
+                        <a asp-action="SalesPerCategory"
+                           asp-route-from="@($"{yr}-01-01")"
+                           asp-route-to="@($"{yr}-12-31")"
+                           class="rpt-year-pill @(Model.Filter.From?.Year == yr && Model.Filter.To?.Year == yr ? "active" : "")">
+                            @yr
+                        </a>
+                    }
+                    @if (from != "" || to != "")
+                    {
+                        <a asp-action="SalesPerCategory" class="rpt-year-pill rpt-year-clear">
+                            <i class="bi bi-x"></i> All time
+                        </a>
+                    }
+                </div>
+            }
+
+            <button type="submit" class="inv-btn inv-btn-primary inv-btn-sm">
+                <i class="bi bi-search"></i> Apply
+            </button>
+        </form>
+
+        @* ── Section header ───────────────────────────────────────────── *@
+        <div class="inv-section-header" style="margin-top:16px;">
+            <h2 class="inv-section-title">
+                <i class="bi bi-tags-fill"></i> Category Sales
+                @if (Model.Filter.HasFilter)
+                {
+                    <span class="rpt-date-badge">
+                        @Model.Filter.EffectiveFrom.ToString("dd MMM yyyy") — @Model.Filter.EffectiveTo.ToString("dd MMM yyyy")
+                    </span>
+                }
+            </h2>
+            @if (Model.Data.Any())
+            {
+                <a asp-action="ExportCsv"
+                   asp-route-report="SalesPerCategory"
+                   asp-route-from="@from" asp-route-to="@to"
+                   class="rpt-export-btn">
+                    <i class="bi bi-download"></i> Export CSV
+                </a>
+            }
+        </div>
+
+        @* ── Summary KPIs ─────────────────────────────────────────────── *@
+        @if (Model.Data.Any())
+        {
+            <div class="rpt-kpi-row">
+                <div class="rpt-kpi-card">
+                    <div class="rpt-kpi-val">@Model.Data.Count</div>
+                    <div class="rpt-kpi-lbl">Categories</div>
+                </div>
+                <div class="rpt-kpi-card">
+                    <div class="rpt-kpi-val">@grandQty.ToString("N0")</div>
+                    <div class="rpt-kpi-lbl">Total Units</div>
+                </div>
+                <div class="rpt-kpi-card rpt-kpi-highlight">
+                    <div class="rpt-kpi-val">PKR @grandTotal.ToString("N0")</div>
+                    <div class="rpt-kpi-lbl">Total Revenue</div>
+                </div>
+            </div>
+        }
+
+        @* ── Table ───────────────────────────────────────────────────────  *@
+        @if (Model.Data.Any())
+        {
+            @await Html.PartialAsync("_SearchBar", new ViewDataDictionary(ViewData) {
+                { "InputId",     "rptSearch"      },
+                { "ClearId",     "rptSearchClear" },
+                { "Placeholder", "Search by category..." }
+            })
+
+            <table class="inv-table">
+                <thead>
+                    <tr>
+                        <th style="width:54px;">#</th>
+                        <th>Category</th>
+                        <th style="width:140px;">Products Sold</th>
+                        <th style="width:120px;">Units Sold</th>
+                        <th style="width:160px;">Revenue (PKR)</th>
+                        <th style="width:120px;">Share %</th>
+                    </tr>
+                </thead>
+                <tbody id="rptTbody">
+                    @foreach (var row in Model.Data)
+                    {
+                        decimal share = grandTotal > 0 ? row.TotalRevenue / grandTotal * 100m : 0m;
+                        <tr>
+                            <td data-label="#" class="rpt-rank">
+                                @if (row.Rank <= 3)
+                                {
+                                    var medal = row.Rank == 1 ? "🥇" : row.Rank == 2 ? "🥈" : "🥉";
+                                    <span>@medal</span>
+                                }
+                                else { <span class="inv-cell-muted">@row.Rank</span> }
+                            </td>
+                            <td data-label="Category"><strong>@row.CategoryName</strong></td>
+                            <td data-label="Products"  class="inv-cell-qty">@row.ProductCount</td>
+                            <td data-label="Units Sold" class="inv-cell-qty">@row.TotalQuantitySold.ToString("N0")</td>
+                            <td data-label="Revenue"    class="inv-cell-price">@row.TotalRevenue.ToString("N2")</td>
+                            <td data-label="Share %">
+                                <div class="rpt-share-bar">
+                                    <div class="rpt-share-fill" style="width:@share.ToString("F1")%"></div>
+                                </div>
+                                <span class="inv-cell-muted" style="font-size:.78rem;">@share.ToString("F1")%</span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr class="rpt-total-row">
+                        <td colspan="3" style="text-align:right;font-weight:700;padding:12px 14px;">TOTAL</td>
+                        <td class="inv-cell-qty" style="padding:12px 14px;">@grandQty.ToString("N0")</td>
+                        <td class="inv-cell-price" style="font-weight:800;padding:12px 14px;">@grandTotal.ToString("N2")</td>
+                        <td style="padding:12px 14px;">100%</td>
+                    </tr>
+                </tfoot>
+            </table>
+        }
+        else
+        {
+            @await Html.PartialAsync("_EmptyState",
+                ("bi-tags", "No sales data", "No invoices found for the selected date range."))
+        }
+
+    </section>
+</div>
+
+@section Scripts {
+    <script src="/js/search.js"></script>
+    @if (Model.Data.Any())
+    {
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                TableSearchService.init({
+                    inputId: 'rptSearch', clearBtnId: 'rptSearchClear',
+                    tbodyId: 'rptTbody', columnIndexes: [1]
+                });
+            });
+        </script>
+    }
+}

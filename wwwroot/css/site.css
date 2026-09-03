@@ -2054,3 +2054,413 @@ mark.search-highlight {
         min-width: unset;
     }
 }
+
+
+/* Low stock row highlight in Products list */
+.inv-stock-low {
+    color: #c05621 !important;
+    font-weight: 700;
+}
+
+
+/* =============================================
+   CUSTOMER HISTORY PAGE
+   ============================================= */
+
+/* Top section: profile card (left) + KPI grid (right) */
+.cust-history-top {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 20px;
+    align-items: start;
+}
+
+/* Profile card */
+.cust-profile-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0;
+    padding: 28px 20px !important;
+}
+
+.cust-avatar {
+    font-size: 3.8rem;
+    color: #a0aec0;
+    margin-bottom: 12px;
+    line-height: 1;
+}
+
+.cust-profile-name {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #1a202c;
+    margin-bottom: 14px;
+}
+
+.cust-profile-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    font-size: .83rem;
+    color: #4a5568;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.cust-profile-meta div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+}
+
+.cust-profile-meta i {
+    color: #a0aec0;
+    font-size: .9rem;
+    flex-shrink: 0;
+}
+
+.cust-profile-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* KPI cards grid — 3 columns on wide, 2 on medium */
+.cust-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    align-content: start;
+}
+
+.cust-kpi-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 16px 18px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.07);
+    border-left: 4px solid transparent;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    transition: transform .18s, box-shadow .18s;
+}
+
+.cust-kpi-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 14px rgba(0,0,0,.1);
+}
+
+.cust-kpi-blue   { border-left-color: #3182ce; }
+.cust-kpi-green  { border-left-color: #38a169; }
+.cust-kpi-purple { border-left-color: #805ad5; }
+.cust-kpi-orange { border-left-color: #dd6b20; }
+.cust-kpi-teal   { border-left-color: #319795; }
+.cust-kpi-slate  { border-left-color: #4a5568; }
+
+.cust-kpi-icon {
+    font-size: 1.25rem;
+    margin-bottom: 4px;
+}
+
+.cust-kpi-blue   .cust-kpi-icon { color: #3182ce; }
+.cust-kpi-green  .cust-kpi-icon { color: #38a169; }
+.cust-kpi-purple .cust-kpi-icon { color: #805ad5; }
+.cust-kpi-orange .cust-kpi-icon { color: #dd6b20; }
+.cust-kpi-teal   .cust-kpi-icon { color: #319795; }
+.cust-kpi-slate  .cust-kpi-icon { color: #4a5568; }
+
+.cust-kpi-value {
+    font-size: 1.55rem;
+    font-weight: 800;
+    color: #1a202c;
+    line-height: 1.1;
+}
+
+.cust-kpi-label {
+    font-size: .72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: #718096;
+    display: flex;
+    align-items: center;
+}
+
+/* Responsive */
+@media (max-width: 1000px) {
+    .cust-history-top {
+        grid-template-columns: 1fr;
+    }
+    .cust-profile-card {
+        flex-direction: row;
+        flex-wrap: wrap;
+        text-align: left;
+        gap: 16px;
+        align-items: flex-start;
+    }
+    .cust-avatar { font-size: 2.8rem; margin-bottom: 0; }
+    .cust-profile-meta { align-items: flex-start; }
+    .cust-profile-meta div { justify-content: flex-start; }
+}
+
+@media (max-width: 700px) {
+    .cust-kpi-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+
+/* =============================================
+   REPORTS MODULE  — shared styles for all 4 report views
+   ============================================= */
+
+/* ── Report nav tabs (above the section card) ── */
+.rpt-tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 0;
+    flex-wrap: wrap;
+}
+
+.rpt-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 18px;
+    border-radius: 8px 8px 0 0;
+    font-size: .83rem;
+    font-weight: 600;
+    color: #4a5568;
+    text-decoration: none;
+    background: #edf2f7;
+    border: 1px solid #e2e8f0;
+    border-bottom: none;
+    transition: background .15s, color .15s;
+    position: relative;
+    bottom: -1px;
+}
+
+.rpt-tab:hover {
+    background: #e2e8f0;
+    color: #2c5282;
+    text-decoration: none;
+}
+
+.rpt-tab.active {
+    background: #fff;
+    color: #2c5282;
+    border-color: #e2e8f0;
+    border-bottom-color: #fff;
+    font-weight: 700;
+}
+
+/* ── Filter bar ── */
+.rpt-filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    background: #f7fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 4px;
+}
+
+.rpt-filter-label {
+    font-size: .8rem;
+    font-weight: 700;
+    color: #2c5282;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+}
+
+.rpt-filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.rpt-filter-sublabel {
+    font-size: .68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: #718096;
+}
+
+.rpt-date-input {
+    padding: 7px 10px !important;
+    font-size: .83rem !important;
+    width: 148px !important;
+}
+
+/* Quick year pill shortcuts */
+.rpt-year-pills {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.rpt-year-pill {
+    padding: 5px 12px;
+    border-radius: 12px;
+    font-size: .78rem;
+    font-weight: 700;
+    color: #4a5568;
+    background: #edf2f7;
+    border: 1px solid #e2e8f0;
+    text-decoration: none;
+    transition: background .15s, color .15s;
+    white-space: nowrap;
+}
+
+.rpt-year-pill:hover {
+    background: #3182ce;
+    color: #fff;
+    border-color: #3182ce;
+    text-decoration: none;
+}
+
+.rpt-year-pill.active {
+    background: #2c5282;
+    color: #fff;
+    border-color: #2c5282;
+}
+
+.rpt-year-clear {
+    background: #fff5f5;
+    color: #c53030;
+    border-color: #fed7d7;
+}
+
+.rpt-year-clear:hover {
+    background: #e53e3e;
+    color: #fff;
+    border-color: #e53e3e;
+}
+
+/* Date range badge beside section title */
+.rpt-date-badge {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 12px;
+    padding: 3px 10px;
+    border-radius: 10px;
+    background: #ebf8ff;
+    color: #2b6cb0;
+    font-size: .75rem;
+    font-weight: 600;
+    border: 1px solid #bee3f8;
+}
+
+/* Export button */
+.rpt-export-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border-radius: 6px;
+    font-size: .8rem;
+    font-weight: 600;
+    color: #4a5568;
+    background: #fff;
+    border: 1px solid #cbd5e0;
+    text-decoration: none;
+    transition: background .15s, border-color .15s, color .15s;
+    white-space: nowrap;
+}
+
+.rpt-export-btn:hover {
+    background: #f7fafc;
+    border-color: #38a169;
+    color: #276749;
+    text-decoration: none;
+}
+
+/* ── KPI summary row ── */
+.rpt-kpi-row {
+    display: flex;
+    gap: 14px;
+    margin: 12px 0 18px;
+    flex-wrap: wrap;
+}
+
+.rpt-kpi-card {
+    flex: 1;
+    min-width: 150px;
+    background: #f7fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 14px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.rpt-kpi-card.rpt-kpi-highlight {
+    background: #f0fff4;
+    border-color: #9ae6b4;
+}
+
+.rpt-kpi-val {
+    font-size: 1.45rem;
+    font-weight: 800;
+    color: #1a202c;
+    line-height: 1.1;
+}
+
+.rpt-kpi-lbl {
+    font-size: .72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: #718096;
+}
+
+/* ── Rank cell ── */
+.rpt-rank {
+    text-align: center !important;
+    font-size: 1rem;
+    vertical-align: middle !important;
+}
+
+/* ── Grand total footer row ── */
+.rpt-total-row td {
+    border-top: 2px solid #e2e8f0 !important;
+    background: #f7fafc;
+}
+
+/* ── Category share bar ── */
+.rpt-share-bar {
+    height: 6px;
+    background: #edf2f7;
+    border-radius: 3px;
+    margin-bottom: 3px;
+    overflow: hidden;
+}
+
+.rpt-share-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #3182ce, #63b3ed);
+    border-radius: 3px;
+    transition: width .3s ease;
+    min-width: 1px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .rpt-tabs { gap: 2px; }
+    .rpt-tab  { padding: 7px 12px; font-size: .78rem; }
+    .rpt-filter-bar { gap: 8px; }
+    .rpt-date-input { width: 130px !important; }
+    .rpt-kpi-row { gap: 10px; }
+    .rpt-kpi-val { font-size: 1.15rem; }
+}

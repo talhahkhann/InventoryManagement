@@ -1,0 +1,183 @@
+@model InventoryManagement.ViewModels.CustomerHistoryViewModel
+
+@{
+    ViewData["Title"]       = $"{Model.Name} — Purchase History";
+    ViewData["HeaderIcon"]  = "bi-person-lines-fill";
+    ViewData["HeaderTitle"] = "CUSTOMER HISTORY";
+    Layout = "~/Views/Shared/_InventoryLayout.cshtml";
+}
+
+<div class="inv-content">
+
+    @* ── Profile + quick stats ─────────────────────────────────────────── *@
+    <div class="cust-history-top">
+
+        @* Left: avatar + contact *@
+        <section class="inv-section cust-profile-card">
+            <div class="cust-avatar">
+                <i class="bi bi-person-circle"></i>
+            </div>
+            <h2 class="cust-profile-name">@Model.Name</h2>
+
+            <div class="cust-profile-meta">
+                @if (!string.IsNullOrEmpty(Model.Email))
+                {
+                    <div><i class="bi bi-envelope"></i> @Model.Email</div>
+                }
+                @if (!string.IsNullOrEmpty(Model.Phone))
+                {
+                    <div><i class="bi bi-telephone"></i> @Model.Phone</div>
+                }
+                @if (!string.IsNullOrEmpty(Model.City) || !string.IsNullOrEmpty(Model.Country))
+                {
+                    <div><i class="bi bi-geo-alt"></i> @string.Join(", ", new[]{ Model.City, Model.Country }.Where(s => !string.IsNullOrEmpty(s)))</div>
+                }
+                @if (!string.IsNullOrEmpty(Model.AreaName) && Model.AreaName != "—")
+                {
+                    <div><i class="bi bi-map"></i> @Model.AreaName area</div>
+                }
+            </div>
+
+            <div class="cust-profile-actions">
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="inv-btn inv-btn-warning inv-btn-sm">
+                    <i class="bi bi-pencil"></i> Edit
+                </a>
+                <a asp-action="Index" class="inv-btn inv-btn-outline inv-btn-sm">
+                    <i class="bi bi-arrow-left"></i> Back
+                </a>
+            </div>
+        </section>
+
+        @* Right: KPI stat cards *@
+        <div class="cust-kpi-grid">
+
+            <div class="cust-kpi-card cust-kpi-blue">
+                <div class="cust-kpi-icon"><i class="bi bi-receipt"></i></div>
+                <div class="cust-kpi-value">@Model.TotalInvoices</div>
+                <div class="cust-kpi-label">Total Invoices</div>
+            </div>
+
+            <div class="cust-kpi-card cust-kpi-green">
+                <div class="cust-kpi-icon"><i class="bi bi-currency-dollar"></i></div>
+                <div class="cust-kpi-value">@Model.TotalSpend.ToString("N0")</div>
+                <div class="cust-kpi-label">Total Spend (PKR)</div>
+            </div>
+
+            <div class="cust-kpi-card cust-kpi-purple">
+                <div class="cust-kpi-icon"><i class="bi bi-bar-chart"></i></div>
+                <div class="cust-kpi-value">@Model.AvgOrderValue.ToString("N0")</div>
+                <div class="cust-kpi-label">Avg Order (PKR)</div>
+            </div>
+
+            <div class="cust-kpi-card cust-kpi-orange">
+                <div class="cust-kpi-icon"><i class="bi bi-box-seam"></i></div>
+                <div class="cust-kpi-value" style="font-size:1rem;font-weight:700;">
+                    @(Model.TopProduct == "—" ? "—" : Model.TopProduct)
+                </div>
+                <div class="cust-kpi-label">
+                    Top Product
+                    @if (Model.TopProductUnits > 0)
+                    {
+                        <span style="font-size:.72rem;color:#a0aec0;margin-left:4px;">(@Model.TopProductUnits units)</span>
+                    }
+                </div>
+            </div>
+
+            <div class="cust-kpi-card cust-kpi-teal">
+                <div class="cust-kpi-icon"><i class="bi bi-calendar-check"></i></div>
+                <div class="cust-kpi-value" style="font-size:1rem;font-weight:700;">
+                    @(Model.LastPurchase.HasValue ? Model.LastPurchase.Value.ToString("MMM dd, yyyy") : "—")
+                </div>
+                <div class="cust-kpi-label">Last Purchase</div>
+            </div>
+
+            <div class="cust-kpi-card cust-kpi-slate">
+                <div class="cust-kpi-icon"><i class="bi bi-calendar-event"></i></div>
+                <div class="cust-kpi-value" style="font-size:1rem;font-weight:700;">
+                    @(Model.FirstPurchase.HasValue ? Model.FirstPurchase.Value.ToString("MMM dd, yyyy") : "—")
+                </div>
+                <div class="cust-kpi-label">First Purchase</div>
+            </div>
+
+        </div>
+    </div>
+
+    @* ── Invoice history table ──────────────────────────────────────────── *@
+    <section class="inv-section">
+        <div class="inv-section-header">
+            <h2 class="inv-section-title">
+                <i class="bi bi-clock-history"></i> Invoice History
+                <span style="font-size:.82rem;font-weight:500;color:#718096;margin-left:8px;">
+                    @Model.TotalInvoices invoice@(Model.TotalInvoices != 1 ? "s" : "")
+                </span>
+            </h2>
+
+            @if (Model.TotalInvoices > 0)
+            {
+                @await Html.PartialAsync("_SearchBar", new ViewDataDictionary(ViewData) {
+                    { "InputId",     "histSearch"      },
+                    { "ClearId",     "histSearchClear" },
+                    { "Placeholder", "Search by invoice #, product..." }
+                })
+            }
+        </div>
+
+        @if (Model.Invoices.Any())
+        {
+            <table class="inv-table">
+                <thead>
+                    <tr>
+                        <th style="width:90px;">Invoice #</th>
+                        <th style="width:140px;">Date</th>
+                        <th style="width:80px;">Items</th>
+                        <th>Top Product</th>
+                        <th style="width:150px;">Total (PKR)</th>
+                        <th class="center" style="width:80px;">View</th>
+                    </tr>
+                </thead>
+                <tbody id="histTbody">
+                    @foreach (var inv in Model.Invoices)
+                    {
+                        <tr>
+                            <td data-label="Invoice #" class="inv-cell-muted">#@inv.Id</td>
+                            <td data-label="Date">@inv.Date.ToString("MMM dd, yyyy")</td>
+                            <td data-label="Items" class="inv-cell-qty">@inv.ItemCount</td>
+                            <td data-label="Top Product">@inv.TopProduct</td>
+                            <td data-label="Total" class="inv-cell-price">@inv.Total.ToString("N2")</td>
+                            <td class="center">
+                                <a asp-controller="Invoice" asp-action="Details" asp-route-id="@inv.Id"
+                                   class="inv-btn inv-btn-info inv-btn-sm" title="View invoice">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            @await Html.PartialAsync("_EmptyState",
+                ("bi-receipt", "No invoices yet", "This customer has not placed any orders."))
+        }
+
+    </section>
+
+</div>
+
+@section Scripts {
+    <script src="/js/search.js"></script>
+    @if (Model.Invoices.Any())
+    {
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                TableSearchService.init({
+                    inputId:       'histSearch',
+                    clearBtnId:    'histSearchClear',
+                    tbodyId:       'histTbody',
+                    columnIndexes: [0, 3]   // Invoice #, Top Product
+                });
+            });
+        </script>
+    }
+}

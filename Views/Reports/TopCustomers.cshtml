@@ -1,0 +1,220 @@
+@model InventoryManagement.ViewModels.SalesReportPageViewModel<InventoryManagement.ViewModels.TopCustomerViewModel>
+
+@{
+    ViewData["Title"]       = "Top Customers";
+    ViewData["HeaderIcon"]  = "bi-people-fill";
+    ViewData["HeaderTitle"] = "REPORTS — TOP CUSTOMERS";
+    Layout = "~/Views/Shared/_InventoryLayout.cshtml";
+
+    var from = Model.Filter.From?.ToString("yyyy-MM-dd") ?? "";
+    var to   = Model.Filter.To?.ToString("yyyy-MM-dd")   ?? "";
+    int top  = ViewBag.Top is int t ? t : 20;
+
+    var grandSpend    = Model.Data.Sum(r => r.TotalSpend);
+    var grandInvoices = Model.Data.Sum(r => r.InvoiceCount);
+}
+
+<div class="inv-content">
+
+    @* ── Report Nav Tabs ─────────────────────────────────────────────── *@
+    <div class="rpt-tabs">
+        <a asp-action="SalesPerProduct"  asp-route-from="@from" asp-route-to="@to"
+           class="rpt-tab"><i class="bi bi-box-seam"></i> By Product</a>
+        <a asp-action="SalesPerCategory" asp-route-from="@from" asp-route-to="@to"
+           class="rpt-tab"><i class="bi bi-tags"></i> By Category</a>
+        <a asp-action="TopProducts"      asp-route-from="@from" asp-route-to="@to"
+           class="rpt-tab"><i class="bi bi-trophy"></i> Top Products</a>
+        <a asp-action="TopCustomers"     asp-route-from="@from" asp-route-to="@to"
+           class="rpt-tab active"><i class="bi bi-people-fill"></i> Top Customers</a>
+    </div>
+
+    <section class="inv-section">
+
+        @* ── Filter bar ──────────────────────────────────────────────── *@
+        <form method="get" asp-action="TopCustomers" class="rpt-filter-bar">
+            <span class="rpt-filter-label"><i class="bi bi-funnel"></i> Date Range</span>
+
+            <div class="rpt-filter-group">
+                <label class="rpt-filter-sublabel">From</label>
+                <input type="date" name="from" value="@from" class="inv-field-input rpt-date-input" />
+            </div>
+            <div class="rpt-filter-group">
+                <label class="rpt-filter-sublabel">To</label>
+                <input type="date" name="to" value="@to" class="inv-field-input rpt-date-input" />
+            </div>
+
+            <div class="rpt-filter-group">
+                <label class="rpt-filter-sublabel">Show top</label>
+                <select name="top" class="inv-field-select" style="width:80px;">
+                    @foreach (var n in new[]{ 10, 20, 50 })
+                    {
+                        if (top == n)
+                        {
+                            <option value="@n" selected>@n</option>
+                        }
+                        else
+                        {
+                            <option value="@n">@n</option>
+                        }
+                    }
+                </select>
+            </div>
+
+            @if (Model.AvailableYears.Any())
+            {
+                <div class="rpt-year-pills">
+                    @foreach (var yr in Model.AvailableYears.Take(5))
+                    {
+                        <a asp-action="TopCustomers"
+                           asp-route-from="@($"{yr}-01-01")"
+                           asp-route-to="@($"{yr}-12-31")"
+                           asp-route-top="@top"
+                           class="rpt-year-pill @(Model.Filter.From?.Year == yr && Model.Filter.To?.Year == yr ? "active" : "")">
+                            @yr
+                        </a>
+                    }
+                    @if (from != "" || to != "")
+                    {
+                        <a asp-action="TopCustomers" asp-route-top="@top" class="rpt-year-pill rpt-year-clear">
+                            <i class="bi bi-x"></i> All time
+                        </a>
+                    }
+                </div>
+            }
+
+            <button type="submit" class="inv-btn inv-btn-primary inv-btn-sm">
+                <i class="bi bi-search"></i> Apply
+            </button>
+        </form>
+
+        @* ── Section header ───────────────────────────────────────────── *@
+        <div class="inv-section-header" style="margin-top:16px;">
+            <h2 class="inv-section-title">
+                <i class="bi bi-people-fill"></i> Top @top Customers by Spend
+                @if (Model.Filter.HasFilter)
+                {
+                    <span class="rpt-date-badge">
+                        @Model.Filter.EffectiveFrom.ToString("dd MMM yyyy") — @Model.Filter.EffectiveTo.ToString("dd MMM yyyy")
+                    </span>
+                }
+            </h2>
+            @if (Model.Data.Any())
+            {
+                <a asp-action="ExportCsv"
+                   asp-route-report="TopCustomers"
+                   asp-route-from="@from" asp-route-to="@to"
+                   asp-route-top="@top"
+                   class="rpt-export-btn">
+                    <i class="bi bi-download"></i> Export CSV
+                </a>
+            }
+        </div>
+
+        @* ── Summary KPIs ─────────────────────────────────────────────── *@
+        @if (Model.Data.Any())
+        {
+            <div class="rpt-kpi-row">
+                <div class="rpt-kpi-card">
+                    <div class="rpt-kpi-val">@Model.Data.Count</div>
+                    <div class="rpt-kpi-lbl">Customers</div>
+                </div>
+                <div class="rpt-kpi-card">
+                    <div class="rpt-kpi-val">@grandInvoices.ToString("N0")</div>
+                    <div class="rpt-kpi-lbl">Total Invoices</div>
+                </div>
+                <div class="rpt-kpi-card rpt-kpi-highlight">
+                    <div class="rpt-kpi-val">PKR @grandSpend.ToString("N0")</div>
+                    <div class="rpt-kpi-lbl">Total Revenue</div>
+                </div>
+            </div>
+        }
+
+        @* ── Table ───────────────────────────────────────────────────────  *@
+        @if (Model.Data.Any())
+        {
+            @await Html.PartialAsync("_SearchBar", new ViewDataDictionary(ViewData) {
+                { "InputId",     "rptSearch"      },
+                { "ClearId",     "rptSearchClear" },
+                { "Placeholder", "Search by customer or area..." }
+            })
+
+            <table class="inv-table">
+                <thead>
+                    <tr>
+                        <th style="width:54px;">#</th>
+                        <th>Customer</th>
+                        <th>Area</th>
+                        <th style="width:110px;">Invoices</th>
+                        <th style="width:160px;">Total Spend (PKR)</th>
+                        <th style="width:155px;">Avg Order (PKR)</th>
+                        <th style="width:140px;">Last Purchase</th>
+                        <th class="center" style="width:80px;">Profile</th>
+                    </tr>
+                </thead>
+                <tbody id="rptTbody">
+                    @foreach (var row in Model.Data)
+                    {
+                        decimal share = grandSpend > 0 ? row.TotalSpend / grandSpend * 100m : 0m;
+                        <tr>
+                            <td data-label="#" class="rpt-rank">
+                                @if (row.Rank <= 3)
+                                {
+                                    var medal = row.Rank == 1 ? "🥇" : row.Rank == 2 ? "🥈" : "🥉";
+                                    <span>@medal</span>
+                                }
+                                else { <span class="inv-cell-muted">@row.Rank</span> }
+                            </td>
+                            <td data-label="Customer">
+                                <strong>@row.CustomerName</strong>
+                                <div style="font-size:.72rem;color:#a0aec0;margin-top:2px;">@share.ToString("F1")% of total</div>
+                            </td>
+                            <td data-label="Area"        class="inv-cell-muted">@row.AreaName</td>
+                            <td data-label="Invoices"    class="inv-cell-qty">@row.InvoiceCount</td>
+                            <td data-label="Total Spend" class="inv-cell-price">@row.TotalSpend.ToString("N2")</td>
+                            <td data-label="Avg Order"   class="inv-cell-price">@row.AvgOrderValue.ToString("N2")</td>
+                            <td data-label="Last Purchase" class="inv-cell-muted">
+                                @(row.LastPurchase.HasValue ? row.LastPurchase.Value.ToString("MMM dd, yyyy") : "—")
+                            </td>
+                            <td class="center">
+                                <a asp-controller="Customer" asp-action="History"
+                                   asp-route-id="@row.CustomerId"
+                                   class="inv-btn inv-btn-info inv-btn-sm" title="View history">
+                                    <i class="bi bi-clock-history"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr class="rpt-total-row">
+                        <td colspan="3" style="text-align:right;font-weight:700;padding:12px 14px;">TOTAL</td>
+                        <td class="inv-cell-qty" style="padding:12px 14px;">@grandInvoices.ToString("N0")</td>
+                        <td class="inv-cell-price" style="font-weight:800;padding:12px 14px;">@grandSpend.ToString("N2")</td>
+                        <td colspan="3" style="padding:12px 14px;"></td>
+                    </tr>
+                </tfoot>
+            </table>
+        }
+        else
+        {
+            @await Html.PartialAsync("_EmptyState",
+                ("bi-people", "No data", "No invoices found for the selected date range."))
+        }
+
+    </section>
+</div>
+
+@section Scripts {
+    <script src="/js/search.js"></script>
+    @if (Model.Data.Any())
+    {
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                TableSearchService.init({
+                    inputId: 'rptSearch', clearBtnId: 'rptSearchClear',
+                    tbodyId: 'rptTbody', columnIndexes: [1, 2]
+                });
+            });
+        </script>
+    }
+}

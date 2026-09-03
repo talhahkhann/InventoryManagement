@@ -10,7 +10,20 @@
 <div class="inv-content">
     <section class="inv-section">
 
-        @* Section header: title + Create button *@
+        @* Success / Error banners *@
+        @if (TempData["Success"] is string ok)
+        {
+            <div class="inv-alert inv-alert-success">
+                <i class="bi bi-check-circle-fill"></i> @ok
+            </div>
+        }
+        @if (TempData["Error"] is string err)
+        {
+            <div class="inv-alert inv-alert-danger">
+                <i class="bi bi-exclamation-triangle-fill"></i> @err
+            </div>
+        }
+
         <div class="inv-section-header">
             <h2 class="inv-section-title">
                 <i class="bi bi-list-ul"></i> Invoice List
@@ -31,28 +44,34 @@
             <table class="inv-table">
                 <thead>
                     <tr>
-                        <th>Invoice ID</th>
+                        <th style="width:80px;">Invoice #</th>
                         <th>Customer</th>
-                        <th>Date</th>
-                        <th>Total Amount</th>
-                        <th class="center">Actions</th>
+                        <th style="width:140px;">Date</th>
+                        <th style="width:140px;">Total</th>
+                        <th class="center" style="width:160px;">Actions</th>
                     </tr>
                 </thead>
                 <tbody id="invoicesTbody">
                     @foreach (var invoice in Model)
                     {
                         <tr>
-                            <td data-label="Invoice ID">@invoice.Id</td>
-                            <td data-label="Customer">@(invoice.Customer?.Name ?? "Unknown Customer")</td>
-                            <td data-label="Date">@invoice.InvoiceDate.ToString("MMM dd, yyyy")</td>
-                            <td data-label="Total Amount" class="inv-cell-price">PKR @invoice.TotalAmount.ToString("F2")</td>
+                            <td data-label="Invoice #" class="inv-cell-muted">#@invoice.Id</td>
+                            <td data-label="Customer"><strong>@(invoice.Customer?.Name ?? "Unknown")</strong></td>
+                            <td data-label="Date" class="inv-cell-muted">@invoice.InvoiceDate.ToString("MMM dd, yyyy")</td>
+                            <td data-label="Total" class="inv-cell-price">PKR @invoice.TotalAmount.ToString("F2")</td>
                             <td data-label="Actions" class="center">
                                 <div class="inv-actions">
-                                    <a asp-action="Details" asp-route-id="@invoice.Id" class="inv-btn inv-btn-info inv-btn-sm" title="View Details">
-                                        <i class="bi bi-eye"></i> View
+                                    <a asp-action="Details" asp-route-id="@invoice.Id"
+                                       class="inv-btn inv-btn-info inv-btn-sm" title="View Details">
+                                        <i class="bi bi-eye"></i>
                                     </a>
-                                    <a asp-action="Edit" asp-route-id="@invoice.Id" class="inv-btn inv-btn-warning inv-btn-sm" title="Edit Invoice">
-                                        <i class="bi bi-pencil"></i> Edit
+                                    <a asp-action="Edit" asp-route-id="@invoice.Id"
+                                       class="inv-btn inv-btn-warning inv-btn-sm" title="Edit">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@invoice.Id"
+                                       class="inv-btn inv-btn-danger inv-btn-sm" title="Delete">
+                                        <i class="bi bi-trash"></i>
                                     </a>
                                 </div>
                             </td>
@@ -78,7 +97,7 @@
                 inputId:       'invoiceSearch',
                 clearBtnId:    'invoiceSearchClear',
                 tbodyId:       'invoicesTbody',
-                columnIndexes: [0, 1, 2, 3]   // Invoice ID, Customer, Date, Amount
+                columnIndexes: [0, 1, 2, 3]
             });
         });
     </script>

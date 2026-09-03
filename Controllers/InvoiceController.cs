@@ -8,8 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace InventoryManagement.Controllers
 {
-    // All authenticated roles can access invoices.
-    // (Admin, Manager, Staff — Staff can only create invoices.)
     [Authorize]
     public class InvoiceController : Controller
     {
@@ -19,6 +17,7 @@ namespace InventoryManagement.Controllers
         private readonly IAreaService _areaService;
         private readonly ICustomerProductPriceService _customerProductService;
         private readonly IProfitService _profitService;
+        private readonly IAuditLogService _audit;
         private readonly ILogger<InvoiceController> _logger;
 
         public InvoiceController(
@@ -27,6 +26,7 @@ namespace InventoryManagement.Controllers
             IProductService productService,
             ICustomerProductPriceService customerProductPriceService,
             IProfitService profitService,
+            IAuditLogService auditLogService,
             ILogger<InvoiceController> logger,
             IAreaService areaService)
         {
@@ -37,7 +37,12 @@ namespace InventoryManagement.Controllers
             _logger                = logger;
             _customerProductService= customerProductPriceService;
             _profitService         = profitService;
+            _audit                 = auditLogService;
         }
+
+        private string CurrentUser => User.Identity?.Name ?? "unknown";
+        private string CurrentRole => User.IsInRole("Admin") ? "Admin"
+                                    : User.IsInRole("Manager") ? "Manager" : "Staff";
 
         [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Index()
@@ -139,6 +144,40 @@ namespace InventoryManagement.Controllers
         {
             var customers = await _customerService.GetCustomersByAreaAsync(areaId);
             return Json(customers);
+        }
+
+        // GET: Invoice/Delete/id  — confirmation page
+        [Authorize(Roles = "Admin,Manager")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var invoice = await _invoiceService.GetInvoiceByIdAsync(id);
+            if (invoice == null) return NotFound();
+            return View(invoice);
+        }
+
+        // POST: Invoice/Delete/id
+        [HttpPost, ActionName("Delete")]
+        [Authorize(Roles = "Admin,Manager")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            try
+            {
+                // InvoiceService.DeleteInvoiceAsync restores stock + resolves alerts
+                await _invoiceService.DeleteInvoiceAsync(id);
+
+                // Remove profit records for this invoice
+                await _profitService.DeleteProfitAsync(id);
+
+                TempData["Success"] = $"Invoice #{id} deleted and stock restored.";
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting Invoice ID: {Id}", id);
+                TempData["Error"] = "An error occurred while deleting the invoice.";
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Invoice/Edit/id
