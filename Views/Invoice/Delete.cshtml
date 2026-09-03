@@ -1,0 +1,77 @@
+@model InventoryManagement.Models.Invoice
+
+@{
+    ViewData["Title"]       = $"Delete Invoice #{Model.Id}";
+    ViewData["HeaderIcon"]  = "bi-trash";
+    ViewData["HeaderTitle"] = "DELETE INVOICE";
+    Layout = "~/Views/Shared/_InventoryLayout.cshtml";
+}
+
+<div class="inv-content">
+    <div class="inv-confirm-card" style="max-width:600px;">
+
+        <i class="bi bi-exclamation-triangle-fill inv-confirm-icon"></i>
+        <h2 class="inv-confirm-title">Delete Invoice #@Model.Id?</h2>
+        <p class="inv-confirm-text">
+            This action <strong>cannot be undone</strong>. The invoice will be permanently removed
+            and the stock quantities for all line items will be <strong>restored</strong> to inventory.
+        </p>
+
+        <div class="inv-confirm-meta">
+            <dl>
+                <dt>Customer</dt>
+                <dd>@(Model.Customer?.Name ?? "Unknown")</dd>
+
+                <dt>Invoice Date</dt>
+                <dd>@Model.InvoiceDate.ToString("MMM dd, yyyy")</dd>
+
+                <dt>Total Amount</dt>
+                <dd class="inv-cell-price" style="font-size:1.05rem;">
+                    PKR @Model.TotalAmount.ToString("F2")
+                </dd>
+
+                <dt>Line Items</dt>
+                <dd>@(Model.Items?.Count ?? 0) product(s)</dd>
+            </dl>
+        </div>
+
+        @if (Model.Items != null && Model.Items.Any())
+        {
+            <div style="margin-bottom:24px;">
+                <p style="font-size:0.82rem;font-weight:700;color:#4a5568;margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em;">
+                    Stock will be restored:
+                </p>
+                <table class="inv-table" style="font-size:0.85rem;">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th style="width:100px;text-align:center;">Qty Restored</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Items)
+                        {
+                            <tr>
+                                <td>@(item.Product?.Name ?? "Unknown")</td>
+                                <td style="text-align:center;" class="inv-cell-qty">+@item.Quantity</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+
+        <div class="inv-confirm-actions">
+            <a asp-action="Index" class="inv-btn inv-btn-outline">
+                <i class="bi bi-x-circle"></i> Cancel
+            </a>
+            <form asp-action="Delete" asp-route-id="@Model.Id" method="post" style="display:inline;">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="inv-btn inv-btn-danger">
+                    <i class="bi bi-trash"></i> Yes, Delete Invoice
+                </button>
+            </form>
+        </div>
+
+    </div>
+</div>

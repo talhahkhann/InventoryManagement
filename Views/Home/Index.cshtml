@@ -127,6 +127,14 @@
                         <i class="bi bi-geo-alt-fill"></i>
                         <span>Areas</span>
                     </a>
+                    <a asp-controller="PurchaseOrder" asp-action="Create" class="dash-action-btn dash-action-green">
+                        <i class="bi bi-box-arrow-in-down"></i>
+                        <span>New PO</span>
+                    </a>
+                    <a asp-controller="Suppliers" asp-action="Index" class="dash-action-btn dash-action-slate">
+                        <i class="bi bi-truck"></i>
+                        <span>Suppliers</span>
+                    </a>
                 </div>
             </section>
 
@@ -155,6 +163,14 @@
                     <a asp-controller="Reports" asp-action="SalesPerProduct" class="dash-action-btn dash-action-teal">
                         <i class="bi bi-bar-chart-line"></i>
                         <span>Sales Report</span>
+                    </a>
+                    <a asp-controller="Reports" asp-action="TopProducts" class="dash-action-btn dash-action-orange">
+                        <i class="bi bi-trophy"></i>
+                        <span>Top Products</span>
+                    </a>
+                    <a asp-controller="Reports" asp-action="TopCustomers" class="dash-action-btn dash-action-purple">
+                        <i class="bi bi-person-badge-fill"></i>
+                        <span>Top Customers</span>
                     </a>
                     <a asp-controller="StockAlert" asp-action="Index" class="dash-action-btn dash-action-red">
                         <i class="bi bi-bell-fill"></i>

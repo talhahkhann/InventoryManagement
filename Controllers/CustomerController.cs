@@ -181,21 +181,20 @@ namespace InventoryManagement.Controllers
         [HttpGet]
         public async Task<JsonResult> GetCustomersByArea(int areaId)
         {
-            var customers =
-                await _customerService.GetCustomersByAreaAsync(areaId);
-
+            var customers = await _customerService.GetCustomersByAreaAsync(areaId);
             var result = customers.Select(c => new
             {
-                c.Id,
-                c.Name,
-                c.Email,
-                c.PhoneNumber,
-                c.Address,
-                c.City,
-                c.Country
+                c.Id, c.Name, c.Email, c.PhoneNumber, c.Address, c.City, c.Country
             });
-
             return Json(result);
+        }
+
+        // GET: Customer/History/5
+        public async Task<IActionResult> History(int id)
+        {
+            var vm = await _customerService.GetHistoryAsync(id);
+            if (vm == null) return NotFound();
+            return View(vm);
         }
     }
 }

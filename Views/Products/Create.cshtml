@@ -55,6 +55,15 @@
                     <span asp-validation-for="CategoryId" class="inv-field-error"></span>
                 </div>
 
+                <div class="inv-field-col">
+                    <label asp-for="StockThreshold" class="inv-field-label required">Stock Alert Threshold</label>
+                    <input asp-for="StockThreshold" type="number" class="inv-field-input" min="0" placeholder="10" />
+                    <span asp-validation-for="StockThreshold" class="inv-field-error"></span>
+                    <span style="color:#718096; font-size:0.78rem; margin-top:4px; display:block;">
+                        Alert fires when stock falls below this number
+                    </span>
+                </div>
+
             </div>
         </section>
 

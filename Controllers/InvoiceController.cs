@@ -141,6 +141,40 @@ namespace InventoryManagement.Controllers
             return Json(customers);
         }
 
+        // GET: Invoice/Delete/id  — confirmation page
+        [Authorize(Roles = "Admin,Manager")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var invoice = await _invoiceService.GetInvoiceByIdAsync(id);
+            if (invoice == null) return NotFound();
+            return View(invoice);
+        }
+
+        // POST: Invoice/Delete/id
+        [HttpPost, ActionName("Delete")]
+        [Authorize(Roles = "Admin,Manager")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            try
+            {
+                // InvoiceService.DeleteInvoiceAsync restores stock + resolves alerts
+                await _invoiceService.DeleteInvoiceAsync(id);
+
+                // Remove profit records for this invoice
+                await _profitService.DeleteProfitAsync(id);
+
+                TempData["Success"] = $"Invoice #{id} deleted and stock restored.";
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting Invoice ID: {Id}", id);
+                TempData["Error"] = "An error occurred while deleting the invoice.";
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
         // GET: Invoice/Edit/id
         [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Edit(int id)

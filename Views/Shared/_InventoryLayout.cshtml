@@ -116,6 +116,12 @@
                     </li>
 
                     <li class="inv-nav-item">
+                        <a asp-controller="PurchaseOrder" asp-action="Index" class="inv-nav-link">
+                            <i class="bi bi-box-arrow-in-down"></i><span>Purchase Orders</span>
+                        </a>
+                    </li>
+
+                    <li class="inv-nav-item">
                         <a asp-controller="Products" asp-action="Index" class="inv-nav-link">
                             <i class="bi bi-boxes"></i><span>Products</span>
                         </a>
@@ -139,6 +145,12 @@
                         </a>
                     </li>
 
+                    <li class="inv-nav-item">
+                        <a asp-controller="Suppliers" asp-action="Index" class="inv-nav-link">
+                            <i class="bi bi-truck"></i><span>Suppliers</span>
+                        </a>
+                    </li>
+
                     <li class="inv-nav-section-label">Analytics</li>
 
                     <li class="inv-nav-item">
@@ -149,7 +161,19 @@
 
                     <li class="inv-nav-item">
                         <a asp-controller="Reports" asp-action="SalesPerProduct" class="inv-nav-link">
-                            <i class="bi bi-bar-chart-line"></i><span>Reports</span>
+                            <i class="bi bi-bar-chart-line"></i><span>Sales Report</span>
+                        </a>
+                    </li>
+
+                    <li class="inv-nav-item">
+                        <a asp-controller="Reports" asp-action="TopProducts" class="inv-nav-link">
+                            <i class="bi bi-trophy"></i><span>Top Products</span>
+                        </a>
+                    </li>
+
+                    <li class="inv-nav-item">
+                        <a asp-controller="Reports" asp-action="TopCustomers" class="inv-nav-link">
+                            <i class="bi bi-person-badge-fill"></i><span>Top Customers</span>
                         </a>
                     </li>
 

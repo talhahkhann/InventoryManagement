@@ -34,6 +34,7 @@
                         <th>#</th>
                         <th>Product Name</th>
                         <th>Quantity</th>
+                        <th>Alert At</th>
                         <th>Price</th>
                         <th>Category</th>
                         <th class="center">Actions</th>
@@ -46,8 +47,19 @@
                         <tr>
                             <td data-label="#">@(row++)</td>
                             <td data-label="Product Name">@item.Name</td>
-                            <td data-label="Quantity" class="inv-cell-qty">@item.Quantity</td>
-                            <td data-label="Price"    class="inv-cell-price">@item.Price.ToString("C")</td>
+                            <td data-label="Quantity" class="inv-cell-qty @(item.Quantity <= item.StockThreshold ? "inv-stock-low" : "")">
+                                @item.Quantity
+                                @if (item.Quantity == 0)
+                                {
+                                    <span class="sa-badge-critical" style="margin-left:6px;font-size:.7rem;">Out</span>
+                                }
+                                else if (item.Quantity <= item.StockThreshold)
+                                {
+                                    <span class="sa-badge-warning" style="margin-left:6px;font-size:.7rem;">Low</span>
+                                }
+                            </td>
+                            <td data-label="Alert At" class="inv-cell-muted">@item.StockThreshold</td>
+                            <td data-label="Price" class="inv-cell-price">@item.Price.ToString("C")</td>
                             <td data-label="Category" class="inv-cell-muted">@item.CategoryId</td>
                             <td data-label="Actions"  class="center">
                                 <div class="inv-actions">
@@ -81,7 +93,7 @@
                 inputId:       'productSearch',
                 clearBtnId:    'productSearchClear',
                 tbodyId:       'productsTbody',
-                columnIndexes: [1, 4]   // Product Name, Category
+                columnIndexes: [1, 5]   // Product Name, Category
             });
         });
     </script>
