@@ -48,6 +48,8 @@ builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddScoped<ICustomerProductPriceService, CustomerProductPriceService>();
 builder.Services.AddScoped<IStockAlertRepository, StockAlertRepository>();
 builder.Services.AddScoped<IStockAlertService, StockAlertService>();
+builder.Services.AddScoped<IAuditLogService,AuditLogService>();
+builder.Services.AddScoped<IAuditLogRepository, AuditLogRepository>();
 builder.Services.AddScoped<InventoryManagement.Repositories.Interfaces.IProfitRepository,
                            InventoryManagement.Repositories.Implementations.ProfitRepository>();
 builder.Services.AddScoped<InventoryManagement.Services.Interfaces.IProfitService,
