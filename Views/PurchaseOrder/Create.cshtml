@@ -1,0 +1,249 @@
+@model InventoryManagement.ViewModels.PurchaseOrderCreateViewModel
+
+@{
+    ViewData["Title"]       = "New Purchase Order";
+    ViewData["HeaderIcon"]  = "bi-box-arrow-in-down";
+    ViewData["HeaderTitle"] = "NEW PURCHASE ORDER";
+    Layout = "~/Views/Shared/_InventoryLayout.cshtml";
+}
+
+<div class="inv-form-area">
+    <form id="poForm" asp-action="Create" method="post">
+        @Html.AntiForgeryToken()
+
+        @* ── Header section ── *@
+        <section class="inv-section">
+            <div class="inv-section-header">
+                <h2 class="inv-section-title"><i class="bi bi-truck"></i> Order Details</h2>
+            </div>
+            <div class="inv-field-row">
+
+                <div class="inv-field-col">
+                    <label asp-for="SupplierId" class="inv-field-label required">Supplier</label>
+                    <select asp-for="SupplierId" class="inv-field-select">
+                        <option value="">-- Select Supplier --</option>
+                        @foreach (var s in Model.Suppliers)
+                        {
+                            <option value="@s.Id">@s.Name @(s.Phone != null ? $"— {s.Phone}" : "")</option>
+                        }
+                    </select>
+                    <span asp-validation-for="SupplierId" class="inv-field-error"></span>
+                </div>
+
+                <div class="inv-field-col">
+                    <label asp-for="OrderDate" class="inv-field-label required">Order Date</label>
+                    <input asp-for="OrderDate" type="date" class="inv-field-input"
+                           value="@Model.OrderDate.ToString("yyyy-MM-dd")" />
+                    <span asp-validation-for="OrderDate" class="inv-field-error"></span>
+                </div>
+
+                <div class="inv-field-col" style="flex:1 1 100%;">
+                    <label asp-for="Notes" class="inv-field-label">Notes</label>
+                    <input asp-for="Notes" class="inv-field-input" placeholder="Optional notes about this order..." />
+                    <span asp-validation-for="Notes" class="inv-field-error"></span>
+                </div>
+
+            </div>
+        </section>
+
+        @* ── Line items section ── *@
+        <section class="inv-section">
+            <div class="inv-section-header">
+                <h2 class="inv-section-title"><i class="bi bi-list-ul"></i> Products to Order</h2>
+            </div>
+
+            <span asp-validation-for="Items" class="inv-field-error" style="display:block;margin-bottom:10px;"></span>
+
+            <table id="poTable" class="inv-table inv-invoice-table">
+                <thead>
+                    <tr>
+                        <th style="width:46px;">#</th>
+                        <th>Product</th>
+                        <th style="width:110px;">In Stock</th>
+                        <th style="width:110px;">Qty to Order</th>
+                        <th style="width:155px;">Unit Cost (PKR)</th>
+                        <th style="width:145px;">Line Total</th>
+                        <th style="width:60px;" class="center">Del</th>
+                    </tr>
+                </thead>
+                <tbody id="poItemsBody">
+                    <tr class="po-row">
+                        <td class="po-row-num inv-inv-cell-num">1</td>
+                        <td class="inv-inv-cell-product">
+                            <div class="autocomplete">
+                                <input type="text" class="po-product-name inv-field-input autocomplete-input"
+                                       placeholder="Type product name…" autocomplete="off" />
+                                <input type="hidden" name="Items[0].ProductId" class="po-product-id" value="" />
+                                <input type="hidden" name="Items[0].ProductName" value="" />
+                            </div>
+                        </td>
+                        <td class="inv-inv-cell-fixed">
+                            <input type="text" class="po-stock inv-field-input inv-total-readonly"
+                                   readonly value="—" />
+                        </td>
+                        <td class="inv-inv-cell-fixed">
+                            <input type="number" name="Items[0].Quantity" class="po-qty inv-field-input"
+                                   value="1" min="1" />
+                        </td>
+                        <td class="inv-inv-cell-fixed">
+                            <input type="number" name="Items[0].UnitCost" class="po-cost inv-field-input"
+                                   value="0.00" step="0.01" min="0.01" />
+                        </td>
+                        <td class="inv-inv-cell-fixed">
+                            <input type="text" class="po-total inv-field-input inv-total-readonly" readonly value="0.00" />
+                        </td>
+                        <td class="center inv-inv-cell-num">
+                            <button type="button" class="inv-btn inv-btn-danger inv-btn-sm po-remove-row"
+                                    style="min-width:auto;padding:8px 10px;">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr class="grand-total-row">
+                        <td colspan="5" style="text-align:right;font-weight:700;font-size:1rem;vertical-align:middle;padding:14px 10px;">
+                            GRAND TOTAL:
+                        </td>
+                        <td colspan="2" style="vertical-align:middle;padding:14px 10px;">
+                            <span id="poGrandTotal" class="grand-total-value">0.00</span>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+
+            <div style="display:flex;justify-content:flex-end;margin-top:16px;">
+                <button type="button" id="poAddRow" class="inv-btn inv-btn-success">
+                    <i class="bi bi-plus-circle"></i> Add Product
+                </button>
+            </div>
+        </section>
+
+        <div class="inv-form-footer">
+            <a asp-action="Index" class="inv-btn inv-btn-outline"><i class="bi bi-x-circle"></i> Cancel</a>
+            <button type="submit" class="inv-btn inv-btn-primary">
+                <i class="bi bi-save"></i> Save as Draft
+            </button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="/js/site.js"></script>
+    <script>
+    // Products list from server
+    const poProducts = @Html.Raw(Json.Serialize(Model.Products.Select(p => new {
+        id        = p.Id,
+        name      = p.Name,
+        costPrice = p.CostPrice,
+        quantity  = p.Quantity
+    })));
+
+    // ── Row helpers ───────────────────────────────────────────────
+    function recalcPoRow(row) {
+        const qty  = parseFloat(row.querySelector('.po-qty').value)  || 0;
+        const cost = parseFloat(row.querySelector('.po-cost').value) || 0;
+        row.querySelector('.po-total').value = (qty * cost).toFixed(2);
+        recalcPoGrandTotal();
+    }
+
+    function recalcPoGrandTotal() {
+        let total = 0;
+        document.querySelectorAll('.po-total').forEach(el => total += parseFloat(el.value) || 0);
+        document.getElementById('poGrandTotal').textContent = total.toFixed(2);
+    }
+
+    function reindexPoRows() {
+        document.querySelectorAll('.po-row').forEach((row, idx) => {
+            row.querySelector('.po-row-num').textContent = idx + 1;
+            row.querySelector('.po-product-id').name          = `Items[${idx}].ProductId`;
+            const hiddenName = row.querySelector('[name$=".ProductName"]');
+            if (hiddenName) hiddenName.name                   = `Items[${idx}].ProductName`;
+            row.querySelector('.po-qty').name                 = `Items[${idx}].Quantity`;
+            row.querySelector('.po-cost').name                = `Items[${idx}].UnitCost`;
+        });
+    }
+
+    function initPoRow(row) {
+        const nameInput = row.querySelector('.po-product-name');
+        const idInput   = row.querySelector('.po-product-id');
+        const stockInput = row.querySelector('.po-stock');
+        const costInput = row.querySelector('.po-cost');
+
+        initAutocomplete(nameInput, idInput, poProducts, function(product) {
+            // Fill stock and default cost price from product data
+            stockInput.value = product.quantity;
+            if (!costInput.value || parseFloat(costInput.value) === 0) {
+                costInput.value = parseFloat(product.costPrice).toFixed(2);
+            }
+            const hiddenName = nameInput.closest('tr').querySelector('[name$=".ProductName"]');
+            if (hiddenName) hiddenName.value = product.name;
+            recalcPoRow(row);
+        });
+
+        row.querySelector('.po-qty').addEventListener('input',  () => recalcPoRow(row));
+        row.querySelector('.po-cost').addEventListener('input', () => recalcPoRow(row));
+    }
+
+    function addPoRow() {
+        const rows    = document.querySelectorAll('.po-row');
+        const idx     = rows.length;
+        const newRow  = document.createElement('tr');
+        newRow.className = 'po-row';
+        newRow.innerHTML = `
+            <td class="po-row-num inv-inv-cell-num">${idx + 1}</td>
+            <td class="inv-inv-cell-product">
+                <div class="autocomplete">
+                    <input type="text" class="po-product-name inv-field-input autocomplete-input"
+                           placeholder="Type product name…" autocomplete="off" />
+                    <input type="hidden" name="Items[${idx}].ProductId" class="po-product-id" value="" />
+                    <input type="hidden" name="Items[${idx}].ProductName" value="" />
+                </div>
+            </td>
+            <td class="inv-inv-cell-fixed">
+                <input type="text" class="po-stock inv-field-input inv-total-readonly" readonly value="—" />
+            </td>
+            <td class="inv-inv-cell-fixed">
+                <input type="number" name="Items[${idx}].Quantity" class="po-qty inv-field-input" value="1" min="1" />
+            </td>
+            <td class="inv-inv-cell-fixed">
+                <input type="number" name="Items[${idx}].UnitCost" class="po-cost inv-field-input"
+                       value="0.00" step="0.01" min="0.01" />
+            </td>
+            <td class="inv-inv-cell-fixed">
+                <input type="text" class="po-total inv-field-input inv-total-readonly" readonly value="0.00" />
+            </td>
+            <td class="center inv-inv-cell-num">
+                <button type="button" class="inv-btn inv-btn-danger inv-btn-sm po-remove-row"
+                        style="min-width:auto;padding:8px 10px;">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </td>`;
+        document.getElementById('poItemsBody').appendChild(newRow);
+        initPoRow(newRow);
+        newRow.querySelector('.po-product-name').focus();
+    }
+
+    // ── Bootstrap ─────────────────────────────────────────────────
+    document.addEventListener('DOMContentLoaded', function () {
+        // Init existing rows
+        document.querySelectorAll('.po-row').forEach(initPoRow);
+        recalcPoGrandTotal();
+
+        // Add row
+        document.getElementById('poAddRow').addEventListener('click', addPoRow);
+
+        // Remove row
+        document.getElementById('poItemsBody').addEventListener('click', function (e) {
+            if (e.target.closest('.po-remove-row')) {
+                const rows = document.querySelectorAll('.po-row');
+                if (rows.length <= 1) { alert('At least one product is required.'); return; }
+                e.target.closest('tr').remove();
+                reindexPoRows();
+                recalcPoGrandTotal();
+            }
+        });
+    });
+    </script>
+}

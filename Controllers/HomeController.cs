@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using InventoryManagement.Models;
 using InventoryManagement.Services.Interfaces;
@@ -6,6 +7,8 @@ using InventoryManagement.Services.Interfaces;
 
 namespace InventoryManagement.Controllers;
 
+// Home (/) redirects based on role — authenticated users only.
+[Authorize]
 public class HomeController : Controller
 {
     private readonly ICustomerService _customerService;

@@ -1,0 +1,90 @@
+@model InventoryManagement.ViewModels.CreateUserViewModel
+
+@{
+    ViewData["Title"]       = "Create User";
+    ViewData["HeaderIcon"]  = "bi-person-plus-fill";
+    ViewData["HeaderTitle"] = "CREATE USER";
+    Layout = "~/Views/Shared/_InventoryLayout.cshtml";
+}
+
+<div class="inv-form-area">
+    <form asp-action="CreateUser" method="post">
+        @Html.AntiForgeryToken()
+
+        <section class="inv-section">
+            <div class="inv-section-header">
+                <h2 class="inv-section-title"><i class="bi bi-person-badge"></i> User Details</h2>
+            </div>
+
+            <div class="inv-field-row">
+
+                <div class="inv-field-col">
+                    <label asp-for="FullName" class="inv-field-label required">Full Name</label>
+                    <input asp-for="FullName" class="inv-field-input" placeholder="Enter full name" />
+                    <span asp-validation-for="FullName" class="inv-field-error"></span>
+                </div>
+
+                <div class="inv-field-col">
+                    <label asp-for="Email" class="inv-field-label required">Email Address</label>
+                    <input asp-for="Email" type="email" class="inv-field-input" placeholder="user@example.com" />
+                    <span asp-validation-for="Email" class="inv-field-error"></span>
+                </div>
+
+                <div class="inv-field-col">
+                    <label asp-for="Password" class="inv-field-label required">Password</label>
+                    <input asp-for="Password" type="password" class="inv-field-input" placeholder="Min. 4 characters" />
+                    <span asp-validation-for="Password" class="inv-field-error"></span>
+                </div>
+
+                <div class="inv-field-col">
+                    <label asp-for="Role" class="inv-field-label required">Role</label>
+                    <select asp-for="Role" class="inv-field-select">
+                        <option value="">-- Select Role --</option>
+                        <option value="Admin">Admin</option>
+                        <option value="Manager">Manager</option>
+                        <option value="Staff">Staff</option>
+                    </select>
+                    <span asp-validation-for="Role" class="inv-field-error"></span>
+                </div>
+
+                <div class="inv-field-col">
+                    <label asp-for="PhoneNumber" class="inv-field-label">Phone Number</label>
+                    <input asp-for="PhoneNumber" type="tel" class="inv-field-input" placeholder="+1 234 567 8900" />
+                    <span asp-validation-for="PhoneNumber" class="inv-field-error"></span>
+                </div>
+
+                <div class="inv-field-col">
+                    <label asp-for="Country" class="inv-field-label">Country</label>
+                    <input asp-for="Country" class="inv-field-input" placeholder="Pakistan" />
+                    <span asp-validation-for="Country" class="inv-field-error"></span>
+                </div>
+
+                <div class="inv-field-col" style="flex: 1 1 100%;">
+                    <label asp-for="Address" class="inv-field-label">Address</label>
+                    <input asp-for="Address" class="inv-field-input" placeholder="Street, City" />
+                    <span asp-validation-for="Address" class="inv-field-error"></span>
+                </div>
+
+            </div>
+
+            @* Role permissions summary *@
+            <div class="inv-info-box" style="margin-top:1.2rem;">
+                <i class="bi bi-shield-check" style="margin-right:.4rem;color:var(--inv-primary);"></i>
+                <strong>Role permissions:</strong>
+                <ul style="margin:.5rem 0 0 1.2rem; font-size:.88rem; color:#4a5568;">
+                    <li><strong>Admin</strong> — full access: users, roles, products, customers, invoices, reports, profit, stock alerts</li>
+                    <li><strong>Manager</strong> — products, customers, invoices (view/edit), reports, profit, stock alerts</li>
+                    <li><strong>Staff</strong> — create invoices only</li>
+                </ul>
+            </div>
+        </section>
+
+        <div class="inv-form-footer">
+            <a asp-action="Users" class="inv-btn inv-btn-outline"><i class="bi bi-x-circle"></i> Cancel</a>
+            <button type="submit" class="inv-btn inv-btn-primary"><i class="bi bi-person-check-fill"></i> Create User</button>
+        </div>
+
+    </form>
+</div>
+
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

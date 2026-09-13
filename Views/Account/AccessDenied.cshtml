@@ -1,0 +1,40 @@
+@{
+    ViewData["Title"] = "Access Denied";
+    Layout = "~/Views/Shared/_InventoryLayout.cshtml";
+    ViewData["HeaderIcon"]  = "bi-shield-x";
+    ViewData["HeaderTitle"] = "ACCESS DENIED";
+}
+
+<div class="inv-content">
+    <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding: 60px 20px; text-align:center;">
+        <i class="bi bi-shield-lock-fill" style="font-size:4rem; color:#e53e3e; margin-bottom:20px;"></i>
+        <h2 style="font-size:1.5rem; font-weight:800; color:#c53030; margin-bottom:12px;">Access Denied</h2>
+        <p style="color:#4a5568; max-width:420px; line-height:1.7; margin-bottom:28px;">
+            You don't have permission to view this page.
+            If you believe this is a mistake, contact your administrator.
+        </p>
+        <div style="display:flex; gap:12px;">
+            <a onclick="history.back()" class="inv-btn inv-btn-outline" style="cursor:pointer;">
+                <i class="bi bi-arrow-left"></i> Go Back
+            </a>
+            @if (User.IsInRole("Admin"))
+            {
+                <a asp-controller="Admin" asp-action="Dashboard" class="inv-btn inv-btn-primary">
+                    <i class="bi bi-speedometer2"></i> Dashboard
+                </a>
+            }
+            else if (User.IsInRole("Manager"))
+            {
+                <a asp-controller="Manager" asp-action="Dashboard" class="inv-btn inv-btn-primary">
+                    <i class="bi bi-speedometer2"></i> Dashboard
+                </a>
+            }
+            else
+            {
+                <a asp-controller="Staff" asp-action="Dashboard" class="inv-btn inv-btn-primary">
+                    <i class="bi bi-speedometer2"></i> Dashboard
+                </a>
+            }
+        </div>
+    </div>
+</div>

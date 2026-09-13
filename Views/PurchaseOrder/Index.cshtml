@@ -1,0 +1,115 @@
+@model IEnumerable<InventoryManagement.ViewModels.PurchaseOrderListViewModel>
+@using InventoryManagement.Models
+
+@{
+    ViewData["Title"]       = "Purchase Orders";
+    ViewData["HeaderIcon"]  = "bi-box-arrow-in-down";
+    ViewData["HeaderTitle"] = "PURCHASE ORDERS";
+    Layout = "~/Views/Shared/_InventoryLayout.cshtml";
+}
+
+<div class="inv-content">
+    <section class="inv-section">
+
+        @if (ViewBag.Success is string ok)
+        {
+            <div class="inv-alert inv-alert-success"><i class="bi bi-check-circle-fill"></i> @ok</div>
+        }
+        @if (ViewBag.Error is string err)
+        {
+            <div class="inv-alert inv-alert-danger"><i class="bi bi-exclamation-triangle-fill"></i> @err</div>
+        }
+
+        <div class="inv-section-header">
+            <h2 class="inv-section-title"><i class="bi bi-box-arrow-in-down"></i> Purchase Orders</h2>
+            <a asp-action="Create" class="inv-btn inv-btn-primary">
+                <i class="bi bi-plus-circle"></i> New Purchase Order
+            </a>
+        </div>
+
+        @if (Model?.Any() == true)
+        {
+            @await Html.PartialAsync("_SearchBar", new ViewDataDictionary(ViewData) {
+                { "InputId",     "poSearch"      },
+                { "ClearId",     "poSearchClear" },
+                { "Placeholder", "Search by supplier, status..." }
+            })
+
+            <table class="inv-table">
+                <thead>
+                    <tr>
+                        <th style="width:70px;">PO #</th>
+                        <th>Supplier</th>
+                        <th style="width:130px;">Order Date</th>
+                        <th style="width:130px;">Received</th>
+                        <th style="width:90px;">Items</th>
+                        <th style="width:140px;">Total Cost</th>
+                        <th style="width:110px;">Status</th>
+                        <th class="center" style="width:130px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="poTbody">
+                    @foreach (var po in Model)
+                    {
+                        <tr>
+                            <td data-label="PO #" class="inv-cell-muted">#@po.Id</td>
+                            <td data-label="Supplier"><strong>@po.SupplierName</strong></td>
+                            <td data-label="Order Date" class="inv-cell-muted">@po.OrderDate.ToString("MMM dd, yyyy")</td>
+                            <td data-label="Received"   class="inv-cell-muted">
+                                @(po.ReceivedDate.HasValue ? po.ReceivedDate.Value.ToString("MMM dd, yyyy") : "—")
+                            </td>
+                            <td data-label="Items" class="inv-cell-qty">@po.ItemCount</td>
+                            <td data-label="Total Cost" class="inv-cell-price">PKR @po.TotalCost.ToString("N2")</td>
+                            <td data-label="Status">
+                                @{
+                                    var (badgeClass, icon, label) = po.Status switch {
+                                        PurchaseOrderStatus.Received  => ("inv-badge inv-badge-success", "bi-check-circle-fill", "Received"),
+                                        PurchaseOrderStatus.Cancelled => ("inv-badge inv-badge-muted",   "bi-x-circle",          "Cancelled"),
+                                        _                             => ("inv-badge inv-badge-warning", "bi-hourglass-split",   "Draft")
+                                    };
+                                }
+                                <span class="@badgeClass"><i class="bi @icon"></i> @label</span>
+                            </td>
+                            <td data-label="Actions" class="center">
+                                <div class="inv-actions">
+                                    <a asp-action="Details" asp-route-id="@po.Id"
+                                       class="inv-btn inv-btn-info inv-btn-sm" title="View Details">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    @if (po.Status == PurchaseOrderStatus.Draft)
+                                    {
+                                        <form asp-action="Delete" asp-route-id="@po.Id" method="post" style="display:inline;"
+                                              onsubmit="return confirm('Delete PO #@po.Id?');">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="inv-btn inv-btn-danger inv-btn-sm" title="Delete Draft">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            @await Html.PartialAsync("_EmptyState",
+                ("bi-box-arrow-in-down", "No purchase orders yet", "Create your first purchase order to restock inventory."))
+        }
+
+    </section>
+</div>
+
+@section Scripts {
+    <script src="/js/search.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            TableSearchService.init({
+                inputId: 'poSearch', clearBtnId: 'poSearchClear',
+                tbodyId: 'poTbody', columnIndexes: [1, 6]
+            });
+        });
+    </script>
+}

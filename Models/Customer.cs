@@ -28,9 +28,9 @@ namespace InventoryManagement.Models
         public string Country { get; set; }
         //Foreign Key
         public int AreaId { get; set; }
-                // Navigation Property
+        // Navigation Properties
         public Area Area { get; set; }
-
+        public ICollection<Invoice> Invoices { get; set; } = new List<Invoice>();
 
         public DateTime? DateOfBirth { get; set; }
     }

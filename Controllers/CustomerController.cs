@@ -1,10 +1,13 @@
 using InventoryManagement.Models;
 using InventoryManagement.Services.Interfaces;
 using InventoryManagement.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InventoryManagement.Controllers
 {
+    // Admin and Manager manage customers; Staff has no access.
+    [Authorize(Roles = "Admin,Manager")]
     public class CustomerController : Controller
     {
         private readonly ICustomerService _customerService;
@@ -178,21 +181,20 @@ namespace InventoryManagement.Controllers
         [HttpGet]
         public async Task<JsonResult> GetCustomersByArea(int areaId)
         {
-            var customers =
-                await _customerService.GetCustomersByAreaAsync(areaId);
-
+            var customers = await _customerService.GetCustomersByAreaAsync(areaId);
             var result = customers.Select(c => new
             {
-                c.Id,
-                c.Name,
-                c.Email,
-                c.PhoneNumber,
-                c.Address,
-                c.City,
-                c.Country
+                c.Id, c.Name, c.Email, c.PhoneNumber, c.Address, c.City, c.Country
             });
-
             return Json(result);
+        }
+
+        // GET: Customer/History/5
+        public async Task<IActionResult> History(int id)
+        {
+            var vm = await _customerService.GetHistoryAsync(id);
+            if (vm == null) return NotFound();
+            return View(vm);
         }
     }
 }

@@ -55,6 +55,14 @@ builder.Services.AddScoped<InventoryManagement.Repositories.Interfaces.IProfitRe
 builder.Services.AddScoped<InventoryManagement.Services.Interfaces.IProfitService,
                            InventoryManagement.Services.Implementations.ProfitService>();
 
+// Purchase Order module
+builder.Services.AddScoped<ISupplierRepository, SupplierRepository>();
+builder.Services.AddScoped<InventoryManagement.Services.Interfaces.ISupplierService,
+                           InventoryManagement.Services.Implementations.SupplierService>();
+builder.Services.AddScoped<IPurchaseOrderRepository, PurchaseOrderRepository>();
+builder.Services.AddScoped<InventoryManagement.Services.Interfaces.IPurchaseOrderService,
+                           InventoryManagement.Services.Implementations.PurchaseOrderService>();
+
 
 
 
@@ -67,16 +75,17 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 var app = builder.Build();
 
-// Apply migrations and seed roles
+// Apply migrations and seed roles + default admin
 using (var scope = app.Services.CreateScope())
 {
-    var services = scope.ServiceProvider;
-    var context = services.GetRequiredService<ApplicationDbContext>();
-    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+    var services     = scope.ServiceProvider;
+    var context      = services.GetRequiredService<ApplicationDbContext>();
+    var roleManager  = services.GetRequiredService<RoleManager<IdentityRole>>();
+    var userManager  = services.GetRequiredService<UserManager<ApplicationUser>>();
 
     context.Database.Migrate(); // apply migrations
 
-    await DbInitializer.SeedRoles(roleManager); // seed Admin/Manager/Staff
+    await DbInitializer.SeedAdminUser(userManager, roleManager);
 }
 
 // Configure HTTP request pipeline

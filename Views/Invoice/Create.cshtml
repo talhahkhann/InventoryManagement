@@ -62,15 +62,15 @@
                 </h2>
             </div>
 
-            <table id="invoiceTable" class="inv-table">
+            <table id="invoiceTable" class="inv-table inv-invoice-table">
                 <thead>
                     <tr>
-                        <th style="width: 50px;">#</th>
+                        <th style="width:46px;">#</th>
                         <th>Product</th>
-                        <th style="width: 150px;">Price</th>
-                        <th style="width: 120px;">Qty</th>
-                        <th style="width: 150px;">Total</th>
-                        <th style="width: 80px;" class="center">Action</th>
+                        <th style="width:155px;">Price</th>
+                        <th style="width:110px;">Qty</th>
+                        <th style="width:145px;">Total</th>
+                        <th style="width:70px;" class="center">Del</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -79,30 +79,30 @@
                         for (int i = 0; i < Model.Items.Count; i++)
                         {
                             <tr class="invoiceRow">
-                                <td class="rowIndex">@(i + 1)</td>
-                                <td data-label="Product">
+                                <td class="rowIndex inv-inv-cell-num">@(i + 1)</td>
+                                <td class="inv-inv-cell-product">
                                     <div class="autocomplete">
                                         <input type="text"
                                                class="autocomplete-input productName inv-field-input"
                                                value="@Model.Items[i].ProductName"
-                                               placeholder="Start typing product name..."
+                                               placeholder="Type product name…"
                                                autocomplete="off" />
                                         <input type="hidden" name="Items[@i].ProductId" class="productId" value="@Model.Items[i].ProductId" />
                                         <input type="hidden" name="Items[@i].ProductName" value="@Model.Items[i].ProductName" />
                                     </div>
                                 </td>
-                                <td data-label="Price">
+                                <td class="inv-inv-cell-fixed">
                                     <input type="text" name="Items[@i].Price" class="price price-editable inv-field-input" value="@Model.Items[i].Price.ToString("F2")" />
                                     <span class="price-note"></span>
                                 </td>
-                                <td data-label="Qty">
+                                <td class="inv-inv-cell-fixed">
                                     <input type="number" name="Items[@i].Quantity" class="quantity inv-field-input" value="@Model.Items[i].Quantity" min="1" />
                                 </td>
-                                <td data-label="Total">
-                                    <input type="text" class="total inv-field-input" readonly value="@Model.Items[i].Total.ToString("F2")" style="background-color: #f7fafc;" />
+                                <td class="inv-inv-cell-fixed">
+                                    <input type="text" class="total inv-field-input inv-total-readonly" readonly value="@Model.Items[i].Total.ToString("F2")" />
                                 </td>
-                                <td class="center">
-                                    <button type="button" class="inv-btn inv-btn-danger inv-btn-sm removeRow" style="min-width: auto; padding: 10px 12px;">
+                                <td class="center inv-inv-cell-num">
+                                    <button type="button" class="inv-btn inv-btn-danger inv-btn-sm removeRow" style="min-width:auto;padding:8px 10px;">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </td>
@@ -112,29 +112,29 @@
                     else
                     {
                         <tr class="invoiceRow">
-                            <td class="rowIndex">1</td>
-                            <td data-label="Product">
+                            <td class="rowIndex inv-inv-cell-num">1</td>
+                            <td class="inv-inv-cell-product">
                                 <div class="autocomplete">
                                     <input type="text"
                                            class="autocomplete-input productName inv-field-input"
-                                           placeholder="Start typing product name..."
+                                           placeholder="Type product name…"
                                            autocomplete="off" />
                                     <input type="hidden" name="Items[0].ProductId" class="productId" value="" />
                                     <input type="hidden" name="Items[0].ProductName" value="" />
                                 </div>
                             </td>
-                            <td data-label="Price">
+                            <td class="inv-inv-cell-fixed">
                                 <input type="text" name="Items[0].Price" class="price price-editable inv-field-input" value="0.00" />
                                 <span class="price-note"></span>
                             </td>
-                            <td data-label="Qty">
+                            <td class="inv-inv-cell-fixed">
                                 <input type="number" name="Items[0].Quantity" class="quantity inv-field-input" value="1" min="1" />
                             </td>
-                            <td data-label="Total">
-                                <input type="text" class="total inv-field-input" readonly value="0.00" style="background-color: #f7fafc;" />
+                            <td class="inv-inv-cell-fixed">
+                                <input type="text" class="total inv-field-input inv-total-readonly" readonly value="0.00" />
                             </td>
-                            <td class="center">
-                                <button type="button" class="inv-btn inv-btn-danger inv-btn-sm removeRow" style="min-width: auto; padding: 10px 12px;">
+                            <td class="center inv-inv-cell-num">
+                                <button type="button" class="inv-btn inv-btn-danger inv-btn-sm removeRow" style="min-width:auto;padding:8px 10px;">
                                     <i class="bi bi-trash"></i>
                                 </button>
                             </td>

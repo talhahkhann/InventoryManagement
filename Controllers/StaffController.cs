@@ -6,9 +6,8 @@ namespace InventoryManagement.Controllers
     [Authorize(Roles = "Staff")]
     public class StaffController : Controller
     {
-        public IActionResult Dashboard()
-        {
-            return View();
-        }
+        // Redirect straight to the unified dashboard
+        public IActionResult Dashboard() =>
+            RedirectToAction("Index", "Home");
     }
 }

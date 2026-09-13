@@ -1,10 +1,13 @@
 using InventoryManagement.Models;
 using InventoryManagement.Services.Interfaces;
 using InventoryManagement.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InventoryManagement.Controllers
 {
+    // Admin and Manager manage categories; Staff has no access.
+    [Authorize(Roles = "Admin,Manager")]
     public class CategoriesController : Controller
     {
         private readonly ICategoryService _categoryService;

@@ -1,0 +1,90 @@
+@model InventoryManagement.ViewModels.EditUserViewModel
+
+@{
+    ViewData["Title"]       = "Edit User";
+    ViewData["HeaderIcon"]  = "bi-person-gear";
+    ViewData["HeaderTitle"] = "EDIT USER";
+    Layout = "~/Views/Shared/_InventoryLayout.cshtml";
+}
+
+<div class="inv-form-area">
+    <form asp-action="EditUser" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="Id" />
+
+        <section class="inv-section">
+            <div class="inv-section-header">
+                <h2 class="inv-section-title"><i class="bi bi-person-lines-fill"></i> Edit User Details</h2>
+            </div>
+
+            <div class="inv-field-row">
+
+                <div class="inv-field-col">
+                    <label asp-for="FullName" class="inv-field-label required">Full Name</label>
+                    <input asp-for="FullName" class="inv-field-input" placeholder="Full Name" />
+                    <span asp-validation-for="FullName" class="inv-field-error"></span>
+                </div>
+
+                <div class="inv-field-col">
+                    <label asp-for="Email" class="inv-field-label required">Email Address</label>
+                    <input asp-for="Email" type="email" class="inv-field-input" placeholder="user@example.com" />
+                    <span asp-validation-for="Email" class="inv-field-error"></span>
+                </div>
+
+                <div class="inv-field-col">
+                    <label asp-for="Role" class="inv-field-label required">Role</label>
+                    <select asp-for="Role" class="inv-field-select">
+                        <option value="">-- Select Role --</option>
+                        <option value="Admin">Admin</option>
+                        <option value="Manager">Manager</option>
+                        <option value="Staff">Staff</option>
+                    </select>
+                    <span asp-validation-for="Role" class="inv-field-error"></span>
+                </div>
+
+                <div class="inv-field-col">
+                    <label asp-for="PhoneNumber" class="inv-field-label">Phone Number</label>
+                    <input asp-for="PhoneNumber" type="tel" class="inv-field-input" placeholder="+1 234 567 8900" />
+                    <span asp-validation-for="PhoneNumber" class="inv-field-error"></span>
+                </div>
+
+                <div class="inv-field-col">
+                    <label asp-for="Country" class="inv-field-label">Country</label>
+                    <input asp-for="Country" class="inv-field-input" placeholder="Pakistan" />
+                    <span asp-validation-for="Country" class="inv-field-error"></span>
+                </div>
+
+                <div class="inv-field-col" style="flex: 1 1 100%;">
+                    <label asp-for="Address" class="inv-field-label">Address</label>
+                    <input asp-for="Address" class="inv-field-input" placeholder="Street, City" />
+                    <span asp-validation-for="Address" class="inv-field-error"></span>
+                </div>
+
+            </div>
+        </section>
+
+        @* Password reset section *@
+        <section class="inv-section" style="margin-top:1.5rem;">
+            <div class="inv-section-header">
+                <h2 class="inv-section-title"><i class="bi bi-key-fill"></i> Reset Password</h2>
+            </div>
+            <div class="inv-field-row">
+                <div class="inv-field-col">
+                    <label asp-for="NewPassword" class="inv-field-label">New Password</label>
+                    <input asp-for="NewPassword" type="password" class="inv-field-input"
+                           placeholder="Leave blank to keep current password" />
+                    <span asp-validation-for="NewPassword" class="inv-field-error"></span>
+                    <span style="font-size:.78rem; color:#718096;">Min. 4 characters. Leave blank to keep the existing password.</span>
+                </div>
+            </div>
+        </section>
+
+        <div class="inv-form-footer">
+            <a asp-action="Users" class="inv-btn inv-btn-outline"><i class="bi bi-x-circle"></i> Cancel</a>
+            <button type="submit" class="inv-btn inv-btn-primary"><i class="bi bi-save"></i> Save Changes</button>
+        </div>
+
+    </form>
+</div>
+
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

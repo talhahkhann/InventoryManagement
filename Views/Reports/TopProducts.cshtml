@@ -1,0 +1,211 @@
+@model InventoryManagement.ViewModels.SalesReportPageViewModel<InventoryManagement.ViewModels.TopProductViewModel>
+
+@{
+    ViewData["Title"]       = "Top Products";
+    ViewData["HeaderIcon"]  = "bi-trophy-fill";
+    ViewData["HeaderTitle"] = "REPORTS — TOP PRODUCTS";
+    Layout = "~/Views/Shared/_InventoryLayout.cshtml";
+
+    var from = Model.Filter.From?.ToString("yyyy-MM-dd") ?? "";
+    var to   = Model.Filter.To?.ToString("yyyy-MM-dd")   ?? "";
+    int top  = ViewBag.Top is int t ? t : 20;
+
+    var grandRevenue = Model.Data.Sum(r => r.TotalRevenue);
+    var grandProfit  = Model.Data.Sum(r => r.TotalProfit);
+    var grandQty     = Model.Data.Sum(r => r.TotalQuantitySold);
+}
+
+<div class="inv-content">
+
+    @* ── Report Nav Tabs ─────────────────────────────────────────────── *@
+    <div class="rpt-tabs">
+        <a asp-action="SalesPerProduct"  asp-route-from="@from" asp-route-to="@to"
+           class="rpt-tab"><i class="bi bi-box-seam"></i> By Product</a>
+        <a asp-action="SalesPerCategory" asp-route-from="@from" asp-route-to="@to"
+           class="rpt-tab"><i class="bi bi-tags"></i> By Category</a>
+        <a asp-action="TopProducts"      asp-route-from="@from" asp-route-to="@to"
+           class="rpt-tab active"><i class="bi bi-trophy"></i> Top Products</a>
+        <a asp-action="TopCustomers"     asp-route-from="@from" asp-route-to="@to"
+           class="rpt-tab"><i class="bi bi-people-fill"></i> Top Customers</a>
+    </div>
+
+    <section class="inv-section">
+
+        @* ── Filter bar ──────────────────────────────────────────────── *@
+        <form method="get" asp-action="TopProducts" class="rpt-filter-bar">
+            <span class="rpt-filter-label"><i class="bi bi-funnel"></i> Date Range</span>
+
+            <div class="rpt-filter-group">
+                <label class="rpt-filter-sublabel">From</label>
+                <input type="date" name="from" value="@from" class="inv-field-input rpt-date-input" />
+            </div>
+            <div class="rpt-filter-group">
+                <label class="rpt-filter-sublabel">To</label>
+                <input type="date" name="to" value="@to" class="inv-field-input rpt-date-input" />
+            </div>
+
+            <div class="rpt-filter-group">
+                <label class="rpt-filter-sublabel">Show top</label>
+                <select name="top" class="inv-field-select" style="width:80px;">
+                    @foreach (var n in new[]{ 10, 20, 50 })
+                    {
+                        if (top == n)
+                        {
+                            <option value="@n" selected>@n</option>
+                        }
+                        else
+                        {
+                            <option value="@n">@n</option>
+                        }
+                    }
+                </select>
+            </div>
+
+            @if (Model.AvailableYears.Any())
+            {
+                <div class="rpt-year-pills">
+                    @foreach (var yr in Model.AvailableYears.Take(5))
+                    {
+                        <a asp-action="TopProducts"
+                           asp-route-from="@($"{yr}-01-01")"
+                           asp-route-to="@($"{yr}-12-31")"
+                           asp-route-top="@top"
+                           class="rpt-year-pill @(Model.Filter.From?.Year == yr && Model.Filter.To?.Year == yr ? "active" : "")">
+                            @yr
+                        </a>
+                    }
+                    @if (from != "" || to != "")
+                    {
+                        <a asp-action="TopProducts" asp-route-top="@top" class="rpt-year-pill rpt-year-clear">
+                            <i class="bi bi-x"></i> All time
+                        </a>
+                    }
+                </div>
+            }
+
+            <button type="submit" class="inv-btn inv-btn-primary inv-btn-sm">
+                <i class="bi bi-search"></i> Apply
+            </button>
+        </form>
+
+        @* ── Section header ───────────────────────────────────────────── *@
+        <div class="inv-section-header" style="margin-top:16px;">
+            <h2 class="inv-section-title">
+                <i class="bi bi-trophy-fill"></i> Top @top Products by Revenue
+                @if (Model.Filter.HasFilter)
+                {
+                    <span class="rpt-date-badge">
+                        @Model.Filter.EffectiveFrom.ToString("dd MMM yyyy") — @Model.Filter.EffectiveTo.ToString("dd MMM yyyy")
+                    </span>
+                }
+            </h2>
+            @if (Model.Data.Any())
+            {
+                <a asp-action="ExportCsv"
+                   asp-route-report="TopProducts"
+                   asp-route-from="@from" asp-route-to="@to"
+                   asp-route-top="@top"
+                   class="rpt-export-btn">
+                    <i class="bi bi-download"></i> Export CSV
+                </a>
+            }
+        </div>
+
+        @* ── Summary KPIs ─────────────────────────────────────────────── *@
+        @if (Model.Data.Any())
+        {
+            <div class="rpt-kpi-row">
+                <div class="rpt-kpi-card">
+                    <div class="rpt-kpi-val">@grandQty.ToString("N0")</div>
+                    <div class="rpt-kpi-lbl">Total Units</div>
+                </div>
+                <div class="rpt-kpi-card">
+                    <div class="rpt-kpi-val">PKR @grandRevenue.ToString("N0")</div>
+                    <div class="rpt-kpi-lbl">Total Revenue</div>
+                </div>
+                <div class="rpt-kpi-card rpt-kpi-highlight">
+                    <div class="rpt-kpi-val">PKR @grandProfit.ToString("N0")</div>
+                    <div class="rpt-kpi-lbl">Total Profit</div>
+                </div>
+            </div>
+        }
+
+        @* ── Table ───────────────────────────────────────────────────────  *@
+        @if (Model.Data.Any())
+        {
+            @await Html.PartialAsync("_SearchBar", new ViewDataDictionary(ViewData) {
+                { "InputId",     "rptSearch"      },
+                { "ClearId",     "rptSearchClear" },
+                { "Placeholder", "Search by product or category..." }
+            })
+
+            <table class="inv-table">
+                <thead>
+                    <tr>
+                        <th style="width:54px;">#</th>
+                        <th>Product</th>
+                        <th>Category</th>
+                        <th style="width:110px;">Units Sold</th>
+                        <th style="width:155px;">Revenue (PKR)</th>
+                        <th style="width:155px;">Profit (PKR)</th>
+                        <th style="width:100px;">Margin %</th>
+                    </tr>
+                </thead>
+                <tbody id="rptTbody">
+                    @foreach (var row in Model.Data)
+                    {
+                        var marginClass = row.MarginPct >= 30 ? "profit-margin-high"
+                                        : row.MarginPct >= 10 ? "profit-margin-mid"
+                                        : "profit-margin-low";
+                        <tr>
+                            <td data-label="#" class="rpt-rank">
+                                @if (row.Rank <= 3)
+                                {
+                                    var medal = row.Rank == 1 ? "🥇" : row.Rank == 2 ? "🥈" : "🥉";
+                                    <span>@medal</span>
+                                }
+                                else { <span class="inv-cell-muted">@row.Rank</span> }
+                            </td>
+                            <td data-label="Product"><strong>@row.ProductName</strong></td>
+                            <td data-label="Category" class="inv-cell-muted">@row.CategoryName</td>
+                            <td data-label="Units"     class="inv-cell-qty">@row.TotalQuantitySold.ToString("N0")</td>
+                            <td data-label="Revenue"   class="inv-cell-price">@row.TotalRevenue.ToString("N2")</td>
+                            <td data-label="Profit"    class="inv-cell-price">@row.TotalProfit.ToString("N2")</td>
+                            <td data-label="Margin"    class="@marginClass">@row.MarginPct.ToString("F1")%</td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr class="rpt-total-row">
+                        <td colspan="3" style="text-align:right;font-weight:700;padding:12px 14px;">TOTAL</td>
+                        <td class="inv-cell-qty" style="padding:12px 14px;">@grandQty.ToString("N0")</td>
+                        <td class="inv-cell-price" style="font-weight:800;padding:12px 14px;">@grandRevenue.ToString("N2")</td>
+                        <td class="inv-cell-price" style="font-weight:800;padding:12px 14px;">@grandProfit.ToString("N2")</td>
+                        <td style="padding:12px 14px;"></td>
+                    </tr>
+                </tfoot>
+            </table>
+        }
+        else
+        {
+            @await Html.PartialAsync("_EmptyState",
+                ("bi-trophy", "No data", "No invoices found for the selected date range."))
+        }
+
+    </section>
+</div>
+
+@section Scripts {
+    <script src="/js/search.js"></script>
+    @if (Model.Data.Any())
+    {
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                TableSearchService.init({
+                    inputId: 'rptSearch', clearBtnId: 'rptSearchClear',
+                    tbodyId: 'rptTbody', columnIndexes: [1, 2]
+                });
+            });
+        </script>
+    }
+}

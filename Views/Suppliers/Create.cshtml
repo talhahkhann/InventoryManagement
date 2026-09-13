@@ -1,0 +1,80 @@
+@model InventoryManagement.ViewModels.SupplierViewModel
+
+@{
+    ViewData["Title"]       = "Add Supplier";
+    ViewData["HeaderIcon"]  = "bi-truck";
+    ViewData["HeaderTitle"] = "ADD SUPPLIER";
+    Layout = "~/Views/Shared/_InventoryLayout.cshtml";
+}
+
+<div class="inv-form-area">
+    <form asp-action="Create" method="post">
+        @Html.AntiForgeryToken()
+
+        <section class="inv-section">
+            <div class="inv-section-header">
+                <h2 class="inv-section-title"><i class="bi bi-info-circle"></i> Supplier Details</h2>
+            </div>
+            <div class="inv-field-row">
+
+                <div class="inv-field-col">
+                    <label asp-for="Name" class="inv-field-label required">Supplier Name</label>
+                    <input asp-for="Name" class="inv-field-input" placeholder="e.g. Ali Trading Co." />
+                    <span asp-validation-for="Name" class="inv-field-error"></span>
+                </div>
+
+                <div class="inv-field-col">
+                    <label asp-for="ContactPerson" class="inv-field-label">Contact Person</label>
+                    <input asp-for="ContactPerson" class="inv-field-input" placeholder="Name of contact" />
+                    <span asp-validation-for="ContactPerson" class="inv-field-error"></span>
+                </div>
+
+                <div class="inv-field-col">
+                    <label asp-for="Phone" class="inv-field-label">Phone</label>
+                    <input asp-for="Phone" type="tel" class="inv-field-input" placeholder="+92 300 0000000" />
+                    <span asp-validation-for="Phone" class="inv-field-error"></span>
+                </div>
+
+                <div class="inv-field-col">
+                    <label asp-for="Email" class="inv-field-label">Email</label>
+                    <input asp-for="Email" type="email" class="inv-field-input" placeholder="supplier@example.com" />
+                    <span asp-validation-for="Email" class="inv-field-error"></span>
+                </div>
+
+                <div class="inv-field-col">
+                    <label asp-for="City" class="inv-field-label">City</label>
+                    <input asp-for="City" class="inv-field-input" placeholder="Karachi" />
+                    <span asp-validation-for="City" class="inv-field-error"></span>
+                </div>
+
+                <div class="inv-field-col">
+                    <label asp-for="Country" class="inv-field-label">Country</label>
+                    <input asp-for="Country" class="inv-field-input" placeholder="Pakistan" />
+                    <span asp-validation-for="Country" class="inv-field-error"></span>
+                </div>
+
+                <div class="inv-field-col" style="flex:1 1 100%;">
+                    <label asp-for="Address" class="inv-field-label">Address</label>
+                    <input asp-for="Address" class="inv-field-input" placeholder="Street, Area" />
+                    <span asp-validation-for="Address" class="inv-field-error"></span>
+                </div>
+
+                <div class="inv-field-col">
+                    <label class="inv-field-label">Status</label>
+                    <div style="display:flex;align-items:center;gap:10px;padding:10px 0;">
+                        <input asp-for="IsActive" type="checkbox" style="width:18px;height:18px;cursor:pointer;" />
+                        <span style="font-size:.875rem;color:#4a5568;">Active (available for purchase orders)</span>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <div class="inv-form-footer">
+            <a asp-action="Index" class="inv-btn inv-btn-outline"><i class="bi bi-x-circle"></i> Cancel</a>
+            <button type="submit" class="inv-btn inv-btn-primary"><i class="bi bi-save"></i> Save Supplier</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

@@ -27,10 +27,14 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                     </ul>
-                    @* Alert bell in the Bootstrap nav right side *@
-                    <div class="d-flex align-items-center" style="gap: 12px; padding-right: 8px;">
-                        @await Component.InvokeAsync("AlertNotification")
-                    </div>
+                    @* Alert bell — only for authenticated Admin/Manager *@
+                    @if (User.Identity?.IsAuthenticated == true &&
+                         (User.IsInRole("Admin") || User.IsInRole("Manager")))
+                    {
+                        <div class="d-flex align-items-center" style="gap: 12px; padding-right: 8px;">
+                            @await Component.InvokeAsync("AlertNotification")
+                        </div>
+                    }
                 </div>
             </div>
         </nav>
@@ -51,12 +55,16 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/js/stockalert.js" asp-append-version="true"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            StockAlertService.initBell();
-            StockAlertService.startAutoRefresh();
-        });
-    </script>
+    @if (User.Identity?.IsAuthenticated == true &&
+         (User.IsInRole("Admin") || User.IsInRole("Manager")))
+    {
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                StockAlertService.initBell();
+                StockAlertService.startAutoRefresh();
+            });
+        </script>
+    }
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

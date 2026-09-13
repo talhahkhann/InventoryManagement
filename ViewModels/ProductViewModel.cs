@@ -11,7 +11,8 @@ namespace InventoryManagement.ViewModels
         public string Name { get; set; }
 
         [Required]
-        [Range(0, double.MaxValue)]
+        [Range(0.01, double.MaxValue, ErrorMessage = "Selling price must be greater than 0.")]
+        [Display(Name = "Selling Price")]
         public decimal Price { get; set; }
 
         [Required]
@@ -22,6 +23,11 @@ namespace InventoryManagement.ViewModels
         [Required]
         [Range(0, int.MaxValue)]
         public int Quantity { get; set; }
+
+        [Required]
+        [Range(0, int.MaxValue)]
+        [Display(Name = "Stock Alert Threshold")]
+        public int StockThreshold { get; set; } = 10;
 
         [Required]
         [Display(Name = "Category")]

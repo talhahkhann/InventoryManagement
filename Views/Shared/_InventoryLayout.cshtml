@@ -8,43 +8,231 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 <body>
-    <div class="inv-root">
+<div class="inv-root">
 
-        @* Page Header *@
-        <header class="inv-header">
-            <div class="inv-header-logo">
-                <i class="bi @(ViewData["HeaderIcon"] ?? "bi-boxes") inv-header-icon"></i>
-                <span class="inv-header-title">@(ViewData["HeaderTitle"] ?? ViewData["Title"])</span>
-            </div>
+    @* ─────────────────────────────────────────────────────────────────
+       TOP HEADER
+    ───────────────────────────────────────────────────────────────── *@
+    <header class="inv-header">
+        <div class="inv-header-logo">
+            <i class="bi @(ViewData["HeaderIcon"] ?? "bi-boxes") inv-header-icon"></i>
+            <span class="inv-header-title">@(ViewData["HeaderTitle"] ?? ViewData["Title"])</span>
+        </div>
 
-            <div class="inv-header-actions">
-                @* Alert bell — shared across all inventory pages *@
+        <div class="inv-header-actions">
+
+            @* Alert bell — visible to Admin and Manager only *@
+            @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+            {
                 @await Component.InvokeAsync("AlertNotification")
+            }
 
-                @if (IsSectionDefined("HeaderActions"))
+            @* Logged-in user chip *@
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <div class="inv-user-chip">
+                    <i class="bi bi-person-circle"></i>
+                    <span>@User.Identity.Name</span>
+                    @{
+                        var roleBadge = User.IsInRole("Admin")   ? "inv-badge inv-badge-danger"  :
+                                        User.IsInRole("Manager") ? "inv-badge inv-badge-warning" :
+                                                                   "inv-badge inv-badge-info";
+                        var roleLabel = User.IsInRole("Admin")   ? "Admin"   :
+                                        User.IsInRole("Manager") ? "Manager" : "Staff";
+                    }
+                    <span class="@roleBadge" style="font-size:.7rem;">@roleLabel</span>
+                </div>
+            }
+
+            @if (IsSectionDefined("HeaderActions"))
+            {
+                @RenderSection("HeaderActions", required: false)
+            }
+
+            @* Logout button *@
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <form asp-controller="Account" asp-action="Logout" method="post" style="display:inline;">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="inv-btn-logout" title="Sign out">
+                        <i class="bi bi-box-arrow-right"></i> Logout
+                    </button>
+                </form>
+            }
+        </div>
+    </header>
+
+    @* ─────────────────────────────────────────────────────────────────
+       BODY WRAPPER  (sidebar + content)
+    ───────────────────────────────────────────────────────────────── *@
+    <div class="inv-body-wrapper">
+
+        @* ── SIDEBAR NAV ── *@
+        <nav class="inv-sidebar">
+            <ul class="inv-nav-list">
+
+                @* Dashboard — role-specific *@
+                @if (User.IsInRole("Admin"))
                 {
-                    @RenderSection("HeaderActions", required: false)
+                    <li class="inv-nav-item">
+                        <a asp-controller="Admin" asp-action="Dashboard" class="inv-nav-link">
+                            <i class="bi bi-speedometer2"></i><span>Dashboard</span>
+                        </a>
+                    </li>
                 }
-            </div>
-        </header>
+                else if (User.IsInRole("Manager"))
+                {
+                    <li class="inv-nav-item">
+                        <a asp-controller="Manager" asp-action="Dashboard" class="inv-nav-link">
+                            <i class="bi bi-speedometer2"></i><span>Dashboard</span>
+                        </a>
+                    </li>
+                }
+                else
+                {
+                    <li class="inv-nav-item">
+                        <a asp-controller="Staff" asp-action="Dashboard" class="inv-nav-link">
+                            <i class="bi bi-speedometer2"></i><span>Dashboard</span>
+                        </a>
+                    </li>
+                }
 
-        @* Main Content *@
+                @* ── Staff: Invoices only ── *@
+                <li class="inv-nav-item">
+                    <a asp-controller="Invoice" asp-action="Create" class="inv-nav-link">
+                        <i class="bi bi-plus-square"></i><span>New Invoice</span>
+                    </a>
+                </li>
+
+                @* ── Admin + Manager section ── *@
+                @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                {
+                    <li class="inv-nav-section-label">Inventory</li>
+
+                    <li class="inv-nav-item">
+                        <a asp-controller="Invoice" asp-action="Index" class="inv-nav-link">
+                            <i class="bi bi-receipt"></i><span>Invoices</span>
+                        </a>
+                    </li>
+
+                    <li class="inv-nav-item">
+                        <a asp-controller="PurchaseOrder" asp-action="Index" class="inv-nav-link">
+                            <i class="bi bi-box-arrow-in-down"></i><span>Purchase Orders</span>
+                        </a>
+                    </li>
+
+                    <li class="inv-nav-item">
+                        <a asp-controller="Products" asp-action="Index" class="inv-nav-link">
+                            <i class="bi bi-boxes"></i><span>Products</span>
+                        </a>
+                    </li>
+
+                    <li class="inv-nav-item">
+                        <a asp-controller="Categories" asp-action="Index" class="inv-nav-link">
+                            <i class="bi bi-tags"></i><span>Categories</span>
+                        </a>
+                    </li>
+
+                    <li class="inv-nav-item">
+                        <a asp-controller="Customer" asp-action="Index" class="inv-nav-link">
+                            <i class="bi bi-people"></i><span>Customers</span>
+                        </a>
+                    </li>
+
+                    <li class="inv-nav-item">
+                        <a asp-controller="Area" asp-action="Index" class="inv-nav-link">
+                            <i class="bi bi-geo-alt"></i><span>Areas</span>
+                        </a>
+                    </li>
+
+                    <li class="inv-nav-item">
+                        <a asp-controller="Suppliers" asp-action="Index" class="inv-nav-link">
+                            <i class="bi bi-truck"></i><span>Suppliers</span>
+                        </a>
+                    </li>
+
+                    <li class="inv-nav-section-label">Analytics</li>
+
+                    <li class="inv-nav-item">
+                        <a asp-controller="Profit" asp-action="Index" class="inv-nav-link">
+                            <i class="bi bi-graph-up-arrow"></i><span>Profit</span>
+                        </a>
+                    </li>
+
+                    <li class="inv-nav-item">
+                        <a asp-controller="Reports" asp-action="SalesPerProduct" class="inv-nav-link">
+                            <i class="bi bi-bar-chart-line"></i><span>Sales Report</span>
+                        </a>
+                    </li>
+
+                    <li class="inv-nav-item">
+                        <a asp-controller="Reports" asp-action="TopProducts" class="inv-nav-link">
+                            <i class="bi bi-trophy"></i><span>Top Products</span>
+                        </a>
+                    </li>
+
+                    <li class="inv-nav-item">
+                        <a asp-controller="Reports" asp-action="TopCustomers" class="inv-nav-link">
+                            <i class="bi bi-person-badge-fill"></i><span>Top Customers</span>
+                        </a>
+                    </li>
+
+                    <li class="inv-nav-item">
+                        <a asp-controller="StockAlert" asp-action="Index" class="inv-nav-link">
+                            <i class="bi bi-bell-fill"></i><span>Stock Alerts</span>
+                        </a>
+                    </li>
+                }
+
+                @* ── Admin only section ── *@
+                @if (User.IsInRole("Admin"))
+                {
+                    <li class="inv-nav-section-label">Administration</li>
+
+                    <li class="inv-nav-item">
+                        <a asp-controller="Admin" asp-action="Users" class="inv-nav-link">
+                            <i class="bi bi-people-fill"></i><span>User Management</span>
+                        </a>
+                    </li>
+                }
+
+            </ul>
+        </nav>
+
+        @* ── MAIN CONTENT ── *@
         <main class="inv-main">
             @RenderBody()
         </main>
 
     </div>
+</div>
 
-    @* Core scripts — available to every inv-layout page *@
-    <script src="/js/site.js"></script>
-    <script src="/js/stockalert.js"></script>
+@* Core scripts *@
+<script src="/js/site.js"></script>
+<script src="/js/stockalert.js"></script>
+@if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+{
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             StockAlertService.initBell();
             StockAlertService.startAutoRefresh();
         });
     </script>
+}
 
-    @await RenderSectionAsync("Scripts", required: false)
+@* Active nav link highlight *@
+<script>
+    (function () {
+        var path = window.location.pathname.toLowerCase();
+        document.querySelectorAll('.inv-nav-link').forEach(function (link) {
+            var href = link.getAttribute('href');
+            if (href && path.startsWith(href.toLowerCase()) && href !== '/') {
+                link.classList.add('active');
+            }
+        });
+    })();
+</script>
+
+@await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

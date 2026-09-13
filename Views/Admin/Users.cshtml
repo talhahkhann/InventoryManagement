@@ -1,0 +1,119 @@
+@model IEnumerable<InventoryManagement.ViewModels.UserListViewModel>
+
+@{
+    ViewData["Title"]       = "User Management";
+    ViewData["HeaderIcon"]  = "bi-people-fill";
+    ViewData["HeaderTitle"] = "USER MANAGEMENT";
+    Layout = "~/Views/Shared/_InventoryLayout.cshtml";
+}
+
+<div class="inv-content">
+    <section class="inv-section">
+
+        @* Success / Error banners *@
+        @if (ViewBag.Success is string ok)
+        {
+            <div class="inv-alert inv-alert-success">
+                <i class="bi bi-check-circle-fill"></i> @ok
+            </div>
+        }
+        @if (TempData["Error"] is string err)
+        {
+            <div class="inv-alert inv-alert-danger">
+                <i class="bi bi-exclamation-triangle-fill"></i> @err
+            </div>
+        }
+
+        <div class="inv-section-header">
+            <h2 class="inv-section-title">
+                <i class="bi bi-person-lines-fill"></i> System Users
+            </h2>
+            <a asp-action="CreateUser" class="inv-btn inv-btn-primary">
+                <i class="bi bi-person-plus-fill"></i> Add User
+            </a>
+        </div>
+
+        @if (Model?.Any() == true)
+        {
+            @await Html.PartialAsync("_SearchBar", new ViewDataDictionary(ViewData) {
+                { "InputId",     "userSearch"      },
+                { "ClearId",     "userSearchClear" },
+                { "Placeholder", "Search by name, email, role..." }
+            })
+
+            <table class="inv-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Full Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Country</th>
+                        <th>Role</th>
+                        <th class="center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="usersTbody">
+                    @{ int row = 1; }
+                    @foreach (var user in Model)
+                    {
+                        <tr>
+                            <td data-label="#">@(row++)</td>
+                            <td data-label="Full Name">@user.FullName</td>
+                            <td data-label="Email" class="inv-cell-muted">@user.Email</td>
+                            <td data-label="Phone" class="inv-cell-muted">@(string.IsNullOrEmpty(user.PhoneNumber) ? "—" : user.PhoneNumber)</td>
+                            <td data-label="Country" class="inv-cell-muted">@(string.IsNullOrEmpty(user.Country) ? "—" : user.Country)</td>
+                            <td data-label="Role">
+                                @{
+                                    var badgeClass = user.Role switch {
+                                        "Admin"   => "inv-badge inv-badge-danger",
+                                        "Manager" => "inv-badge inv-badge-warning",
+                                        "Staff"   => "inv-badge inv-badge-info",
+                                        _         => "inv-badge inv-badge-muted"
+                                    };
+                                }
+                                <span class="@badgeClass">@user.Role</span>
+                            </td>
+                            <td data-label="Actions" class="center">
+                                <div class="inv-actions">
+                                    <a asp-action="EditUser" asp-route-id="@user.Id"
+                                       class="inv-btn inv-btn-warning inv-btn-sm" title="Edit">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <form asp-action="DeleteUser" method="post" style="display:inline"
+                                          onsubmit="return confirm('Delete user @user.FullName? This cannot be undone.');">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@user.Id" />
+                                        <button type="submit" class="inv-btn inv-btn-danger inv-btn-sm" title="Delete">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            @await Html.PartialAsync("_EmptyState",
+                ("bi-people", "No users found", "Add the first user to get started."))
+        }
+
+    </section>
+</div>
+
+@section Scripts {
+    <script src="/js/search.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            TableSearchService.init({
+                inputId:       'userSearch',
+                clearBtnId:    'userSearchClear',
+                tbodyId:       'usersTbody',
+                columnIndexes: [1, 2, 5]  // Name, Email, Role
+            });
+        });
+    </script>
+}

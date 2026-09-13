@@ -1360,3 +1360,1107 @@ mark.search-highlight {
         font-size: 1rem;
     }
 }
+
+
+/* =============================================
+   SIDEBAR NAVIGATION LAYOUT
+   Added for role-based nav in _InventoryLayout
+   ============================================= */
+
+/* Body wrapper: sidebar on left, main on right */
+.inv-body-wrapper {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    min-height: 0;
+}
+
+/* Sidebar */
+.inv-sidebar {
+    width: 220px;
+    flex-shrink: 0;
+    background: #1a2844;
+    overflow-y: auto;
+    padding: 16px 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.inv-nav-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    flex: 1;
+}
+
+.inv-nav-item {
+    margin: 0;
+}
+
+/* Section label (e.g. "Inventory", "Analytics") */
+.inv-nav-section-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #4a6fa5;
+    padding: 14px 20px 4px;
+    pointer-events: none;
+}
+
+/* Nav link */
+.inv-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    color: #a0b3cc;
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-left: 3px solid transparent;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+}
+
+.inv-nav-link i {
+    font-size: 1rem;
+    width: 18px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.inv-nav-link:hover {
+    color: #fff;
+    background: rgba(255,255,255,0.07);
+    text-decoration: none;
+}
+
+.inv-nav-link.active {
+    color: #fff;
+    background: rgba(49,130,206,0.18);
+    border-left-color: #3182ce;
+    font-weight: 700;
+}
+
+/* Main content area next to sidebar */
+.inv-main {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+    background: #f0f4f8;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-height: 0;
+}
+
+/* =============================================
+   USER CHIP (header top-right)
+   ============================================= */
+.inv-user-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,0.12);
+    border-radius: 20px;
+    padding: 6px 14px 6px 10px;
+    font-size: 0.82rem;
+    color: #e2e8f0;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.inv-user-chip i {
+    font-size: 1.1rem;
+    color: #90cdf4;
+}
+
+/* =============================================
+   BADGE VARIANTS  (role, status, etc.)
+   ============================================= */
+.inv-badge-danger {
+    background: #fff5f5;
+    color: #c53030;
+    border: 1px solid #feb2b2;
+}
+
+.inv-badge-warning {
+    background: #fffaf0;
+    color: #c05621;
+    border: 1px solid #fbd38d;
+}
+
+.inv-badge-info {
+    background: #ebf8ff;
+    color: #2b6cb0;
+    border: 1px solid #bee3f8;
+}
+
+.inv-badge-muted {
+    background: #f7fafc;
+    color: #718096;
+    border: 1px solid #e2e8f0;
+}
+
+/* =============================================
+   ALERT BANNERS  (success / danger)
+   ============================================= */
+.inv-alert {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 18px;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 16px;
+}
+
+.inv-alert-success {
+    background: #f0fff4;
+    color: #276749;
+    border: 1px solid #9ae6b4;
+}
+
+.inv-alert-danger {
+    background: #fff5f5;
+    color: #c53030;
+    border: 1px solid #feb2b2;
+}
+
+/* =============================================
+   INFO BOX  (role permissions summary etc.)
+   ============================================= */
+.inv-info-box {
+    background: #ebf8ff;
+    border: 1px solid #bee3f8;
+    border-radius: 8px;
+    padding: 14px 18px;
+    font-size: 0.875rem;
+    color: #2b6cb0;
+}
+
+/* =============================================
+   RESPONSIVE SIDEBAR
+   ============================================= */
+@media (max-width: 768px) {
+    .inv-sidebar {
+        width: 56px;
+        padding: 10px 0;
+    }
+
+    .inv-nav-link span,
+    .inv-nav-section-label {
+        display: none;
+    }
+
+    .inv-nav-link {
+        justify-content: center;
+        padding: 12px;
+        border-left-width: 2px;
+    }
+
+    .inv-nav-link i {
+        width: auto;
+        font-size: 1.15rem;
+    }
+
+    .inv-user-chip span:not(i) {
+        display: none;
+    }
+
+    .inv-user-chip {
+        padding: 6px;
+        border-radius: 50%;
+    }
+}
+
+
+/* =============================================
+   DASHBOARD — Home/Index
+   ============================================= */
+
+/* Welcome banner */
+.dash-welcome {
+    background: linear-gradient(135deg, #1a3a6c 0%, #2c5282 100%);
+    border-radius: 12px;
+    padding: 24px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    box-shadow: 0 4px 16px rgba(26,58,108,0.18);
+}
+
+.dash-welcome-greeting {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 4px;
+}
+
+.dash-welcome-sub {
+    font-size: 0.875rem;
+    color: #90cdf4;
+}
+
+.dash-welcome-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 20px;
+    padding: 8px 18px;
+    color: #fff;
+    font-size: 0.875rem;
+    font-weight: 700;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.dash-welcome-badge i { font-size: 1rem; color: #90cdf4; }
+
+/* KPI stat cards row */
+.dash-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+.dash-kpi-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+    text-decoration: none;
+    color: inherit;
+    border-left: 4px solid transparent;
+    transition: transform 0.18s, box-shadow 0.18s;
+    position: relative;
+}
+
+.dash-kpi-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    text-decoration: none;
+    color: inherit;
+}
+
+.dash-kpi-blue   { border-left-color: #3182ce; }
+.dash-kpi-green  { border-left-color: #38a169; }
+.dash-kpi-orange { border-left-color: #dd6b20; }
+.dash-kpi-purple { border-left-color: #805ad5; }
+.dash-kpi-red    { border-left-color: #e53e3e; }
+
+.dash-kpi-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.dash-kpi-blue   .dash-kpi-icon { background: #ebf8ff; color: #3182ce; }
+.dash-kpi-green  .dash-kpi-icon { background: #f0fff4; color: #38a169; }
+.dash-kpi-orange .dash-kpi-icon { background: #fffaf0; color: #dd6b20; }
+.dash-kpi-purple .dash-kpi-icon { background: #faf5ff; color: #805ad5; }
+.dash-kpi-red    .dash-kpi-icon { background: #fff5f5; color: #e53e3e; }
+
+.dash-kpi-body { flex: 1; min-width: 0; }
+
+.dash-kpi-value {
+    font-size: 1.9rem;
+    font-weight: 800;
+    color: #1a202c;
+    line-height: 1;
+    margin-bottom: 4px;
+}
+
+.dash-kpi-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #718096;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.dash-kpi-arrow {
+    font-size: 1.4rem;
+    color: #cbd5e0;
+    transition: color 0.15s, transform 0.15s;
+}
+
+.dash-kpi-card:hover .dash-kpi-arrow {
+    color: #3182ce;
+    transform: translateX(3px);
+}
+
+/* Two-column panels row */
+.dash-panels {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.dash-panel { margin: 0 !important; }
+
+/* Action button grid inside panels */
+.dash-action-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 12px;
+}
+
+.dash-action-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 18px 12px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-align: center;
+    color: #fff;
+    transition: transform 0.15s, box-shadow 0.15s, filter 0.15s;
+    line-height: 1.2;
+}
+
+.dash-action-btn i {
+    font-size: 1.5rem;
+}
+
+.dash-action-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+    filter: brightness(1.08);
+    text-decoration: none;
+    color: #fff;
+}
+
+.dash-action-blue   { background: #3182ce; }
+.dash-action-teal   { background: #319795; }
+.dash-action-green  { background: #38a169; }
+.dash-action-orange { background: #dd6b20; }
+.dash-action-purple { background: #805ad5; }
+.dash-action-red    { background: #e53e3e; }
+.dash-action-slate  { background: #4a5568; }
+
+/* Responsive */
+@media (max-width: 900px) {
+    .dash-panels {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .dash-kpi-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    .dash-kpi-value { font-size: 1.5rem; }
+    .dash-welcome-greeting { font-size: 1.1rem; }
+    .dash-welcome-badge { display: none; }
+    .dash-action-grid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    }
+}
+
+
+/* =============================================
+   LOGOUT BUTTON — visible white outline in header
+   ============================================= */
+.inv-btn-logout {
+    background: transparent;
+    color: #e2e8f0;
+    border: 1px solid rgba(255,255,255,0.45);
+    padding: 7px 14px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.18s, border-color 0.18s, color 0.18s;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.inv-btn-logout:hover {
+    background: rgba(255,255,255,0.15);
+    border-color: rgba(255,255,255,0.8);
+    color: #fff;
+    text-decoration: none;
+}
+
+/* =============================================
+   FILTER BAR  (Customer area filter etc.)
+   ============================================= */
+.inv-filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    background: #f7fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 10px 16px;
+    margin-bottom: 16px;
+}
+.inv-filter-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #4a5568;
+    white-space: nowrap;
+}
+.inv-filter-loading {
+    font-size: 0.8rem;
+    color: #718096;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* =============================================
+   BADGE VARIANTS — danger / warning / success
+   (extend existing inv-badge base class)
+   ============================================= */
+.inv-badge-danger {
+    background: #fff5f5;
+    color: #c53030;
+    border: 1px solid #feb2b2;
+}
+.inv-badge-warning {
+    background: #fffaf0;
+    color: #c05621;
+    border: 1px solid #fbd38d;
+}
+.inv-badge-success {
+    background: #f0fff4;
+    color: #276749;
+    border: 1px solid #9ae6b4;
+}
+
+/* Success button (resolve) */
+.inv-btn-success {
+    background: #38a169;
+    color: white;
+}
+.inv-btn-success:hover {
+    background: #2f855a;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(56,161,105,0.3);
+    color: white;
+}
+
+
+/* =============================================
+   INVOICE TABLE — alignment & autocomplete fix
+   ============================================= */
+
+/* Lock table layout so column widths never shift */
+.inv-invoice-table {
+    table-layout: fixed;
+    width: 100%;
+}
+
+/* All cells: top-aligned, no overflow clipping */
+.inv-invoice-table td,
+.inv-invoice-table th {
+    vertical-align: top;
+    overflow: visible;   /* critical — lets autocomplete dropdown escape the cell */
+    padding: 10px 10px;
+}
+
+/* Product cell — takes remaining width, overflow visible for dropdown */
+.inv-inv-cell-product {
+    overflow: visible !important;
+    position: relative;
+}
+
+/* Number / delete cells — fixed narrow */
+.inv-inv-cell-num {
+    width: 46px;
+    text-align: center;
+    vertical-align: middle !important;
+    padding-top: 12px !important;
+}
+
+/* Price / Qty / Total cells — fixed width, inputs fill cell */
+.inv-inv-cell-fixed {
+    vertical-align: top;
+}
+
+/* All inputs inside invoice table fill their cell */
+.inv-invoice-table .inv-field-input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 9px 10px;
+    font-size: 0.875rem;
+}
+
+/* Read-only total cell */
+.inv-total-readonly {
+    background: #f7fafc !important;
+    color: #38a169;
+    font-weight: 700;
+}
+
+/* Price-note label — sits below the price input, no height impact */
+.price-note {
+    display: block;
+    font-size: 0.72rem;
+    margin-top: 3px;
+    min-height: 14px;   /* reserve space so row height stays stable */
+    line-height: 1;
+}
+
+/* ── Autocomplete dropdown fix ───────────────────────────────────────
+   The wrapper must be position:relative so the dropdown is
+   absolutely positioned relative to it, NOT the table cell.
+   overflow:visible on the wrapper + cell lets the list escape.        */
+.autocomplete {
+    position: relative !important;
+    display: block;
+    width: 100%;
+}
+
+.autocomplete-items {
+    position: absolute;
+    top: 100%;           /* flush below the input */
+    left: 0;
+    right: 0;
+    z-index: 9999;       /* above everything */
+    background: #fff;
+    border: 1px solid #cbd5e0;
+    border-top: none;
+    border-radius: 0 0 6px 6px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+    max-height: 220px;
+    overflow-y: auto;
+    /* Detach from table flow entirely */
+    width: max-content;
+    min-width: 100%;
+}
+
+.autocomplete-items div {
+    padding: 9px 14px;
+    cursor: pointer;
+    border-bottom: 1px solid #edf2f7;
+    font-size: 0.875rem;
+    white-space: nowrap;
+}
+
+.autocomplete-items div:last-child { border-bottom: none; }
+
+.autocomplete-items div:hover,
+.autocomplete-items div.highlight {
+    background: #ebf8ff;
+    color: #2b6cb0;
+}
+
+/* Grand total row */
+.grand-total-row td {
+    border-top: 2px solid #e2e8f0;
+    padding: 14px 10px !important;
+    vertical-align: middle !important;
+}
+
+.grand-total-value {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #38a169;
+}
+
+/* =============================================
+   GLOBAL FORM & TABLE ALIGNMENT FIXES
+   ============================================= */
+
+/* inv-field-row: consistent vertical alignment for all form rows */
+.inv-field-row {
+    align-items: flex-start;   /* top-align labels + inputs of different heights */
+}
+
+/* inv-field-col: make sure error spans don't collapse height */
+.inv-field-col .inv-field-error:empty {
+    display: block;
+    min-height: 1rem;
+}
+
+/* inv-section-title: always vertically centered with its actions button */
+.inv-section-header {
+    align-items: center;
+}
+
+/* inv-table: consistent cell padding and vertical alignment */
+.inv-table td {
+    vertical-align: middle;
+}
+
+/* inv-actions: always centered vertically */
+.inv-actions {
+    align-items: center;
+}
+
+/* Responsive: invoice table stacks gracefully */
+@media (max-width: 768px) {
+    .inv-invoice-table,
+    .inv-invoice-table thead,
+    .inv-invoice-table tbody,
+    .inv-invoice-table tr,
+    .inv-invoice-table td {
+        display: block;
+        width: 100%;
+    }
+
+    .inv-invoice-table thead {
+        display: none;
+    }
+
+    .inv-invoice-table tr {
+        margin-bottom: 16px;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 12px;
+        background: #fff;
+    }
+
+    .inv-invoice-table td {
+        padding: 8px 0;
+        border: none;
+    }
+
+    .inv-inv-cell-num {
+        text-align: left;
+        width: 100%;
+        padding-top: 4px !important;
+    }
+
+    .autocomplete-items {
+        width: 100%;
+        min-width: unset;
+    }
+}
+
+
+/* Low stock row highlight in Products list */
+.inv-stock-low {
+    color: #c05621 !important;
+    font-weight: 700;
+}
+
+
+/* =============================================
+   CUSTOMER HISTORY PAGE
+   ============================================= */
+
+/* Top section: profile card (left) + KPI grid (right) */
+.cust-history-top {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 20px;
+    align-items: start;
+}
+
+/* Profile card */
+.cust-profile-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0;
+    padding: 28px 20px !important;
+}
+
+.cust-avatar {
+    font-size: 3.8rem;
+    color: #a0aec0;
+    margin-bottom: 12px;
+    line-height: 1;
+}
+
+.cust-profile-name {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #1a202c;
+    margin-bottom: 14px;
+}
+
+.cust-profile-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    font-size: .83rem;
+    color: #4a5568;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.cust-profile-meta div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+}
+
+.cust-profile-meta i {
+    color: #a0aec0;
+    font-size: .9rem;
+    flex-shrink: 0;
+}
+
+.cust-profile-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* KPI cards grid — 3 columns on wide, 2 on medium */
+.cust-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    align-content: start;
+}
+
+.cust-kpi-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 16px 18px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.07);
+    border-left: 4px solid transparent;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    transition: transform .18s, box-shadow .18s;
+}
+
+.cust-kpi-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 14px rgba(0,0,0,.1);
+}
+
+.cust-kpi-blue   { border-left-color: #3182ce; }
+.cust-kpi-green  { border-left-color: #38a169; }
+.cust-kpi-purple { border-left-color: #805ad5; }
+.cust-kpi-orange { border-left-color: #dd6b20; }
+.cust-kpi-teal   { border-left-color: #319795; }
+.cust-kpi-slate  { border-left-color: #4a5568; }
+
+.cust-kpi-icon {
+    font-size: 1.25rem;
+    margin-bottom: 4px;
+}
+
+.cust-kpi-blue   .cust-kpi-icon { color: #3182ce; }
+.cust-kpi-green  .cust-kpi-icon { color: #38a169; }
+.cust-kpi-purple .cust-kpi-icon { color: #805ad5; }
+.cust-kpi-orange .cust-kpi-icon { color: #dd6b20; }
+.cust-kpi-teal   .cust-kpi-icon { color: #319795; }
+.cust-kpi-slate  .cust-kpi-icon { color: #4a5568; }
+
+.cust-kpi-value {
+    font-size: 1.55rem;
+    font-weight: 800;
+    color: #1a202c;
+    line-height: 1.1;
+}
+
+.cust-kpi-label {
+    font-size: .72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: #718096;
+    display: flex;
+    align-items: center;
+}
+
+/* Responsive */
+@media (max-width: 1000px) {
+    .cust-history-top {
+        grid-template-columns: 1fr;
+    }
+    .cust-profile-card {
+        flex-direction: row;
+        flex-wrap: wrap;
+        text-align: left;
+        gap: 16px;
+        align-items: flex-start;
+    }
+    .cust-avatar { font-size: 2.8rem; margin-bottom: 0; }
+    .cust-profile-meta { align-items: flex-start; }
+    .cust-profile-meta div { justify-content: flex-start; }
+}
+
+@media (max-width: 700px) {
+    .cust-kpi-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+
+/* =============================================
+   REPORTS MODULE  — shared styles for all 4 report views
+   ============================================= */
+
+/* ── Report nav tabs (above the section card) ── */
+.rpt-tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 0;
+    flex-wrap: wrap;
+}
+
+.rpt-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 18px;
+    border-radius: 8px 8px 0 0;
+    font-size: .83rem;
+    font-weight: 600;
+    color: #4a5568;
+    text-decoration: none;
+    background: #edf2f7;
+    border: 1px solid #e2e8f0;
+    border-bottom: none;
+    transition: background .15s, color .15s;
+    position: relative;
+    bottom: -1px;
+}
+
+.rpt-tab:hover {
+    background: #e2e8f0;
+    color: #2c5282;
+    text-decoration: none;
+}
+
+.rpt-tab.active {
+    background: #fff;
+    color: #2c5282;
+    border-color: #e2e8f0;
+    border-bottom-color: #fff;
+    font-weight: 700;
+}
+
+/* ── Filter bar ── */
+.rpt-filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    background: #f7fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 4px;
+}
+
+.rpt-filter-label {
+    font-size: .8rem;
+    font-weight: 700;
+    color: #2c5282;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+}
+
+.rpt-filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.rpt-filter-sublabel {
+    font-size: .68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: #718096;
+}
+
+.rpt-date-input {
+    padding: 7px 10px !important;
+    font-size: .83rem !important;
+    width: 148px !important;
+}
+
+/* Quick year pill shortcuts */
+.rpt-year-pills {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.rpt-year-pill {
+    padding: 5px 12px;
+    border-radius: 12px;
+    font-size: .78rem;
+    font-weight: 700;
+    color: #4a5568;
+    background: #edf2f7;
+    border: 1px solid #e2e8f0;
+    text-decoration: none;
+    transition: background .15s, color .15s;
+    white-space: nowrap;
+}
+
+.rpt-year-pill:hover {
+    background: #3182ce;
+    color: #fff;
+    border-color: #3182ce;
+    text-decoration: none;
+}
+
+.rpt-year-pill.active {
+    background: #2c5282;
+    color: #fff;
+    border-color: #2c5282;
+}
+
+.rpt-year-clear {
+    background: #fff5f5;
+    color: #c53030;
+    border-color: #fed7d7;
+}
+
+.rpt-year-clear:hover {
+    background: #e53e3e;
+    color: #fff;
+    border-color: #e53e3e;
+}
+
+/* Date range badge beside section title */
+.rpt-date-badge {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 12px;
+    padding: 3px 10px;
+    border-radius: 10px;
+    background: #ebf8ff;
+    color: #2b6cb0;
+    font-size: .75rem;
+    font-weight: 600;
+    border: 1px solid #bee3f8;
+}
+
+/* Export button */
+.rpt-export-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border-radius: 6px;
+    font-size: .8rem;
+    font-weight: 600;
+    color: #4a5568;
+    background: #fff;
+    border: 1px solid #cbd5e0;
+    text-decoration: none;
+    transition: background .15s, border-color .15s, color .15s;
+    white-space: nowrap;
+}
+
+.rpt-export-btn:hover {
+    background: #f7fafc;
+    border-color: #38a169;
+    color: #276749;
+    text-decoration: none;
+}
+
+/* ── KPI summary row ── */
+.rpt-kpi-row {
+    display: flex;
+    gap: 14px;
+    margin: 12px 0 18px;
+    flex-wrap: wrap;
+}
+
+.rpt-kpi-card {
+    flex: 1;
+    min-width: 150px;
+    background: #f7fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 14px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.rpt-kpi-card.rpt-kpi-highlight {
+    background: #f0fff4;
+    border-color: #9ae6b4;
+}
+
+.rpt-kpi-val {
+    font-size: 1.45rem;
+    font-weight: 800;
+    color: #1a202c;
+    line-height: 1.1;
+}
+
+.rpt-kpi-lbl {
+    font-size: .72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: #718096;
+}
+
+/* ── Rank cell ── */
+.rpt-rank {
+    text-align: center !important;
+    font-size: 1rem;
+    vertical-align: middle !important;
+}
+
+/* ── Grand total footer row ── */
+.rpt-total-row td {
+    border-top: 2px solid #e2e8f0 !important;
+    background: #f7fafc;
+}
+
+/* ── Category share bar ── */
+.rpt-share-bar {
+    height: 6px;
+    background: #edf2f7;
+    border-radius: 3px;
+    margin-bottom: 3px;
+    overflow: hidden;
+}
+
+.rpt-share-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #3182ce, #63b3ed);
+    border-radius: 3px;
+    transition: width .3s ease;
+    min-width: 1px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .rpt-tabs { gap: 2px; }
+    .rpt-tab  { padding: 7px 12px; font-size: .78rem; }
+    .rpt-filter-bar { gap: 8px; }
+    .rpt-date-input { width: 130px !important; }
+    .rpt-kpi-row { gap: 10px; }
+    .rpt-kpi-val { font-size: 1.15rem; }
+}
